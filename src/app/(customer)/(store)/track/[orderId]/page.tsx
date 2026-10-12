@@ -1,6 +1,19 @@
+import { Suspense } from "react";
 import { TrackOrder } from "../components";
 
-export default async function TrackPage({
+export default function TrackPage({
+	params,
+}: {
+	params: Promise<{ orderId: string }>;
+}) {
+	return (
+		<Suspense fallback={<div className='min-h-[60vh]' />}>
+			<TrackContent params={params} />
+		</Suspense>
+	);
+}
+
+async function TrackContent({
 	params,
 }: {
 	params: Promise<{ orderId: string }>;

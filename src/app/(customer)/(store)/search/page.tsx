@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Container, EmptyState, Link, ProductCard, SearchInput } from "@/shared";
 import { products } from "../product";
 import { Header } from "../_components";
@@ -9,7 +10,19 @@ const tagMeta: Record<string, { label: string }> = {
 	bestsellers: { label: "Bestsellers" },
 };
 
-export default async function SearchPage({
+export default function SearchPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ q?: string; tag?: string }>;
+}) {
+	return (
+		<Suspense fallback={<Header text='Shop results' />}>
+			<SearchResults searchParams={searchParams} />
+		</Suspense>
+	);
+}
+
+async function SearchResults({
 	searchParams,
 }: {
 	searchParams: Promise<{ q?: string; tag?: string }>;
