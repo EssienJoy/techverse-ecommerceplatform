@@ -12,4 +12,5 @@ export interface ProductSummary {
   imageUrl?: string;
   rating?: number;
   reviews?: number;
+  stock?: number;
 }

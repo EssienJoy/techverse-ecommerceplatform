@@ -1,6 +1,6 @@
-import { products } from "@/features/products";
 import { ProductCard } from "@/shared";
 import { ProductSection } from "./ProductSection";
+import { products } from "@/shared/data/products";
 
 const sections = [
 	{ title: "Featured", href: "/shop?section=featured" },
@@ -20,7 +20,7 @@ export function ProductSections() {
 						<ProductCard
 							key={product.id}
 							product={product}
-							className='w-[48%] shrink-0 snap-start'
+							className='w-[50%] shrink-0 snap-start'
 						/>
 					))}
 				</ProductSection>

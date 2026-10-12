@@ -1,5 +1,5 @@
 import { Flame, Package } from "lucide-react";
-import { products } from "@/features/products";
+import { products } from "@/app/(customer)/(store)/product";
 import { Container, Link, formatCurrency } from "@/shared";
 
 const MAX_STOCK = 15;
@@ -15,10 +15,10 @@ export function LimitedStock() {
 			<Container>
 				<div className='flex items-center justify-between'>
 					<div className='flex items-center gap-2'>
-						<span className='flex size-7 items-center justify-center rounded-lg bg-danger-muted text-danger-foreground'>
+						{/* <span className='flex size-7 items-center justify-center rounded-lg bg-danger-muted text-danger-foreground'>
 							<Flame className='size-4' />
-						</span>
-						<h2 className='text-lg font-bold'>Almost Gone</h2>
+						</span> */}
+						<h2 className='text-lg font-bold'>Limited Stocks</h2>
 					</div>
 					<Link href='/shop?filter=low-stock' className='text-sm font-medium'>
 						See all
@@ -28,14 +28,13 @@ export function LimitedStock() {
 					{lowStock.map((product) => {
 						const pct = Math.max(
 							8,
-							Math.round((product.stock / MAX_STOCK) * 100)
+							Math.round((product.stock / MAX_STOCK) * 100),
 						);
 						return (
 							<li key={product.id} className='w-36 shrink-0'>
 								<Link
 									href={`/shop?product=${product.slug}`}
-									className='flex flex-col rounded-2xl border border-border bg-card p-2 transition-shadow hover:shadow-md'
-								>
+									className='flex flex-col rounded-2xl border border-border bg-card p-2 transition-shadow hover:shadow-md'>
 									<div className='relative flex h-20 items-center justify-center rounded-xl bg-gradient-to-br from-brand-100 to-brand-200 text-brand-500'>
 										<Package className='size-6' />
 									</div>

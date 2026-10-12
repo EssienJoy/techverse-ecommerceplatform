@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
-import { MobileNav } from "./(home)/components";
+import { SiteNav } from "./(home)/components";
+import { CartDrawer } from "@/shared";
 
 export default function CustomerLayout({ children }: { children: ReactNode }) {
 	return (
 		<>
 			<main>{children}</main>
-			<footer className='mt-26'>
-				<MobileNav />
-			</footer>
+			<SiteNav />
+			<CartDrawer />
 		</>
 	);
 }

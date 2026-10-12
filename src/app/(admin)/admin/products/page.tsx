@@ -1,5 +1,5 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { products } from "@/features/products";
+import { products } from "@/app/(customer)/(store)/product";
 import { formatCurrency, Link } from "@/shared";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -31,8 +31,7 @@ export default function AdminProductsPage() {
 		<div className='flex flex-col gap-6'>
 			<PageHeader
 				title='Products'
-				description='Manage your catalogue, stock and pricing.'
-			>
+				description='Manage your catalogue, stock and pricing.'>
 				<Button render={<Link href='/admin/products/new' />}>
 					<Plus />
 					Add product
@@ -72,14 +71,16 @@ export default function AdminProductsPage() {
 										</TableCell>
 										<TableCell className='text-right'>
 											<div className='flex justify-end gap-1'>
-												<Button variant='ghost' size='icon-sm' aria-label='Edit product'>
+												<Button
+													variant='ghost'
+													size='icon-sm'
+													aria-label='Edit product'>
 													<Pencil />
 												</Button>
 												<Button
 													variant='ghost'
 													size='icon-sm'
-													aria-label='Delete product'
-												>
+													aria-label='Delete product'>
 													<Trash2 />
 												</Button>
 											</div>

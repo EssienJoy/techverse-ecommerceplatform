@@ -1,5 +1,5 @@
 import { ArrowRight, ShoppingBag, Zap } from "lucide-react";
-import { products } from "@/features/products";
+import { products } from "@/app/(customer)/(store)/product";
 import { Container, Link, formatCurrency } from "@/shared";
 import { DealCountdown } from "./DealCountdown";
 
@@ -42,8 +42,7 @@ export function Deals() {
 								<Link
 									key={product.id}
 									href={`/shop?product=${product.slug}`}
-									className='group flex flex-col overflow-hidden rounded-2xl bg-white p-2 text-foreground transition-transform hover:-translate-y-0.5'
-								>
+									className='group flex flex-col overflow-hidden rounded-2xl bg-white p-2 text-foreground transition-transform hover:-translate-y-0.5'>
 									<div className='relative flex h-24 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-200 text-brand-500'>
 										<ShoppingBag className='size-7' />
 										<span className='absolute top-1.5 left-1.5 rounded-full bg-danger px-2 py-0.5 text-[0.625rem] font-bold text-white shadow-sm'>
@@ -68,8 +67,7 @@ export function Deals() {
 
 					<Link
 						href='/shop?section=flash-sale'
-						className='relative mt-3 flex items-center justify-center gap-1 rounded-xl bg-white py-2 text-xs font-bold text-brand-700 transition-colors hover:bg-white/90'
-					>
+						className='relative mt-3 flex items-center justify-center gap-1 rounded-xl bg-white py-2 text-xs font-bold text-brand-700 transition-colors hover:bg-white/90'>
 						View all deals
 						<ArrowRight className='size-3.5' />
 					</Link>

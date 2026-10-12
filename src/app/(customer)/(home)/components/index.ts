@@ -11,3 +11,4 @@ export * from "./ProductSections";
 export * from "./RecentlyViewed";
 export * from "./ScreenGuard";
 export * from "./SearchBar";
+export * from "./SiteNav";

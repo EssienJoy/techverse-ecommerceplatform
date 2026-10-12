@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ChevronRight } from "lucide-react";
 import { Container, Link } from "@/shared";
 
 type ProductSectionProps = {
@@ -14,14 +15,17 @@ export function ProductSection({ title, href, children }: ProductSectionProps) {
 				<div className='flex items-center justify-between'>
 					<h2 className='text-lg font-bold'>{title}</h2>
 					{href ? (
-						<Link href={href} className='text-sm font-medium'>
+						<Link
+							href={href}
+							className='inline-flex items-center gap-0.5 text-sm font-medium'>
 							See all
+							<ChevronRight className='size-4' />
 						</Link>
 					) : null}
 				</div>
 				<div
-					className='mt-3 flex snap-x snap-mandatory gap-1
-				 overflow-x-auto pb-2 [scrollbar-width:none]
+					className='mt-3 flex snap-x snap-mandatory gap-2
+				 overflow-x-auto [scrollbar-width:none]
 				  [&::-webkit-scrollbar]:hidden'>
 					{children}
 				</div>

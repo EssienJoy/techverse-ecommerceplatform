@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
+import { ThemeSync } from "@/shared";
 
 const dmSans = DM_Sans({
 	variable: "--font-dm-sans",
@@ -16,7 +17,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
 	return (
 		<html lang='en' className={dmSans.variable}>
-		<body>{children}</body>
+		<body>
+			<ThemeSync />
+			{children}
+		</body>
 		</html>
 	);
 }

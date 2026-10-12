@@ -1,5 +1,5 @@
 import { DollarSign, Package, ShoppingCart, Users } from "lucide-react";
-import { products } from "@/features/products";
+import { products } from "@/app/(customer)/(store)/product";
 import { formatCurrency } from "@/shared";
 import { Badge } from "@/shared/components/ui/badge";
 import {
@@ -78,8 +78,7 @@ export default function AdminDashboardPage() {
 														: order.status === "Cancelled"
 															? "destructive"
 															: "outline"
-												}
-											>
+												}>
 												{order.status}
 											</Badge>
 										</TableCell>
@@ -93,21 +92,23 @@ export default function AdminDashboardPage() {
 				<Card>
 					<CardHeader>
 						<CardTitle>Low Stock</CardTitle>
-						<CardDescription>Products running low on inventory.</CardDescription>
+						<CardDescription>
+							Products running low on inventory.
+						</CardDescription>
 					</CardHeader>
 					<CardContent className='flex flex-col gap-3'>
 						{lowStock.map((product) => (
 							<div
 								key={product.id}
-								className='flex items-center justify-between gap-3'
-							>
+								className='flex items-center justify-between gap-3'>
 								<div className='flex items-center gap-3'>
 									<span className='flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-100 to-brand-300 text-brand-700'>
 										<Package className='size-4' />
 									</span>
 									<span className='text-sm font-medium'>{product.name}</span>
 								</div>
-								<Badge variant={product.stock === 0 ? "destructive" : "outline"}>
+								<Badge
+									variant={product.stock === 0 ? "destructive" : "outline"}>
 									{product.stock} left
 								</Badge>
 							</div>

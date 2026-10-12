@@ -1,5 +1,5 @@
 import { History, Package } from "lucide-react";
-import { products } from "@/features/products";
+import { products } from "@/app/(customer)/(store)/product";
 import { Container, Link, formatCurrency } from "@/shared";
 
 const recentlyViewed = [
@@ -25,8 +25,7 @@ export function RecentlyViewed() {
 						<li key={product.id} className='w-28 shrink-0'>
 							<Link
 								href={`/shop?product=${product.slug}`}
-								className='group flex flex-col'
-							>
+								className='group flex flex-col'>
 								<div className='flex h-24 items-center justify-center rounded-2xl border border-border bg-gradient-to-br from-surface to-brand-50 text-brand-400 transition-colors group-hover:border-brand-200'>
 									<Package className='size-6' />
 								</div>

@@ -40,8 +40,7 @@ export function Hero() {
 							<CarouselItem key={slide.id} className='pl-0'>
 								<AspectRatio
 									ratio={4 / 3}
-									className='overflow-hidden rounded-3xl shadow-lg shadow-brand-900/10 ring-1 ring-black/5'
-								>
+									className='overflow-hidden rounded-3xl shadow-lg shadow-brand-900/10 ring-1 ring-black/5'>
 									<Image
 										src='/hero.jpg'
 										alt={slide.title}
@@ -51,8 +50,13 @@ export function Hero() {
 									/>
 									<div className='absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-transparent' />
 									<div className='absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent' />
-									<div className='absolute inset-0 flex flex-col justify-center gap-3.5 px-5 text-white'>
-										<span className='w-fit rounded-full bg-white/15 px-3 py-1 text-[0.625rem] font-semibold tracking-[0.14em] uppercase ring-1 ring-white/25 backdrop-blur-sm'>
+									<section
+										className='absolute inset-0 flex flex-col justify-center
+									 gap-3.5 px-5 text-white'>
+										<span
+											className='w-fit rounded-full bg-white/15
+										 px-3 py-1 text-[0.625rem] font-semibold tracking-[0.14em] 
+										 uppercase ring-1 ring-white/25 backdrop-blur-sm'>
 											{slide.tag}
 										</span>
 										<div className='flex flex-col gap-1.5'>
@@ -64,16 +68,15 @@ export function Hero() {
 											</p>
 										</div>
 										<Button
-											render={<Link href='/shop' />}
-											className='mt-0.5 w-fit rounded-full'
-										>
+											className='self-start'
+											render={<Link href='/shop' />}>
 											Shop Now
 											<ArrowRight
 												data-icon='inline-end'
 												className='transition-transform duration-200 group-hover/button:translate-x-0.5'
 											/>
 										</Button>
-									</div>
+									</section>
 								</AspectRatio>
 							</CarouselItem>
 						))}
