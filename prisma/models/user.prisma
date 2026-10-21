@@ -1,0 +1,20 @@
+enum UserRole {
+  admin
+  super_admin
+
+  @@map("user_role")
+}
+
+model User {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  name         String
+  email        String   @unique
+  password     String
+  role         UserRole @default(admin)
+  isActive     Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}

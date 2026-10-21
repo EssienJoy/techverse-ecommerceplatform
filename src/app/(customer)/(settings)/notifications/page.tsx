@@ -4,7 +4,7 @@ import { Switch } from "@/shared/components/ui/switch";
 import {
 	useSettingsStore,
 	type NotificationKey,
-} from "@/shared/store/useSettingsStore";
+} from "@/features/account/stores/useSettingsStore";
 
 const rows: { key: NotificationKey; title: string; description: string }[] = [
 	{

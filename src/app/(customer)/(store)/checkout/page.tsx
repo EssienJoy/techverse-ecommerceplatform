@@ -3,11 +3,11 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Container, Input, formatCurrency } from "@/shared";
-import { Header } from "../_components";
-import { products } from "../product";
-import { useCartStore } from "@/shared/store/useCartStore";
-import { useCheckoutStore } from "@/shared/store/useCheckoutStore";
+import { Header } from "@/features/navigation";
+import { useCartStore } from "@/features/cart/stores/useCartStore";
+import { useCheckoutStore } from "@/features/checkout/stores/useCheckoutStore";
 import { ChevronRight } from "lucide-react";
+import type { Product } from "@/shared/lib";
 
 type ShippingForm = {
 	fullName: string;
@@ -31,11 +31,14 @@ export default function CheckoutPage() {
 	const router = useRouter();
 	const [form, setForm] = useState<ShippingForm>(initialForm);
 	const cart = useCartStore((state) => state.cart);
+	const products: Product[] = [];
+	const productsById = new Map(
+		products.map((product) => [product.id, product]),
+	);
 	const setShipping = useCheckoutStore((state) => state.setShipping);
 
 	const update =
-		(key: keyof ShippingForm) =>
-		(event: React.ChangeEvent<HTMLInputElement>) =>
+		(key: keyof ShippingForm) => (event: React.ChangeEvent<HTMLInputElement>) =>
 			setForm((prev) => ({ ...prev, [key]: event.target.value }));
 
 	const handleSubmit = (event: FormEvent) => {
@@ -52,19 +55,24 @@ export default function CheckoutPage() {
 	};
 
 	const orderItems = cart.map((item) => {
-		const product = products.find((p) => p.id === item.productId);
+		const product = productsById.get(item.productId);
 		return {
 			productId: item.productId,
-			name: product?.name ?? "Product",
+			name: product?.name ?? "",
 			price: product?.price ?? 0,
 			qty: item.qty,
 		};
 	});
+	const hasUnavailableProducts = orderItems.some((item) => !item.name);
 
-	const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+	const subtotal = orderItems.reduce(
+		(sum, item) => sum + item.price * item.qty,
+		0,
+	);
 	const shipping = subtotal === 0 || subtotal > 300 ? 0 : 19;
 	const tax = subtotal * 0.08;
 	const total = subtotal + shipping + tax;
+	const canContinue = cart.length > 0 && !hasUnavailableProducts;
 
 	return (
 		<>
@@ -157,6 +165,7 @@ export default function CheckoutPage() {
 
 							<Button
 								type='submit'
+								disabled={!canContinue}
 								className='mt-6 h-12 w-full gap-2 rounded-full text-base'>
 								Continue to payment
 								<ChevronRight className='size-4' />
@@ -171,6 +180,12 @@ export default function CheckoutPage() {
 							</h2>
 						</div>
 						<div className='px-4 py-4'>
+							{hasUnavailableProducts ? (
+								<p className='text-sm text-danger'>
+									Some cart products are no longer available. Remove them from
+									your cart to continue.
+								</p>
+							) : null}
 							{orderItems.length === 0 ? (
 								<p className='text-sm text-muted-foreground'>
 									No items in your cart yet.

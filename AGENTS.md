@@ -10,11 +10,31 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project Guidance
 
-- Keep changes focused on the requested task. Do not rewrite, reformat, or remove unrelated code or existing user changes.
-- Before editing, inspect the relevant implementation and nearby conventions. Prefer the smallest change that solves the request.
-- This project uses Next.js 16, React, TypeScript, and Tailwind CSS. Before changing Next.js code, read the relevant guide under `node_modules/next/dist/docs/` and follow its current APIs and conventions.
+- This project uses Next.js 16, React, TypeScript, Tailwind CSS, and Prisma ORM.
+- Keep changes focused on the requested task. Inspect the relevant implementation and nearby conventions before editing; preserve unrelated code and user changes.
 - Keep domain code in its existing feature area under `src/features/` and shared UI or utilities under `src/shared/` or `src/lib/`. Preserve established barrel exports where applicable.
-- Reuse existing dependencies and UI patterns. Do not add a dependency or introduce a new abstraction unless the task requires it.
-- For UI changes, follow the existing components and styling conventions; make layouts responsive and controls accessible by keyboard.
-- Validate changes with the narrowest relevant check. Available project checks include `npm run lint` and `npm run build`; there is currently no test script. Do not claim checks passed unless they were run.
-- Do not change generated or configuration files unless they are directly required by the task. Never remove the Next.js-managed block above; `next dev` may recreate it.
+- Prefer TypeScript for new application code and co-locate component-specific styles when practical.
+- Reuse existing dependencies and UI patterns. Avoid introducing a dependency or abstraction unless the task requires it.
+- Do not edit generated Prisma client files. Make schema changes in the source files under `prisma/` and follow applicable instructions in `.agents/skills/` for Prisma work.
+- For UI changes, follow existing components and styling conventions; make layouts responsive and controls accessible by keyboard.
+
+## Development Workflow
+
+- Use `npm run dev` while iterating so Next.js HMR remains available.
+- Do not run `npm run build` in an interactive agent session. A production build changes `.next` output and can disrupt the development server. Run it outside the interactive workflow only when specifically required.
+- When adding or updating dependencies, update the package manager's lockfile and restart the development server.
+
+## Validation
+
+- Run `npm run lint` for ESLint validation and `npx tsc --noEmit` when a TypeScript change needs a type check.
+- There is no test script in `package.json`. Run relevant existing tests directly if the touched area has them, and report checks that could not be run.
+- Do not claim a check passed unless it was run.
+
+## Available Commands
+
+| Command            | Purpose                                                         |
+| ------------------ | --------------------------------------------------------------- |
+| `npm run dev`      | Start the Next.js development server with HMR.                  |
+| `npm run lint`     | Run ESLint.                                                     |
+| `npx tsc --noEmit` | Type-check without emitting files.                              |
+| `npm run build`    | Production build; do not run during interactive agent sessions. |

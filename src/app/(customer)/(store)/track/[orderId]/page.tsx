@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { TrackOrder } from "../components";
+import { TrackOrder } from "@/features/orders";
 
 export default function TrackPage({
 	params,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
-import { ThemeSync } from "@/shared";
+import { AlertMessage, ThemeProvider } from "@/shared";
 
 const dmSans = DM_Sans({
 	variable: "--font-dm-sans",
@@ -9,7 +9,10 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-	title: "TechNest | Gadgets & Tech Essentials",
+	title: {
+		template: "%s | Gadgets & Tech Essentials",
+		default: "TechNest | Gadgets & Tech Essentials",
+	},
 	description:
 		"Discover the latest gadgets at TechNest. Shop smartphones, wearables, audio, smart home devices and more — quality tech at great prices with fast delivery.",
 };
@@ -17,10 +20,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
 	return (
 		<html lang='en' className={dmSans.variable}>
-		<body>
-			<ThemeSync />
-			{children}
-		</body>
+			<body>
+				<ThemeProvider>
+					<AlertMessage />
+					{children}
+				</ThemeProvider>
+			</body>
 		</html>
 	);
 }

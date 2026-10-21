@@ -1,7 +1,6 @@
-import { Suspense } from "react";
-import type { ReactNode } from "react";
-import { SiteNav } from "./(home)/components";
-import { CartDrawer } from "@/shared";
+import { Suspense, type ReactNode } from "react";
+import { SiteNav } from "@/features/navigation";
+import { CartDrawer } from "@/features/cart";
 
 export default function CustomerLayout({ children }: { children: ReactNode }) {
 	return (

@@ -1,0 +1,20 @@
+model Variations {
+    id        String   @id @default(cuid())
+    sku       String  @unique
+    color     String
+    size      String
+    price Int
+    stock Int
+    images VariantImage[]
+    productId String   @db.Uuid
+    product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)    
+
+    @@map("variations")
+}
+
+model VariantImage {
+    id        String   @id @default(cuid())
+    url String
+    variationId String
+    variant  Variations @relation(fields: [variationId], references: [id], onDelete: Cascade)
+}

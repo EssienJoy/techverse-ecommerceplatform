@@ -4,11 +4,14 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button, Container, Input, formatCurrency } from "@/shared";
-import { Header } from "../../_components";
-import { products } from "../../product";
-import { useCartStore } from "@/shared/store/useCartStore";
-import { useCheckoutStore } from "@/shared/store/useCheckoutStore";
-import { useOrderStore, type Order } from "@/shared/store/useOrderStore";
+import { Header } from "@/features/navigation";
+import { useCartStore } from "@/features/cart/stores/useCartStore";
+import { useCheckoutStore } from "@/features/checkout/stores/useCheckoutStore";
+import type { Product } from "@/shared/lib";
+import {
+	useOrderStore,
+	type Order,
+} from "@/features/orders/stores/useOrderStore";
 import { CheckCircle2, Loader2, Lock } from "lucide-react";
 
 type PaymentForm = {
@@ -34,6 +37,10 @@ export default function PaymentPage() {
 	const shipping = useCheckoutStore((state) => state.shipping);
 	const clearCheckout = useCheckoutStore((state) => state.clearCheckout);
 	const cart = useCartStore((state) => state.cart);
+	const products: Product[] = [];
+	const productsById = new Map(
+		products.map((product) => [product.id, product]),
+	);
 	const clearCart = useCartStore((state) => state.clearCart);
 	const addOrder = useOrderStore((state) => state.addOrder);
 
@@ -48,8 +55,7 @@ export default function PaymentPage() {
 	}, [shipping, completedOrder, router]);
 
 	const update =
-		(key: keyof PaymentForm) =>
-		(event: ChangeEvent<HTMLInputElement>) =>
+		(key: keyof PaymentForm) => (event: ChangeEvent<HTMLInputElement>) =>
 			setForm((prev) => ({ ...prev, [key]: event.target.value }));
 
 	if (completedOrder) {
@@ -67,7 +73,9 @@ export default function PaymentPage() {
 							</h2>
 							<p className='mt-2 max-w-sm text-sm text-muted-foreground'>
 								Order{" "}
-								<span className='font-medium text-foreground'>{completedOrder.id}</span>{" "}
+								<span className='font-medium text-foreground'>
+									{completedOrder.id}
+								</span>{" "}
 								· {formatCurrency(completedOrder.total)}
 							</p>
 							<Link
@@ -101,22 +109,29 @@ export default function PaymentPage() {
 	}
 
 	const orderItems = cart.map((item) => {
-		const product = products.find((p) => p.id === item.productId);
+		const product = productsById.get(item.productId);
 		return {
 			productId: item.productId,
-			name: product?.name ?? "Product",
+			name: product?.name ?? "",
 			price: product?.price ?? 0,
 			qty: item.qty,
 		};
 	});
+	const hasUnavailableProducts = orderItems.some((item) => !item.name);
 
-	const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+	const subtotal = orderItems.reduce(
+		(sum, item) => sum + item.price * item.qty,
+		0,
+	);
 	const shippingFee = subtotal === 0 || subtotal > 300 ? 0 : 19;
 	const tax = subtotal * 0.08;
 	const total = subtotal + shippingFee + tax;
 
 	const handlePay = (event: FormEvent) => {
 		event.preventDefault();
+		if (hasUnavailableProducts || cart.length === 0) {
+			return;
+		}
 		setProcessing(true);
 		window.setTimeout(() => {
 			const order: Order = {
@@ -214,12 +229,16 @@ export default function PaymentPage() {
 
 							<Button
 								type='submit'
-								disabled={processing}
+								disabled={
+									processing || hasUnavailableProducts || cart.length === 0
+								}
 								className='mt-5 h-12 w-full gap-2 rounded-full text-base'>
 								{processing ? (
 									<Loader2 className='size-4 animate-spin' />
 								) : null}
-								{processing ? "Processing payment…" : `Pay ${formatCurrency(total)}`}
+								{processing
+									? "Processing payment…"
+									: `Pay ${formatCurrency(total)}`}
 							</Button>
 						</form>
 					</section>

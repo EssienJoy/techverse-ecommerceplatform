@@ -46,5 +46,8 @@ next-env.d.ts
 
 # prisma generated client
 /src/generated
-
 /src/generated/prisma
+
+# local agent tool junctions (canonical skills live in .agents/)
+/.claude/
+/.windsurf/

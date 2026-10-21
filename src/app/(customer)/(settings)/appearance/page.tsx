@@ -2,7 +2,7 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 import { cn } from "cn";
-import { useSettingsStore, type Theme } from "@/shared/store/useSettingsStore";
+import { useTheme, type Theme } from "@/shared";
 
 const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [
 	{ value: "light", label: "Light", icon: Sun },
@@ -11,8 +11,7 @@ const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [
 ];
 
 export default function AppearancePage() {
-	const theme = useSettingsStore((state) => state.theme);
-	const setTheme = useSettingsStore((state) => state.setTheme);
+	const { theme, setTheme } = useTheme();
 
 	return (
 		<section className='mt-4'>

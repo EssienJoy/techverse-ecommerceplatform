@@ -1,8 +1,10 @@
 import { Suspense } from "react";
-import { Container, EmptyState, Link, ProductCard, SearchInput } from "@/shared";
-import { products } from "../product";
-import { Header } from "../_components";
+import { Container, EmptyState, Link, SearchInput } from "@/shared";
+import { ProductCard } from "@/features/products";
+import { Header } from "@/features/navigation";
 import { ChevronLeft, Search } from "lucide-react";
+import { getCategories } from "@/features/content/server/content.service";
+import type { Product } from "@/shared/lib";
 
 const tagMeta: Record<string, { label: string }> = {
 	"limited-stock": { label: "Limited Stock" },
@@ -13,7 +15,7 @@ const tagMeta: Record<string, { label: string }> = {
 export default function SearchPage({
 	searchParams,
 }: {
-	searchParams: Promise<{ q?: string; tag?: string }>;
+	searchParams: Promise<{ q?: string; tag?: string; category?: string }>;
 }) {
 	return (
 		<Suspense fallback={<Header text='Shop results' />}>
@@ -25,17 +27,27 @@ export default function SearchPage({
 async function SearchResults({
 	searchParams,
 }: {
-	searchParams: Promise<{ q?: string; tag?: string }>;
+	searchParams: Promise<{ q?: string; tag?: string; category?: string }>;
 }) {
-	const { q, tag } = await searchParams;
+	const { q, tag, category } = await searchParams;
 	const query = q?.trim() ?? "";
 
 	const meta = tag ? tagMeta[tag] : null;
+
+	const categories = await getCategories();
+	const products: Product[] = [];
+	const activeCategory = category
+		? categories.find(
+				(item) => item.slug === category || item.label === category,
+			)
+		: undefined;
 
 	const results = products.filter((product) => {
 		if (tag === "limited-stock" && product.stock > 10) return false;
 		if (tag === "new-in-stock" && product.stock < 20) return false;
 		if (tag === "bestsellers" && product.rating < 4.7) return false;
+		if (activeCategory && product.category !== activeCategory.label)
+			return false;
 		if (query && !product.name.toLowerCase().includes(query.toLowerCase()))
 			return false;
 		return true;
@@ -43,7 +55,7 @@ async function SearchResults({
 
 	const title = query
 		? `Results for "${query}"`
-		: meta?.label ?? "Shop results";
+		: activeCategory?.label || meta?.label || "Shop results";
 
 	return (
 		<>

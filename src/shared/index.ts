@@ -1,5 +1,5 @@
 export * from "./components";
 export * from "./config";
-export * from "./hooks";
+export * from "./contexts";
 export * from "./lib";
-export * from "./types";
+export * from "./stores";

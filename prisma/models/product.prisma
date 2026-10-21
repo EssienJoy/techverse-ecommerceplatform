@@ -1,0 +1,57 @@
+model Product {
+  id                String    @id @default(uuid(7)) @db.Uuid
+  categoryId        String
+  category          Category  @relation(fields: [categoryId], references: [id],onDelete: Cascade)
+  brandId           String
+  brand             Brand     @relation(fields: [brandId], references: [id],onDelete: Cascade)
+  name              String
+  slug              String    @unique
+  description       String
+  imageUrl          String
+  features          String[]  @default([])
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  flashSaleItems FlashSaleItem[]
+  reviews  ProductReview[]
+  ratings  ProductRating[]
+  variations  Variations[]
+
+
+  @@index([categoryId])
+  @@index([brandId])
+  @@map("products")
+}
+
+
+
+model ProductReview {
+  id           String   @id @default(cuid())
+  productId    String   @db.Uuid
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  reviewerName String?
+  title        String?
+  body         String
+  isPublished  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([productId])
+  @@map("product_reviews")
+}
+
+model ProductRating {
+  id        String   @id @default(cuid())
+  productId String   @db.Uuid
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  value     Int
+  createdAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+
+  @@index([productId])
+  @@map("product_ratings")
+}
+
+

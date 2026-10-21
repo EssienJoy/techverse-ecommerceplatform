@@ -1,7 +1,10 @@
 import { Suspense } from "react";
-import { products } from "@/app/(customer)/(store)/product";
 import { notFound } from "next/navigation";
-import { ProductDetail } from "../components";
+import { ProductDetail } from "@/features/products";
+import {
+	getProduct,
+	getProductReviews,
+} from "@/features/products/server/products.service";
 
 export default function ProductPage({
 	params,
@@ -26,11 +29,14 @@ async function ProductContent({
 	params: Promise<{ productId: string }>;
 }) {
 	const { productId } = await params;
-	const product = products.find((item) => item.id === productId);
+	const [product, reviews] = await Promise.all([
+		getProduct(productId),
+		getProductReviews(productId),
+	]);
 
 	if (!product) {
 		notFound();
 	}
 
-	return <ProductDetail product={product} />;
+	return <ProductDetail product={product} reviews={reviews} />;
 }

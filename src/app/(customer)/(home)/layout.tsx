@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Header } from "./components";
+import { Header } from "@/features/storefront";
 export const metadata: Metadata = {
 	title: "Home | Gadgets & Tech Essentials",
 	description:
