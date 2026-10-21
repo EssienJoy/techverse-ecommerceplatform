@@ -7,6 +7,8 @@ export const metadata: Metadata = {
 	description: `Sign in to the ${siteConfig.name} admin console.`,
 };
 
+export const instant = false;
+
 export default function AuthLayout({ children }: { children: ReactNode }) {
 	return (
 		<main>

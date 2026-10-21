@@ -11,6 +11,8 @@ export const metadata: Metadata = {
 	description: `Manage ${siteConfig.name} products, orders and customers.`,
 };
 
+export const instant = false;
+
 export default async function AdminLayout({
 	children,
 }: {
