@@ -1,19 +1,8 @@
 "use client";
-import {
-	useRef,
-	useState,
-	type MouseEvent,
-	type TouchEvent,
-} from "react";
+
+import { useState } from "react";
 import Image from "next/image";
-import {
-	ChevronLeft,
-	ChevronRight,
-	Heart,
-	ShoppingBag,
-	Sparkles,
-	Star,
-} from "lucide-react";
+import { Check, ChevronDown, Heart, ShoppingBag, Sparkles, Star } from "lucide-react";
 import { cn } from "cn";
 import { Button } from "@/shared/components/Button";
 import { formatCurrency } from "@/shared/lib";
@@ -21,6 +10,7 @@ import type { Product } from "@/shared/lib";
 import Link from "next/link";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
 import { useFavoritesStore } from "@/features/saved/stores/useFavoritesStore";
+import { isLowStock } from "@/features/products/lib/stock";
 
 type ProductCardProps = {
 	product: Product;
@@ -35,7 +25,6 @@ export function ProductCard({
 }: ProductCardProps) {
 	const cartStore = useCartStore((state) => state);
 	const favoritesStore = useFavoritesStore((state) => state);
-	// console.log(cartStore.cart);
 	const isTopRated =
 		typeof product.rating === "number" && product.rating >= 4.7;
 	const ratingLabel =
@@ -47,18 +36,10 @@ export function ProductCard({
 		? Math.round(((oldPrice - product.price) / oldPrice) * 100)
 		: 0;
 	const [selectedVariationIndex, setSelectedVariationIndex] = useState(0);
-	const [activeImage, setActiveImage] = useState(0);
-	const swipeStart = useRef<number | null>(null);
-	const didSwipe = useRef(false);
+	const [isVariationOpen, setIsVariationOpen] = useState(false);
 
-	const selectedVariation = product.variations[selectedVariationIndex];
-	const images = selectedVariation?.images.length
-		? selectedVariation.images
-		: product.imageUrl
-			? [product.imageUrl]
-			: [];
-	const imageIndex = Math.min(activeImage, Math.max(images.length - 1, 0));
-	const currentImage = images[imageIndex] ?? product.imageUrl;
+	const selectedVariation =
+		product.variations[selectedVariationIndex] ?? product.variations[0];
 	const activePrice = selectedVariation?.price ?? product.price;
 	const activeStock = selectedVariation?.stock ?? product.stock;
 	const cartId = selectedVariation?.id ?? product.id;
@@ -67,69 +48,23 @@ export function ProductCard({
 	);
 	const isFavorite = favoritesStore.favorites.includes(product.id);
 
-	const selectVariation = (index: number) => {
-		setSelectedVariationIndex(index);
-		setActiveImage(0);
-	};
-
-	const selectImage = (index: number) => setActiveImage(index);
-
-	const showPreviousImage = () => {
-		if (images.length < 2) return;
-		setActiveImage((imageIndex - 1 + images.length) % images.length);
-	};
-
-	const showNextImage = () => {
-		if (images.length < 2) return;
-		setActiveImage((imageIndex + 1) % images.length);
-	};
-
-	const handleTouchStart = (event: TouchEvent) => {
-		swipeStart.current = event.touches[0].clientX;
-		didSwipe.current = false;
-	};
-
-	const handleTouchEnd = (event: TouchEvent) => {
-		if (swipeStart.current === null) return;
-
-		const delta = event.changedTouches[0].clientX - swipeStart.current;
-		swipeStart.current = null;
-
-		if (Math.abs(delta) < 40) return;
-
-		didSwipe.current = true;
-
-		if (delta > 0) showPreviousImage();
-		else showNextImage();
-	};
-
-	const handleCardClick = (event: MouseEvent) => {
-		if (!didSwipe.current) return;
-
-		event.preventDefault();
-		event.stopPropagation();
-		didSwipe.current = false;
-	};
 	return (
 		<Link
 			href={`/product/${product.id}`}
-			onClick={handleCardClick}
 			className={cn(
-				`group/card relative overflow-hidden 
-				rounded-xl border border-border/70 
-				bg-card space-y-2 py-2 shadow-sm `,
+				`group/card relative flex h-full flex-col gap-2 overflow-hidden
+				rounded-xl border border-border/70
+				bg-card py-2 shadow-sm`,
 				className,
 			)}>
-			<section>
-				<div
-					className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-white'
-					onTouchStart={handleTouchStart}
-					onTouchEnd={handleTouchEnd}>
-					{currentImage ? (
+			<section className='flex flex-1 flex-col'>
+				<div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-white'>
+					{product.imageUrl ? (
 						<Image
-							src={currentImage}
+							src={product.imageUrl}
 							alt={product.name}
 							fill
+							sizes='(min-width: 1024px) 25vw, 50vw'
 							className='object-contain'
 						/>
 					) : (
@@ -169,56 +104,8 @@ export function ProductCard({
 						/>
 					</button>
 
-					{images.length > 1 ? (
-						<>
-							<button
-								type='button'
-								aria-label='Previous image'
-								onClick={(event) => {
-									event.preventDefault();
-									event.stopPropagation();
-									showPreviousImage();
-								}}
-								className='absolute top-1/2 left-1 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground shadow-sm backdrop-blur transition-opacity hover:bg-white sm:opacity-0 sm:group-hover/card:opacity-100'>
-								<ChevronLeft className='size-3.5' />
-							</button>
-							<button
-								type='button'
-								aria-label='Next image'
-								onClick={(event) => {
-									event.preventDefault();
-									event.stopPropagation();
-									showNextImage();
-								}}
-								className='absolute top-1/2 right-1 z-10 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground shadow-sm backdrop-blur transition-opacity hover:bg-white sm:opacity-0 sm:group-hover/card:opacity-100'>
-								<ChevronRight className='size-3.5' />
-							</button>
-
-							<div className='absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full bg-white/85 px-1.5 py-1 shadow-sm backdrop-blur'>
-								{images.map((image, index) => (
-									<button
-										key={`${image}-${index}`}
-										type='button'
-										aria-label={`Show image ${index + 1}`}
-										aria-pressed={imageIndex === index}
-										onClick={(event) => {
-											event.preventDefault();
-											event.stopPropagation();
-											selectImage(index);
-										}}
-										className={cn(
-											"h-1.5 rounded-full transition-all",
-											imageIndex === index
-												? "w-3 bg-brand-500"
-												: "w-1.5 bg-black/20 hover:bg-black/40",
-										)}
-									/>
-								))}
-							</div>
-						</>
-					) : null}
-
-					{typeof activeStock === "number" && activeStock <= 8 ? (
+					{typeof activeStock === "number" &&
+					(activeStock <= 0 || isLowStock(activeStock)) ? (
 						<span
 							className={cn(
 								"absolute bottom-2 left-2 rounded-full px-2 py-0.5 text-[10px] font-semibold shadow-sm backdrop-blur",
@@ -233,42 +120,98 @@ export function ProductCard({
 
 				<div className='flex flex-1 flex-col px-2.5 pb-1 pt-3'>
 					<h3
-						className=' 
-					text-sm font-semibold leading-5 text-foreground
+						className='text-sm font-semibold leading-5 text-foreground
 					 transition-colors group-hover/card:text-brand-700'>
 						{product.name}
 					</h3>
 
-					{product.variations.length > 1 ? (
-						<div className='mt-1.5 flex flex-wrap gap-1'>
-							{product.variations.map((variation, index) => {
-								const selected = selectedVariationIndex === index;
-								const outOfStock = variation.stock === 0;
+					{product.variations.length > 0 ? (
+						<div
+							className='relative mt-2'
+							onBlur={(event) => {
+								if (
+									!event.currentTarget.contains(
+										event.relatedTarget as Node | null,
+									)
+								) {
+									setIsVariationOpen(false);
+								}
+							}}>
+							<button
+								type='button'
+								aria-haspopup='listbox'
+								aria-expanded={isVariationOpen}
+								onClick={(event) => {
+									event.preventDefault();
+									event.stopPropagation();
+									setIsVariationOpen((value) => !value);
+								}}
+								className='flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-medium transition-colors hover:border-brand-300'>
+								<span className='truncate'>
+									{selectedVariation
+										? `${selectedVariation.color} · ${selectedVariation.size}`
+										: "Select option"}
+								</span>
+								<ChevronDown
+									className={cn(
+										"size-3.5 shrink-0 text-muted-foreground transition-transform",
+										isVariationOpen && "rotate-180",
+									)}
+								/>
+							</button>
 
-								return (
-									<button
-										key={variation.id}
-										type='button'
-										disabled={outOfStock}
-										aria-pressed={selected}
-										title={`${variation.color} · ${variation.size} — ${formatCurrency(
-											variation.price,
-										)}${outOfStock ? " · Out of stock" : ""}`}
-										onClick={(event) => {
-											event.preventDefault();
-											event.stopPropagation();
-											selectVariation(index);
-										}}
-										className={cn(
-											"rounded-full border px-1.5 py-0.5 text-[10px] font-medium transition-colors disabled:line-through disabled:opacity-40",
-											selected
-												? "border-brand-500 bg-brand-50 text-brand-700"
-												: "border-border text-muted-foreground hover:border-brand-300",
-										)}>
-										{variation.color} · {variation.size}
-									</button>
-								);
-							})}
+							{isVariationOpen ? (
+								<div
+									role='listbox'
+									className='absolute inset-x-0 bottom-full z-20 mb-1 max-h-40 overflow-y-auto rounded-xl border border-border bg-card p-1 shadow-lg'>
+									{product.variations.map((variation, index) => {
+										const selected = selectedVariationIndex === index;
+										const isOutOfStock = variation.stock <= 0;
+										const isLow = isLowStock(variation.stock);
+
+										return (
+											<button
+												key={variation.id}
+												type='button'
+												role='option'
+												aria-selected={selected}
+												onClick={(event) => {
+													event.preventDefault();
+													event.stopPropagation();
+													setSelectedVariationIndex(index);
+													setIsVariationOpen(false);
+												}}
+												className={cn(
+													"flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-left text-[11px] transition-colors hover:bg-surface-muted",
+													selected && "bg-brand-50 text-brand-700",
+													isOutOfStock && "text-muted-foreground",
+												)}>
+												<span
+													className={cn(
+														"min-w-0 truncate",
+														isOutOfStock && "line-through",
+													)}>
+													{variation.color} · {variation.size}
+												</span>
+												<span className='flex shrink-0 items-center gap-1.5'>
+													{isOutOfStock ? (
+														<span className='rounded-full bg-danger-muted px-1.5 py-0.5 text-[9px] font-medium text-danger-foreground'>
+															Out
+														</span>
+													) : isLow ? (
+														<span className='rounded-full bg-warning-muted px-1.5 py-0.5 text-[9px] font-medium text-warning-foreground'>
+															Low
+														</span>
+													) : null}
+													{selected ? (
+														<Check className='size-3.5' />
+													) : null}
+												</span>
+											</button>
+										);
+									})}
+								</div>
+							) : null}
 						</div>
 					) : null}
 
@@ -282,10 +225,9 @@ export function ProductCard({
 							</span>
 						) : null}
 					</div>
+
 					{ratingLabel ? (
-						<div
-							className=' flex items-center gap-1.5 text-xs
-						 text-muted-foreground'>
+						<div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
 							<Star className='size-3.5 fill-amber-400 text-amber-400' />
 							<span className='font-medium text-foreground'>
 								{ratingLabel}
@@ -298,32 +240,33 @@ export function ProductCard({
 				</div>
 			</section>
 
-			{cartItem ? (
-				<div className='flex justify-between items-center px-2.5 '>
+			<div className='mt-auto px-2.5 pt-2'>
+				{cartItem ? (
+					<div className='flex items-center justify-between gap-2'>
+						<Button
+							size='sm'
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								cartStore.decreaseQty(cartId);
+							}}>
+							-
+						</Button>
+						<span>{cartItem.qty}</span>
+						<Button
+							size='sm'
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								cartStore.increaseQty(cartId);
+							}}>
+							+
+						</Button>
+					</div>
+				) : (
 					<Button
 						size='sm'
-						onClick={(e) => {
-							e.preventDefault();
-							e.stopPropagation();
-							cartStore.decreaseQty(cartId);
-						}}>
-						-
-					</Button>
-					<span>{cartItem.qty}</span>
-					<Button
-						size='sm'
-						onClick={(e) => {
-							e.preventDefault();
-							e.stopPropagation();
-							cartStore.increaseQty(cartId);
-						}}>
-						+
-					</Button>
-				</div>
-			) : (
-				<div className='px-2.5  grid'>
-					<Button
-						size='sm'
+						className='w-full'
 						disabled={typeof activeStock === "number" && activeStock <= 0}
 						onClick={(e) => {
 							if (typeof activeStock === "number" && activeStock <= 0) {
@@ -340,8 +283,8 @@ export function ProductCard({
 							? "Out of stock"
 							: "Add to cart"}
 					</Button>
-				</div>
-			)}
+				)}
+			</div>
 		</Link>
 	);
 }

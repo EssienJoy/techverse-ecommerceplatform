@@ -4,6 +4,7 @@ import { ProductCard } from "@/features/products";
 import { Header } from "@/features/navigation";
 import { ChevronLeft, Search } from "lucide-react";
 import { getCategories } from "@/features/content/server/content.service";
+import { isLowStock } from "@/features/products/lib/stock";
 import type { Product } from "@/shared/lib";
 
 const tagMeta: Record<string, { label: string }> = {
@@ -43,7 +44,7 @@ async function SearchResults({
 		: undefined;
 
 	const results = products.filter((product) => {
-		if (tag === "limited-stock" && product.stock > 10) return false;
+		if (tag === "limited-stock" && !isLowStock(product.stock)) return false;
 		if (tag === "new-in-stock" && product.stock < 20) return false;
 		if (tag === "bestsellers" && product.rating < 4.7) return false;
 		if (activeCategory && product.category !== activeCategory.label)

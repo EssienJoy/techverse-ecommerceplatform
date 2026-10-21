@@ -7,6 +7,7 @@ export const productVariationInputSchema = z.object({
 	price: z.number().int().nonnegative(),
 	stock: z.number().int().nonnegative(),
 	images: z.array(z.string().min(1)).default([]),
+	features: z.array(z.string()).default([]),
 });
 
 export const productVariationSchema = productVariationInputSchema.extend({
@@ -24,7 +25,6 @@ export const productSchema = z.object({
 	stock: z.number().int().nonnegative(),
 	rating: z.number().min(0).max(5),
 	reviews: z.number().int().nonnegative(),
-	features: z.array(z.string()).optional(),
 	variations: z.array(productVariationSchema),
 	category: z.string(),
 	brand: z.string(),
@@ -72,7 +72,6 @@ export const productInputSchema = z.object({
 	slug: z.string().min(1),
 	description: z.string().min(1),
 	imageUrl: z.string().min(1),
-	features: z.array(z.string()).optional(),
 	categoryId: z.string().min(1),
 	brandId: z.string().min(1),
 	isActive: z.boolean().optional(),
@@ -200,7 +199,6 @@ export type ProductFormValues = {
 	slug: string;
 	description: string;
 	imageUrl: string;
-	features: string[];
 	variations: ProductVariationInput[];
 	categoryId: string;
 	brandId: string;

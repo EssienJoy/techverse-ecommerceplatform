@@ -20,7 +20,7 @@ import {
 	SelectValue,
 } from "@/shared/components/ui/select";
 import { Switch } from "@/shared/components/ui/switch";
-import type { FlashSaleData } from "@/features/content/lib/content";
+import type { FlashSaleData } from "@/features/content/lib/flash-sale";
 import {
 	flashSaleSettingsAction,
 	addFlashSaleItemAction,

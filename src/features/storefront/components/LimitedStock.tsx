@@ -2,15 +2,23 @@ import Image from "next/image";
 import { Package } from "lucide-react";
 import { Container, Link, formatCurrency } from "@/shared";
 import { getProducts } from "@/features/products/server/products.service";
-
-const MAX_STOCK = 15;
+import {
+	LOW_STOCK_LIMIT,
+	getLowestStockVariation,
+} from "@/features/products/lib/stock";
 
 export async function LimitedStock() {
 	const products = await getProducts();
 	const lowStock = products
-		.filter((product) => product.stock > 0 && product.stock <= MAX_STOCK)
-		.sort((a, b) => a.stock - b.stock)
+		.flatMap((product) => {
+			const variation = getLowestStockVariation(product.variations);
+
+			return variation ? [{ product, variation }] : [];
+		})
+		.sort((a, b) => a.variation.stock - b.variation.stock)
 		.slice(0, 10);
+
+	if (lowStock.length === 0) return null;
 
 	return (
 		<section className='py-1'>
@@ -27,10 +35,10 @@ export async function LimitedStock() {
 					</Link>
 				</div>
 				<ul className='mt-3 flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-					{lowStock.map((product) => {
+					{lowStock.map(({ product, variation }) => {
 						const pct = Math.max(
 							8,
-							Math.round((product.stock / MAX_STOCK) * 100),
+							Math.round((variation.stock / LOW_STOCK_LIMIT) * 100),
 						);
 						return (
 							<li key={product.id} className='w-36 shrink-0'>
@@ -53,6 +61,9 @@ export async function LimitedStock() {
 									<h3 className='mt-2 line-clamp-2 text-[0.6875rem] font-medium'>
 										{product.name}
 									</h3>
+									<span className='line-clamp-1 text-[0.625rem] text-muted-foreground'>
+										{variation.color} · {variation.size}
+									</span>
 									<span className='mt-1 text-sm font-bold text-primary'>
 										{formatCurrency(product.price)}
 									</span>
@@ -64,7 +75,7 @@ export async function LimitedStock() {
 									</div>
 									<span className='mt-1.5 flex items-center gap-1 text-[0.625rem] font-semibold text-danger'>
 										<span className='size-1.5 animate-pulse rounded-full bg-danger' />
-										Only {product.stock} left
+										Only {variation.stock} left
 									</span>
 								</Link>
 							</li>

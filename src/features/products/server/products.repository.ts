@@ -26,6 +26,7 @@ function toVariationCreate(variations: ProductInput["variations"]) {
 		size: variation.size,
 		price: variation.price,
 		stock: variation.stock,
+		features: variation.features,
 		images: { create: variation.images.map((url) => ({ url })) },
 	}));
 }

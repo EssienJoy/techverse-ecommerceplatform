@@ -5,6 +5,7 @@ model Variations {
     size      String
     price Int
     stock Int
+    features String[] @default([])
     images VariantImage[]
     productId String   @db.Uuid
     product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)    

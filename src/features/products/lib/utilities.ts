@@ -28,11 +28,6 @@ export function parseProductForm(formData: FormData) {
 	const categoryId = String(formData.get("categoryId") ?? "").trim();
 	const brandId = String(formData.get("brandId") ?? "").trim();
 
-	const features = formData
-		.getAll("features")
-		.map((feature) => String(feature).trim())
-		.filter(Boolean);
-
 	const imageEntry = formData.get("imageFile");
 	const imageFile =
 		imageEntry instanceof File && imageEntry.size > 0 ? imageEntry : null;
@@ -44,7 +39,6 @@ export function parseProductForm(formData: FormData) {
 		slug: slug || toSlug(name),
 		description: String(formData.get("description") ?? "").trim(),
 		imageUrl: existingImageUrl || (imageFile ? "upload-pending" : ""),
-		features: features.length > 0 ? features : undefined,
 		categoryId,
 		brandId,
 		isActive: formData.get("isActive") === "on",
@@ -75,6 +69,9 @@ export function toProduct(row: ProductRecord): Product {
 	const lowestPrice = row.variations.length
 		? Math.min(...row.variations.map((variation) => variation.price))
 		: 0;
+	const availableStocks = row.variations
+		.map((variation) => variation.stock)
+		.filter((stock) => stock > 0);
 
 	return {
 		id: row.id,
@@ -83,10 +80,9 @@ export function toProduct(row: ProductRecord): Product {
 		description: row.description,
 		price: lowestPrice,
 		imageUrl: row.imageUrl,
-		stock: row.variations.reduce((sum, variation) => sum + variation.stock, 0),
+		stock: availableStocks.length ? Math.min(...availableStocks) : 0,
 		rating: Math.round(rating * 10) / 10,
 		reviews: row._count.reviews,
-		features: row.features,
 		variations: row.variations.map((variation) => ({
 			id: variation.id,
 			sku: variation.sku,
@@ -94,6 +90,7 @@ export function toProduct(row: ProductRecord): Product {
 			size: variation.size,
 			price: variation.price,
 			stock: variation.stock,
+			features: variation.features,
 			images: variation.images.map((image) => image.url),
 		})),
 		category: row.category.label,

@@ -1,12 +1,9 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import type {
-	CategoryIconKey,
-	ContentBrand,
-	ContentCategory,
-	FlashSaleData,
-	HeroSlide,
-} from "../lib/content";
+import type { HeroSlide } from "../lib/banner";
+import type { ContentBrand } from "../lib/brand";
+import type { CategoryIconKey, ContentCategory } from "../lib/category";
+import type { FlashSaleData } from "../lib/flash-sale";
 import type { Product } from "@/shared/lib";
 import {
 	findActiveFlashSale,

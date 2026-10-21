@@ -6,7 +6,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Button, Input } from "@/shared";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Label } from "@/shared/components/ui/label";
-import type { ContentBrand } from "@/features/content/lib/content";
+import type { ContentBrand } from "@/features/content/lib/brand";
 import { ImageUpload } from "@/features/admin";
 import {
 	brandFormAction,

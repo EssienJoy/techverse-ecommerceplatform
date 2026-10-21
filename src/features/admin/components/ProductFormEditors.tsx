@@ -81,6 +81,7 @@ const emptyVariation: ProductVariationInput = {
 	size: "",
 	price: 0,
 	stock: 0,
+	features: [],
 	images: [],
 };
 
@@ -307,6 +308,24 @@ export function ProductVariationsEditor({
 										onClick={() => removeVariation(index)}>
 										<Trash2 />
 									</Button>
+								</div>
+								<div className='col-span-full border-t border-border/60 pt-2'>
+									<ProductFeaturesEditor
+										features={variation.features}
+										onAdd={(feature) =>
+											updateVariation(index, {
+												features: [...variation.features, feature],
+											})
+										}
+										onRemove={(featureIndex) =>
+											updateVariation(index, {
+												features: variation.features.filter(
+													(_, currentIndex) =>
+														currentIndex !== featureIndex,
+												),
+											})
+										}
+									/>
 								</div>
 							</div>
 						))}

@@ -5,6 +5,8 @@ import type { Product } from "@/shared/lib";
 export function RecentlyViewed() {
 	const recentlyViewed: Product[] = [];
 
+	if (recentlyViewed.length === 0) return null;
+
 	return (
 		<section className='my-6'>
 			<Container>

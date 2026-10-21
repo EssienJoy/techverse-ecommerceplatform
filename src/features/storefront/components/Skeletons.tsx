@@ -63,15 +63,21 @@ export function DealsSkeleton() {
 
 export function BrandsSkeleton() {
 	return (
-		<section>
+		<section className='my-6'>
 			<Container>
-				<ul className='flex gap-2 overflow-hidden py-6'>
-					{Array.from({ length: 6 }).map((_, index) => (
-						<li key={index} className='shrink-0'>
-							<Skeleton className='h-8 w-24 rounded-full' />
-						</li>
-					))}
-				</ul>
+				<div className='flex items-center gap-2'>
+					<ul className='flex flex-1 items-center gap-4 overflow-hidden'>
+						{Array.from({ length: 8 }).map((_, index) => (
+							<li key={index} className='shrink-0'>
+								<Skeleton className='h-6 w-20 sm:h-8' />
+							</li>
+						))}
+					</ul>
+					<div className='flex shrink-0 gap-0.5'>
+						<Skeleton className='size-7 rounded-lg' />
+						<Skeleton className='size-7 rounded-lg' />
+					</div>
+				</div>
 			</Container>
 		</section>
 	);

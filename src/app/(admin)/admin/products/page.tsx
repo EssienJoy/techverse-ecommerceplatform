@@ -16,15 +16,16 @@ import {
 	TableRow,
 } from "@/shared/components/ui/table";
 import { getProducts } from "@/features/products/server/products.service";
+import { isLowStock } from "@/features/products/lib/stock";
 import { DeleteProductButton, PageHeader, ProductSuccessAlert } from "@/features/admin";
 import { AdminHeader } from "@/features/admin/components/AdminHeader";
 
 function getStatus(stock: number) {
-	if (stock === 0) {
+	if (stock <= 0) {
 		return { label: "Out of stock", variant: "destructive" as const };
 	}
 
-	if (stock <= 10) {
+	if (isLowStock(stock)) {
 		return { label: "Low stock", variant: "outline" as const };
 	}
 

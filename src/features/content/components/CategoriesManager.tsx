@@ -10,7 +10,7 @@ import {
 	categoryIcons,
 	type CategoryIconKey,
 	type ContentCategory,
-} from "@/features/content/lib/content";
+} from "@/features/content/lib/category";
 import { ImageUpload } from "@/features/admin";
 import {
 	categoryFormAction,

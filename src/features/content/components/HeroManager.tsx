@@ -8,7 +8,7 @@ import { Badge } from "@/shared/components/ui/badge";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Label } from "@/shared/components/ui/label";
 import { Switch } from "@/shared/components/ui/switch";
-import type { HeroSlide } from "@/features/content/lib/content";
+import type { HeroSlide } from "@/features/content/lib/banner";
 import { ImageUpload } from "@/features/admin";
 import {
 	heroFormAction,

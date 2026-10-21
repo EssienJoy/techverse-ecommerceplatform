@@ -32,7 +32,7 @@ import {
 	type ProductFormState,
 } from "@/features/products/server/products.actions";
 import { ImageUpload } from "./ImageUpload";
-import { ProductFeaturesEditor, ProductVariationsEditor } from "./ProductFormEditors";
+import { ProductVariationsEditor } from "./ProductFormEditors";
 
 type Option = { id: string; label: string };
 
@@ -103,15 +103,9 @@ function ProductForm({
 	);
 	const [isActive, setIsActive] = useState(initial ? initial.isActive : true);
 	const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "");
-	const [features, setFeatures] = useState<string[]>(initial?.features ?? []);
 	const [variations, setVariations] = useState<ProductVariationInput[]>(
 		initial?.variations ?? [],
 	);
-
-	const addFeature = (feature: string) =>
-		setFeatures((prev) => [...prev, feature]);
-	const removeFeature = (index: number) =>
-		setFeatures((prev) => prev.filter((_, i) => i !== index));
 
 	const handleNameChange = (value: string) => {
 		setName(value);
@@ -132,6 +126,10 @@ function ProductForm({
 			sum + (Number.isFinite(variation.stock) ? variation.stock : 0),
 		0,
 	);
+	const totalFeatures = variations.reduce(
+		(sum, variation) => sum + (variation.features?.length ?? 0),
+		0,
+	);
 	const colors = Array.from(
 		new Set(variations.map((variation) => variation.color.trim()).filter(Boolean)),
 	);
@@ -147,14 +145,6 @@ function ProductForm({
 		<form action={formAction} className='flex flex-col gap-5'>
 			{initial ? <input type='hidden' name='id' value={initial.id} /> : null}
 			<input type='hidden' name='imageUrl' value={imageUrl} />
-			{features.map((feature, index) => (
-				<input
-					key={`${feature}-${index}`}
-					type='hidden'
-					name='features'
-					value={feature}
-				/>
-			))}
 
 			<div className='grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_340px]'>
 				<div className='flex flex-col gap-5'>
@@ -216,12 +206,6 @@ function ProductForm({
 								/>
 								<FieldError message={fieldErrors.description?.[0]} />
 							</div>
-
-							<ProductFeaturesEditor
-								features={features}
-								onAdd={addFeature}
-								onRemove={removeFeature}
-							/>
 						</CardContent>
 					</Card>
 
@@ -390,7 +374,7 @@ function ProductForm({
 									<dt className='text-[11px] text-muted-foreground'>
 										Features
 									</dt>
-									<dd className='text-sm font-semibold'>{features.length}</dd>
+									<dd className='text-sm font-semibold'>{totalFeatures}</dd>
 								</div>
 							</dl>
 

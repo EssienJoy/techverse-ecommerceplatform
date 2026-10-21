@@ -11,7 +11,6 @@ async function main() {
 	await prisma.variantImage.deleteMany();
 	await prisma.variations.deleteMany();
 	await prisma.product.deleteMany();
-	await prisma.banner.deleteMany();
 	await prisma.heroSlide.deleteMany();
 	await prisma.brand.deleteMany();
 	await prisma.category.deleteMany();

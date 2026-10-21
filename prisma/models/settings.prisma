@@ -1,0 +1,21 @@
+model Settings {
+  id           String   @id @default("store")
+  storeName    String   @default("TechNest")
+  supportEmail String?
+  about        String?
+  logoUrl      String?
+  bannerUrl    String?
+  currency     String   @default("NGN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model StoreSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("store_settings")
+}
