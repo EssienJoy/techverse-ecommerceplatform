@@ -12,7 +12,7 @@ export function Header() {
 
 	return (
 		<header>
-			<Container className='flex items-center justify-between py-6'>
+			<Container className='flex items-center justify-between py-4'>
 				<Link
 					href='/'
 					className='text-xl
@@ -20,8 +20,9 @@ export function Header() {
 					{siteConfig.name}
 				</Link>
 				<div className='flex items-center gap-1'>
-					<Button variant='ghost' size='icon-lg' aria-label='Download'>
-						<Download />
+					<Button size='sm'>
+						<Download aria-hidden='true' />
+						Install app
 					</Button>
 					<button
 						type='button'

@@ -1,14 +1,13 @@
 import Image from "next/image";
 import { Package } from "lucide-react";
 import { Container, Link, formatCurrency } from "@/shared";
-import { getProducts } from "@/features/products/server/products.service";
+import type { Product } from "@/shared/lib";
 import {
 	LOW_STOCK_LIMIT,
 	getLowestStockVariation,
 } from "@/features/products/lib/stock";
 
-export async function LimitedStock() {
-	const products = await getProducts();
+export function LimitedStock({ products }: { products: Product[] }) {
 	const lowStock = products
 		.flatMap((product) => {
 			const variation = getLowestStockVariation(product.variations);

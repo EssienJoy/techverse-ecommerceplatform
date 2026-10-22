@@ -1,12 +1,9 @@
 import { ArrowRight, ShoppingBag, Zap } from "lucide-react";
 import { Container, Link, formatCurrency } from "@/shared";
-import { getFlashSale } from "@/features/content/server/content.service";
+import type { FlashSaleDeal } from "@/features/content/server/content.service";
 import { DealCountdown } from "./DealCountdown";
 
-export async function Deals() {
-	const sale = await getFlashSale();
-	// console.log(sale);
-
+export function Deals({ sale }: { sale: FlashSaleDeal | null }) {
 	if (!sale) {
 		return null;
 	}

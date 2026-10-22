@@ -1,3 +1,3 @@
 export * from "./format-currency";
 export * from "./image-validation";
-export * from "./schemas";
+export * from "./zod/schema";

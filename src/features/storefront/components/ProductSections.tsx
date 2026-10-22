@@ -1,14 +1,15 @@
 import { ProductCard } from "@/features/products";
 import { ProductSection } from "./ProductSection";
-import { getCategories } from "@/features/content/server/content.service";
-import { getProducts } from "@/features/products/server/products.service";
+import type { ContentCategory } from "@/features/content/lib/category";
+import type { Product } from "@/shared/lib";
 
-export async function ProductSections() {
-	const [categories, products] = await Promise.all([
-		getCategories(),
-		getProducts(),
-	]);
-
+export function ProductSections({
+	categories,
+	products,
+}: {
+	categories: ContentCategory[];
+	products: Product[];
+}) {
 	return (
 		<>
 			{categories.map((category) => {

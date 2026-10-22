@@ -1,9 +1,7 @@
 import Image from "next/image";
 import { LayoutGrid } from "lucide-react";
 import { Container, Link } from "@/shared";
-import { getCategories } from "@/features/content/server/content.service";
-
-const DEFAULT_CATEGORY_IMAGE = "/hero.jpg";
+import type { ContentCategory } from "@/features/content/lib/category";
 
 type CategoryItem = {
 	id: string;
@@ -12,8 +10,7 @@ type CategoryItem = {
 	imageUrl: string;
 };
 
-export async function Categories() {
-	const categories = await getCategories();
+export function Categories({ categories }: { categories: ContentCategory[] }) {
 	const items: CategoryItem[] = [
 		{ id: "all", label: "All", slug: "", imageUrl: "" },
 		...categories.map((category) => ({
@@ -41,7 +38,7 @@ export async function Categories() {
 										<LayoutGrid className='size-5 text-primary' />
 									) : (
 										<Image
-											src={item.imageUrl || DEFAULT_CATEGORY_IMAGE}
+											src={item.imageUrl}
 											alt={item.label}
 											width={88}
 											height={88}

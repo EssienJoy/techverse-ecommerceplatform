@@ -1,10 +1,8 @@
 import { Container } from "@/shared";
-import { getBrands } from "@/features/content/server/content.service";
+import type { ContentBrand } from "@/features/content/lib/brand";
 import { BrandsSlider } from "./BrandsSlider";
 
-export async function Brands() {
-	const brands = await getBrands();
-
+export function Brands({ brands }: { brands: ContentBrand[] }) {
 	if (brands.length === 0) return null;
 
 	return (
