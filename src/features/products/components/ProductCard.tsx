@@ -52,12 +52,12 @@ export function ProductCard({
 		<Link
 			href={`/product/${product.id}`}
 			className={cn(
-				`group/card relative flex h-full flex-col gap-2 overflow-hidden
+				`group/card relative flex flex-col justify-between gap-2 overflow-hidden
 				rounded-xl border border-border/70
 				bg-card py-2 shadow-sm`,
 				className,
 			)}>
-			<section className='flex flex-1 flex-col'>
+			<section className='flex flex-col'>
 				<div className='relative flex aspect-square w-full items-center justify-center overflow-hidden bg-white'>
 					{product.imageUrl ? (
 						<Image
@@ -118,7 +118,7 @@ export function ProductCard({
 					) : null}
 				</div>
 
-				<div className='flex flex-1 flex-col px-2.5 pb-1 pt-3'>
+				<div className='flex flex-col px-2.5 pb-1 pt-3'>
 					<h3
 						className='text-sm font-semibold leading-5 text-foreground
 					 transition-colors group-hover/card:text-brand-700'>
@@ -240,7 +240,7 @@ export function ProductCard({
 				</div>
 			</section>
 
-			<div className='mt-auto px-2.5 pt-2'>
+			<div className='px-2.5 pt-2'>
 				{cartItem ? (
 					<div className='flex items-center justify-between gap-2'>
 						<Button
