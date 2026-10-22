@@ -26,7 +26,8 @@ export function MobileNav() {
 	return (
 		<nav
 			className='fixed w-full bottom-0 left-0 z-50 rounded-t-3xl
-		 bg-card p-2 shadow-2xl md:hidden '>
+		 bg-card p-2 shadow-2xl md:hidden '
+			style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))" }}>
 			<ul className='justify-between flex items-center gap-2'>
 				{navItems.map(({ label, href, icon: Icon }) => {
 					const count = countFor(href);

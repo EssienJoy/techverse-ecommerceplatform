@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { AlertMessage, ThemeProvider } from "@/shared";
@@ -7,6 +7,10 @@ const dmSans = DM_Sans({
 	variable: "--font-dm-sans",
 	subsets: ["latin"],
 });
+
+export const viewport: Viewport = {
+	viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
 	title: {
