@@ -1,5 +1,5 @@
 model Settings {
-  id           String   @id @default("store")
+  id           String   @id @default(uuid(7)) @db.Uuid
   storeName    String   @default("TechNest")
   supportEmail String?
   about        String?

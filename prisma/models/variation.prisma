@@ -1,21 +1,39 @@
 model Variations {
-    id        String   @id @default(cuid())
+    id        String   @id @default(uuid(7)) @db.Uuid
     sku       String  @unique
-    color     String
-    size      String
     price Int
     stock Int
     features String[] @default([])
+    isDefault   Boolean  @default(false)
     images VariantImage[]
     productId String   @db.Uuid
     product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)    
+    cartItems   CartItem[]
+    savedItems  SavedItem[]
+    options     VariationOption[] 
+
+    @@index([productId])
 
     @@map("variations")
 }
 
+model VariationOption {
+  id          String     @id @default(uuid(7)) @db.Uuid
+  variationId String     @db.Uuid
+  variation   Variations @relation(fields: [variationId], references: [id], onDelete: Cascade)
+  name        String     // "color", "size", "storage"
+  value       String     // "red", "M", "256GB"
+
+  @@unique([variationId, name])
+  @@index([variationId])
+  @@map("variation_options")
+}
 model VariantImage {
-    id        String   @id @default(cuid())
-    url String
-    variationId String
-    variant  Variations @relation(fields: [variationId], references: [id], onDelete: Cascade)
+  id          String     @id @default(uuid(7)) @db.Uuid
+  url         String
+  variationId String     @db.Uuid
+  variation   Variations @relation(fields: [variationId], references: [id], onDelete: Cascade)
+
+  @@index([variationId])
+  @@map("variant_images")
 }

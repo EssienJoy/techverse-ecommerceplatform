@@ -1,22 +1,24 @@
 model Product {
   id                String    @id @default(uuid(7)) @db.Uuid
-  categoryId        String
+  categoryId        String    @db.Uuid
   category          Category  @relation(fields: [categoryId], references: [id],onDelete: Cascade)
-  brandId           String
+  brandId           String    @db.Uuid
   brand             Brand     @relation(fields: [brandId], references: [id],onDelete: Cascade)
   name              String
   slug              String    @unique
   description       String
   imageUrl          String
+   hasVariations Boolean @default(false)
   isActive          Boolean   @default(true)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  flashSaleItems FlashSaleItem[]
   reviews  ProductReview[]
   ratings  ProductRating[]
   variations  Variations[]
   collections CollectionProduct[]
+  cartItems   CartItem[]
+  savedItems  SavedItem[]
 
 
   @@index([categoryId])
@@ -27,7 +29,7 @@ model Product {
 
 
 model ProductReview {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid(7)) @db.Uuid
   productId    String   @db.Uuid
   product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   reviewerName String?
@@ -42,7 +44,7 @@ model ProductReview {
 }
 
 model ProductRating {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid(7)) @db.Uuid
   productId String   @db.Uuid
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   value     Int
@@ -53,30 +55,3 @@ model ProductRating {
   @@index([productId])
   @@map("product_ratings")
 }
-
-model FlashSale {
-  id        String          @id @default(cuid())
-  headline  String
-  endsAt    DateTime
-  isActive  Boolean         @default(true)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  items     FlashSaleItem[]
-
-  @@map("flash_sales")
-}
-
-model FlashSaleItem {
-  id          String    @id @default(cuid())
-  flashSaleId String
-  productId   String    @db.Uuid
-  discount    Int
-  flashSale   FlashSale @relation(fields: [flashSaleId], references: [id], onDelete: Cascade)
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([flashSaleId, productId])
-  @@index([productId])
-  @@map("flash_sale_items")
-}
-
-

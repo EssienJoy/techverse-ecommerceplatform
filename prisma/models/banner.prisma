@@ -1,5 +1,5 @@
 model HeroSlide {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid(7)) @db.Uuid
   tag       String
   title     String
   subtitle  String

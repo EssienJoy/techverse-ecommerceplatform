@@ -1,5 +1,5 @@
 model Brand {
-  id        String    @id
+  id        String    @id @default(uuid(7)) @db.Uuid
   name      String    @unique
   slug      String    @unique
   logoUrl   String?

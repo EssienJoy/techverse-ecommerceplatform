@@ -1,5 +1,5 @@
 model Category {
-  id        String    @id
+  id        String    @id @default(uuid(7)) @db.Uuid
   label     String    @unique
   title     String?
   slug      String    @unique
