@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin } from "@/features/auth/server/current-user";
+import { requireAdmin } from "@/features/auth/server/user.service";
 import {
 	createProduct,
 	updateProduct,

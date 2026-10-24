@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { siteConfig } from "@/shared";
 import { AdminMobileNav, AdminSidebar } from "@/features/admin";
-import { getCurrentUser } from "@/features/auth/server/current-user";
+import { getCurrentUser } from "@/features/auth/server/user.service";
 
 export const metadata: Metadata = {
 	title: `Admin | ${siteConfig.name}`,

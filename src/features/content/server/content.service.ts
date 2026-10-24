@@ -53,11 +53,13 @@ function toContentCategory(row: {
 function toContentBrand(row: {
 	id: string;
 	name: string;
+	slug: string;
 	logoUrl: string | null;
 }): ContentBrand {
 	return {
 		id: row.id,
 		name: row.name,
+		slug: row.slug,
 		logoUrl: row.logoUrl ?? undefined,
 	};
 }

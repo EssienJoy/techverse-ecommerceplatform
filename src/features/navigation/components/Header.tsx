@@ -37,7 +37,7 @@ export function Header({
 	const clearFavorites = useFavoritesStore((state) => state.clearFavorites);
 
 	return (
-		<header className='py-6'>
+		<header className='py-4'>
 			<Container className='grid grid-cols-3 items-center'>
 				<div className='flex justify-start'>
 					{showMenu ? (

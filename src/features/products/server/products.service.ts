@@ -2,7 +2,7 @@ import "server-only";
 
 import {
 	createProductRecord,
-	findProducts,
+	findProductsPage,
 	findProductById,
 	findProductsByIds,
 	findProductReviews,
@@ -20,18 +20,42 @@ import type {
 	ProductReviewInput,
 	ProductReviewItem,
 } from "@/shared/lib";
+import type {
+	ProductCursor,
+	ProductPageOptions,
+} from "../lib/pagination";
 import { toProduct } from "../lib/utilities";
+
+export type ProductPage = {
+	products: Product[];
+	nextCursor: ProductCursor | null;
+	total: number;
+};
 
 // COUNT PRODUCTS
 export function getProductCount(): Promise<number> {
-	return countProducts();
+	return countProducts({ includeInactive: true });
 }
 
-// GET ALL PRODUCTS
-export async function getProducts(): Promise<Product[]> {
-	const rows = await findProducts();
+// GET A CURSOR-PAGED PRODUCT LIST
+export async function getProducts(
+	options: ProductPageOptions = {},
+): Promise<ProductPage> {
+	const [{ rows, nextCursor }, total] = await Promise.all([
+		findProductsPage(options),
+		countProducts({
+			categoryId: options.categoryId,
+			brandId: options.brandId,
+			inStockOnly: options.inStockOnly,
+			includeInactive: options.includeInactive,
+		}),
+	]);
 
-	return rows.map(toProduct);
+	return {
+		products: rows.map(toProduct),
+		nextCursor,
+		total,
+	};
 }
 
 // GET ONE PRODUCT FOR THE STOREFRONT

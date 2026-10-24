@@ -2,11 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { createUserInputSchema } from "@/shared/lib";
-import { createAdminUser } from "./auth.service";
-import { getCurrentUser } from "./current-user";
-import { verifyPassword } from "./password";
-import { findUserByEmail } from "./users.repository";
-import { clearSessionCookie, setSessionCookie } from "./session";
+import { getCurrentUser } from "./user.service";
+import { setSessionCookie, clearSessionCookie } from "./middleware/session";
+import { registerUser, loginUser, createAdminUser } from "./user.service";
 
 export type AuthFormState = {
 	fieldErrors?: Record<string, string[]>;
@@ -18,29 +16,54 @@ export async function loginAction(
 	_prevState: AuthFormState,
 	formData: FormData,
 ): Promise<AuthFormState> {
-	const email = String(formData.get("email") ?? "").trim().toLowerCase();
+	const email = String(formData.get("email") ?? "")
+		.trim()
+		.toLowerCase();
 	const password = String(formData.get("password") ?? "");
 
 	if (!email || !password) {
 		return { error: "Enter your email and password." };
 	}
 
-	const user = await findUserByEmail(email);
-
-	if (!user || !(await verifyPassword(password, user.password))) {
-		return { error: "Incorrect email or password." };
+	const result = await loginUser({ email, password });
+	if (!result.ok) {
+		return { error: result.error };
 	}
 
-	await setSessionCookie({
-		id: user.id,
-		name: user.name,
-		email: user.email,
-		role: user.role,
-	});
-	redirect("/admin");
+	await setSessionCookie(result.user);
+
+	if (result.user.role === "admin" || result.user.role === "super_admin") {
+		redirect("/admin");
+	}
+	redirect("/store");
 }
 
-export async function createUserAction(
+export async function userSignupAction(
+	_prevState: AuthFormState,
+	formData: FormData,
+): Promise<AuthFormState> {
+	const parsed = createUserInputSchema.safeParse({
+		name: formData.get("name"),
+		email: formData.get("email"),
+		password: formData.get("password"),
+	});
+
+	if (!parsed.success) {
+		return { fieldErrors: parsed.error.flatten().fieldErrors };
+	}
+
+	const result = await registerUser({ ...parsed.data, role: "user" });
+	if (!result.ok) {
+		return { error: result.error, success: null };
+	}
+
+	// Optional: auto-login after signup
+	await setSessionCookie(result.user);
+
+	return { success: "Account created successfully.", error: null };
+}
+
+export async function adminSignupAction(
 	_prevState: AuthFormState,
 	formData: FormData,
 ): Promise<AuthFormState> {
@@ -58,9 +81,7 @@ export async function createUserAction(
 
 	const confirmPassword = String(formData.get("confirmPassword") ?? "");
 	if (parsed.data.password !== confirmPassword) {
-		return {
-			fieldErrors: { confirmPassword: ["Passwords do not match."] },
-		};
+		return { fieldErrors: { confirmPassword: ["Passwords do not match."] } };
 	}
 
 	const result = await createAdminUser(parsed.data, currentUser);

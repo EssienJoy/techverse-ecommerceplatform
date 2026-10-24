@@ -28,7 +28,7 @@ export function BrandsSlider({ brands }: { brands: ContentBrand[] }) {
 					{brands.map((brand) => (
 						<li key={brand.id} className='shrink-0'>
 							<Link
-								href={`/shop?brand=${brand.name.toLowerCase()}`}
+								href={`/shop/brand/${brand.slug}`}
 								aria-label={`Shop ${brand.name}`}
 								title={brand.name}
 								className='flex h-11 items-center justify-center px-3 opacity-60 grayscale transition duration-200 hover:opacity-100 hover:grayscale-0 sm:px-4'>

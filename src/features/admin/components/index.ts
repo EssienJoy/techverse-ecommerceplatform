@@ -1,4 +1,5 @@
 export * from "./AdminMobileNav";
+export * from "./AdminProductsTable";
 export * from "./AdminSidebar";
 export * from "./ContentNav";
 export * from "./DeleteProductButton";

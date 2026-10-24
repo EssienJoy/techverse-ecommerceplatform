@@ -1,17 +1,10 @@
-import { Suspense } from "react";
 import {
 	Brands,
-	BrandsSkeleton,
 	Categories,
-	CategoriesSkeleton,
 	Deals,
-	DealsSkeleton,
 	Hero,
-	HeroSkeleton,
 	LimitedStock,
-	LimitedStockSkeleton,
 	ProductSections,
-	ProductSectionsSkeleton,
 	SearchBar,
 } from "@/features/storefront";
 import {
@@ -22,32 +15,8 @@ import {
 } from "@/features/content";
 import { getProducts } from "@/features/products/server/products.service";
 
-export default function Home() {
-	return (
-		<>
-			<SearchBar />
-			<Suspense fallback={<HomeSectionsSkeleton />}>
-				<HomeSections />
-			</Suspense>
-		</>
-	);
-}
-
-function HomeSectionsSkeleton() {
-	return (
-		<>
-			<HeroSkeleton />
-			<CategoriesSkeleton />
-			<DealsSkeleton />
-			<BrandsSkeleton />
-			<LimitedStockSkeleton />
-			<ProductSectionsSkeleton />
-		</>
-	);
-}
-
-async function HomeSections() {
-	const [slides, categories, sale, brands, products] = await Promise.all([
+export default async function Home() {
+	const [slides, categories, sale, brands, productPage] = await Promise.all([
 		getHeroSlides(),
 		getCategories(),
 		getFlashSale(),
@@ -55,8 +24,10 @@ async function HomeSections() {
 		getProducts(),
 	]);
 
+	const products = productPage.products;
 	return (
 		<>
+			<SearchBar />
 			<Hero slides={slides} />
 			<Categories categories={categories} />
 			<Deals sale={sale} />

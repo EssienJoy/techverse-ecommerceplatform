@@ -33,3 +33,143 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 		</html>
 	);
 }
+
+// Product
+
+// Product Category
+
+// Brand
+
+// Product Variation
+
+// Product Image
+
+// Inventory
+
+// Supplier
+
+// Shopping Cart
+
+// Cart Item
+
+// Wishlist
+
+// Customer
+
+// User
+
+// Admin
+
+// Address
+
+// Order
+
+// Order Item
+
+// Payment
+
+// Refund
+
+// Shipment
+
+// Delivery
+
+// Coupon
+
+// Discount
+
+// Promotion
+
+// Product Review
+
+// Product Rating
+
+// Product Question
+
+// Return
+
+// Exchange
+
+// Warranty
+
+// Invoice
+
+// Receipt
+
+// Tax
+
+// Shipping Method
+
+// Shipping Zone
+
+// Notification
+
+// Customer Support Ticket
+
+// Support Message
+
+// Search History
+
+// Recently Viewed Product
+
+// Product Comparison
+
+// Product Bundle
+
+// Gift Card
+
+// Store Credit
+
+// Loyalty Program
+
+// Loyalty Transaction
+
+// Referral
+
+// Advertisement Banner
+
+// Store Page / Content
+
+// Blog Post
+
+// FAQ
+
+// Store Settings
+
+// Admin Role
+
+// Permission
+
+// Audit Log
+
+// Analytics Event
+
+// Stock Movement
+
+// Purchase Order
+
+// Supplier Invoice
+
+// Payment Transaction
+
+// Currency
+
+// Exchange Rate
+
+// Tax Rule
+
+// Return Request
+
+// Refund Transaction
+
+// Delivery Tracking Event
+
+// Newsletter Subscription
+
+// Marketing Campaign
+
+// Abandoned Cart
+
+// Fraud Report
+
+// Activity Log

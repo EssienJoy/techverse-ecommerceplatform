@@ -31,7 +31,7 @@ export function Categories({ categories }: { categories: ContentCategory[] }) {
 					{items.map((item) => (
 						<li key={item.id} className='shrink-0'>
 							<Link
-								href={item.slug ? `/shop?category=${item.slug}` : "/shop"}
+								href={item.slug ? `/shop/category/${item.slug}` : "/shop"}
 								className='flex w-16 flex-col items-center gap-1.5'>
 								<span className='relative flex size-11 items-center justify-center overflow-hidden rounded-full bg-white'>
 									{item.id === "all" ? (

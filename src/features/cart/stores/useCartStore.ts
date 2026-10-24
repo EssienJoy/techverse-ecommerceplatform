@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { CartLine } from "@/shared/lib";
+import { alert } from "@/shared";
+import type { CartLine } from "@/shared/lib";
+import {
+	addCartItemAction,
+	clearCartAction,
+	removeCartItemAction,
+	setCartItemQuantityAction,
+} from "../server/cart.actions";
 
 type Cart = {
 	cart: CartLine[];
@@ -10,16 +17,20 @@ type Cart = {
 	decreaseQty: (variationId: string) => void;
 	removeFromCart: (variationId: string) => void;
 	clearCart: () => void;
+	replaceCart: (cart: CartLine[]) => void;
 };
 
 const cartLineId = (item: CartLine) => item.variationId ?? item.productId;
 
 export const useCartStore = create<Cart>()(
 	persist(
-		(set) => ({
+		(set, get) => ({
 			cart: [],
 			totalCartItems: 0,
-			addToCart: (productId, variationId) =>
+			addToCart: (productId, variationId) => {
+				void addCartItemAction(productId, variationId).catch(() => {
+					alert.error("Could not save this cart change to your account.");
+				});
 				set((state) => {
 					const id = variationId ?? productId;
 					const existing = state.cart.find((item) => cartLineId(item) === id);
@@ -32,15 +43,35 @@ export const useCartStore = create<Cart>()(
 						cart,
 						totalCartItems: cart.length,
 					};
-				}),
-			increaseQty: (id) =>
+				});
+			},
+			increaseQty: (id) => {
+				const item = get().cart.find((line) => cartLineId(line) === id);
+				if (!item) return;
+				void setCartItemQuantityAction(
+					item.productId,
+					item.variationId,
+					item.qty + 1,
+				).catch(() => {
+					alert.error("Could not save this cart change to your account.");
+				});
 				set((state) => {
 					const cart = state.cart.map((item) =>
 						cartLineId(item) === id ? { ...item, qty: item.qty + 1 } : item,
 					);
 					return { cart, totalCartItems: cart.length };
-				}),
-			decreaseQty: (id) =>
+				});
+			},
+			decreaseQty: (id) => {
+				const item = get().cart.find((line) => cartLineId(line) === id);
+				if (!item) return;
+				void setCartItemQuantityAction(
+					item.productId,
+					item.variationId,
+					item.qty - 1,
+				).catch(() => {
+					alert.error("Could not save this cart change to your account.");
+				});
 				set((state) => {
 					const cart = state.cart
 						.map((item) =>
@@ -48,13 +79,26 @@ export const useCartStore = create<Cart>()(
 						)
 						.filter((item) => item.qty > 0);
 					return { cart, totalCartItems: cart.length };
-				}),
-			removeFromCart: (id) =>
+				});
+			},
+			removeFromCart: (id) => {
+				const item = get().cart.find((line) => cartLineId(line) === id);
+				if (!item) return;
+				void removeCartItemAction(item.productId, item.variationId).catch(() => {
+					alert.error("Could not save this cart change to your account.");
+				});
 				set((state) => {
 					const cart = state.cart.filter((item) => cartLineId(item) !== id);
 					return { cart, totalCartItems: cart.length };
-				}),
-			clearCart: () => set({ cart: [], totalCartItems: 0 }),
+				});
+			},
+			clearCart: () => {
+				void clearCartAction().catch(() => {
+					alert.error("Could not clear your saved cart.");
+				});
+				set({ cart: [], totalCartItems: 0 });
+			},
+			replaceCart: (cart) => set({ cart, totalCartItems: cart.length }),
 		}),
 		{ name: "technest-cart" },
 	),

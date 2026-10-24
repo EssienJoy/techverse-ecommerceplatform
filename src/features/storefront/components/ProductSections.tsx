@@ -23,7 +23,7 @@ export function ProductSections({
 					<ProductSection
 						key={category.id}
 						title={category.title}
-						href={`/shop?category=${category.slug}`}>
+						href={`/shop/category/${category.slug}`}>
 						{items.map((product) => (
 							<ProductCard
 								key={product.id}

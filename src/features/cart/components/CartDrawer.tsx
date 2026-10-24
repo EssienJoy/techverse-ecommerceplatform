@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,7 +12,7 @@ import {
 	X,
 } from "lucide-react";
 import { cn } from "cn";
-import { Skeleton, formatCurrency } from "@/shared";
+import { Skeleton, formatCurrency, useAlertStore } from "@/shared";
 import { useProductsByIds } from "@/features/products";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
 import { useCartUIStore } from "@/features/cart/stores/useCartUIStore";
@@ -25,8 +25,31 @@ export function CartDrawer() {
 	const increaseQty = useCartStore((state) => state.increaseQty);
 	const decreaseQty = useCartStore((state) => state.decreaseQty);
 	const removeFromCart = useCartStore((state) => state.removeFromCart);
+	const showAlert = useAlertStore((state) => state.show);
 	const drawerRef = useRef<HTMLDivElement>(null);
-	const { productsById } = useProductsByIds(cart.map((item) => item.productId));
+	const { productsById, isLoading, missingIds } = useProductsByIds(
+		cart.map((item) => item.productId),
+	);
+	const missingKey = missingIds.join("|");
+
+	useEffect(() => {
+		if (isLoading || !missingKey) return;
+
+		const unavailableIds = new Set(missingKey.split("|"));
+		const staleLines = useCartStore
+			.getState()
+			.cart.filter((line) => unavailableIds.has(line.productId));
+
+		if (staleLines.length === 0) return;
+
+		staleLines.forEach((line) => {
+			removeFromCart(line.variationId ?? line.productId);
+		});
+		showAlert(
+			"info",
+			"Some items in your cart are no longer available and were removed.",
+		);
+	}, [isLoading, missingKey, removeFromCart, showAlert]);
 
 	const cartItems = cart.flatMap((line) => {
 		const product = productsById.get(line.productId);

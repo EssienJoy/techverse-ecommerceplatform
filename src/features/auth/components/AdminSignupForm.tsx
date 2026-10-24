@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { Button, Input } from "@/shared";
 import { Label } from "@/shared/components/ui/label";
 import {
-	createUserAction,
+	adminSignupAction,
 	type AuthFormState,
 } from "@/features/auth/server/auth.actions";
 
@@ -18,7 +18,7 @@ function FieldError({ messages }: { messages?: string[] }) {
 
 export function AdminSignupForm() {
 	const [state, formAction, pending] = useActionState(
-		createUserAction,
+		adminSignupAction,
 		initialState,
 	);
 

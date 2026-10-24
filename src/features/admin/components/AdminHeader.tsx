@@ -1,5 +1,5 @@
 import { Bell, CalendarDays, UserRound } from "lucide-react";
-import { getCurrentUser } from "@/features/auth/server/current-user";
+import { getCurrentUser } from "@/features/auth/server/user.service";
 
 type AdminHeaderProps = {
 	title: string;
@@ -47,9 +47,7 @@ export async function AdminHeader({ title }: AdminHeaderProps) {
 						</span>
 						<span className='hidden flex-col leading-tight sm:flex'>
 							<span className='text-sm font-semibold'>{user.name}</span>
-							<span className='text-xs text-muted-foreground'>
-								{roleLabel}
-							</span>
+							<span className='text-xs text-muted-foreground'>{roleLabel}</span>
 						</span>
 					</div>
 				) : (

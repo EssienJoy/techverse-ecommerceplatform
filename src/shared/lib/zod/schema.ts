@@ -1,5 +1,21 @@
 import { z } from "zod";
 
+//user
+export const userRoleSchema = z.enum(["user", "admin", "super_admin"]);
+
+export const sessionUserSchema = z.object({
+	id: z.string().min(1),
+	name: z.string().min(1),
+	email: z.email(),
+	role: userRoleSchema,
+});
+
+export const createUserInputSchema = z.object({
+	email: z.email(),
+	password: z.string().min(8),
+});
+
+//hero slide
 export const heroSlide = z.object({
 	id: z.string(),
 	tag: z.string(),
@@ -60,21 +76,6 @@ export const productSummarySchema = z.object({
 			}),
 		)
 		.optional(),
-});
-
-export const userRoleSchema = z.enum(["admin", "super_admin"]);
-
-export const sessionUserSchema = z.object({
-	id: z.string().min(1),
-	name: z.string().min(1),
-	email: z.email(),
-	role: userRoleSchema,
-});
-
-export const createUserInputSchema = z.object({
-	name: z.string().trim().min(1),
-	email: z.email(),
-	password: z.string().min(8),
 });
 
 export const productInputSchema = z.object({

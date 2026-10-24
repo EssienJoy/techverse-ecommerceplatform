@@ -9,7 +9,7 @@ import {
 	CardTitle,
 } from "@/shared/components/ui/card";
 import { AdminSignupForm } from "@/features/auth";
-import { getCurrentUser } from "@/features/auth/server/current-user";
+import { getCurrentUser } from "@/features/auth/server/user.service";
 
 export const metadata: Metadata = {
 	title: "Create admin account",
