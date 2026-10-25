@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Home, Settings, ShoppingBag, ShoppingCart } from "lucide-react";
+import { Heart, Home, ShoppingBag, ShoppingCart, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "cn";
 import { Link } from "@/shared";
@@ -20,7 +20,7 @@ export function MobileNav() {
 		{ label: "Saved", href: "/saved", icon: Heart },
 		{ label: "Shop", href: "/shop", icon: ShoppingBag },
 		{ label: "Cart", href: "/cart", icon: ShoppingCart },
-		{ label: "Settings", href: "/settings", icon: Settings },
+		{ label: "Profile", href: "/profile", icon: UserRound },
 	];
 
 	return (

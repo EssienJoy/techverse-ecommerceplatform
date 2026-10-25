@@ -6,7 +6,7 @@ model Saved {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
-  @@map("saved_lists")
+  @@map("saved")
 }
 
 model SavedItem {

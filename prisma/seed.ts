@@ -6,8 +6,6 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-	await prisma.flashSaleItem.deleteMany();
-	await prisma.flashSale.deleteMany();
 	await prisma.variantImage.deleteMany();
 	await prisma.variations.deleteMany();
 	await prisma.product.deleteMany();

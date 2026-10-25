@@ -16,7 +16,7 @@ export const productInclude = {
 	brand: true,
 	variations: {
 		orderBy: { sku: "asc" },
-		include: { images: true },
+		include: { images: true, options: true },
 	},
 	ratings: { select: { value: true } },
 	_count: { select: { reviews: true } },
@@ -37,12 +37,16 @@ type ProductPageRow = {
 function toVariationCreate(variations: ProductInput["variations"]) {
 	return variations.map((variation) => ({
 		sku: variation.sku,
-		color: variation.color,
-		size: variation.size,
 		price: variation.price,
 		stock: variation.stock,
 		features: variation.features,
 		images: { create: variation.images.map((url) => ({ url })) },
+		options: {
+			create: [
+				{ name: "color", value: variation.color.trim() },
+				{ name: "size", value: variation.size.trim() },
+			].filter((option) => option.value !== ""),
+		},
 	}));
 }
 

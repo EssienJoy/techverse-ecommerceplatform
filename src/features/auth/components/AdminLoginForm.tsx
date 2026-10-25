@@ -1,12 +1,12 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button, Input } from "@/shared";
-import { Label } from "@/shared/components/ui/label";
+import { Button } from "@/shared";
 import {
 	loginAction,
 	type AuthFormState,
 } from "@/features/auth/server/auth.actions";
+import { AuthField, FormMessage, PasswordField } from "./AuthFields";
 
 const initialState: AuthFormState = {};
 
@@ -18,38 +18,30 @@ export function AdminLoginForm() {
 
 	return (
 		<form action={formAction} className='flex flex-col gap-4'>
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='login-email'>Email</Label>
-				<Input
-					id='login-email'
-					name='email'
-					type='email'
-					placeholder='you@example.com'
-					autoComplete='email'
-					required
-				/>
-			</div>
+			{state.error ? <FormMessage type='error'>{state.error}</FormMessage> : null}
 
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='login-password'>Password</Label>
-				<Input
-					id='login-password'
-					name='password'
-					type='password'
-					placeholder='••••••••'
-					autoComplete='current-password'
-					required
-				/>
-			</div>
+			<AuthField
+				id='admin-login-email'
+				name='email'
+				label='Work email'
+				type='email'
+				placeholder='admin@example.com'
+				autoComplete='email'
+				errors={state.fieldErrors?.email}
+				required
+			/>
 
-			{state.error ? (
-				<p role='alert' className='text-sm text-danger'>
-					{state.error}
-				</p>
-			) : null}
+			<PasswordField
+				id='admin-login-password'
+				name='password'
+				label='Password'
+				placeholder='Enter your password'
+				autoComplete='current-password'
+				required
+			/>
 
-			<Button type='submit' disabled={pending} className='mt-2 w-full'>
-				{pending ? "Signing in..." : "Sign in"}
+			<Button type='submit' disabled={pending} className='mt-2 h-11 w-full'>
+				{pending ? "Signing in..." : "Sign in to console"}
 			</Button>
 		</form>
 	);

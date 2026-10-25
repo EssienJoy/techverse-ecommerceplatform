@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { Link, siteConfig } from "@/shared";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/shared/components/ui/card";
-import { AdminSignupForm } from "@/features/auth";
+import { AdminSignupForm, AuthShell } from "@/features/auth";
 import { getCurrentUser } from "@/features/auth/server/user.service";
 
 export const metadata: Metadata = {
@@ -27,19 +21,19 @@ export default async function AdminSignupPage() {
 	}
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Create admin account</CardTitle>
-				<CardDescription>
-					Only super admins can create admin accounts for {siteConfig.name}.
-				</CardDescription>
-			</CardHeader>
-			<CardContent className='flex flex-col gap-4'>
-				<AdminSignupForm />
-				<p className='text-center text-sm text-muted-foreground'>
-					<Link href='/admin'>Back to dashboard</Link>
-				</p>
-			</CardContent>
-		</Card>
+		<AuthShell
+			variant='admin'
+			title='Create admin account'
+			description={`Only super admins can add admins to ${siteConfig.name}. Share the temporary password securely.`}
+			footer={
+				<Link
+					href='/admin'
+					className='inline-flex items-center gap-1.5 font-medium hover:underline'>
+					<ArrowLeft className='size-4' aria-hidden />
+					Back to dashboard
+				</Link>
+			}>
+			<AdminSignupForm />
+		</AuthShell>
 	);
 }

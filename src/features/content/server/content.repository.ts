@@ -35,15 +35,16 @@ export async function findHeroSlides() {
 	});
 }
 
-export async function findActiveFlashSale() {
+export async function findActiveFlashSale(): Promise<{
+	headline: string;
+	endsAt: Date;
+	isActive: boolean;
+} | null> {
 	"use cache";
 	cacheTag("flash-sale");
 	cacheLife("default");
 
-	return prisma.flashSale.findFirst({
-		where: { isActive: true },
-		orderBy: { createdAt: "desc" },
-	});
+	return null;
 }
 
 // Admin queries (uncached, include inactive)
@@ -65,24 +66,22 @@ export async function findAllHeroSlides() {
 	});
 }
 
-export async function findLatestFlashSaleWithItems() {
-	return prisma.flashSale.findFirst({
-		orderBy: { createdAt: "desc" },
-		include: {
-			items: {
-				include: {
-					product: {
-						select: {
-							id: true,
-							name: true,
-							variations: { select: { price: true } },
-						},
-					},
-				},
-				orderBy: { id: "asc" },
-			},
-		},
-	});
+export async function findLatestFlashSaleWithItems(): Promise<{
+	id: string;
+	headline: string;
+	endsAt: Date;
+	isActive: boolean;
+	items: {
+		id: string;
+		productId: string;
+		discount: number;
+		product: {
+			name: string;
+			variations: { price: number }[];
+		};
+	}[];
+} | null> {
+	return null;
 }
 
 // Category mutations
@@ -192,15 +191,8 @@ export async function upsertFlashSaleRecord(data: {
 	endsAt: Date;
 	isActive: boolean;
 }) {
-	const existing = await prisma.flashSale.findFirst({
-		orderBy: { createdAt: "desc" },
-	});
-
-	if (existing) {
-		return prisma.flashSale.update({ where: { id: existing.id }, data });
-	}
-
-	return prisma.flashSale.create({ data });
+	void data;
+	return null;
 }
 
 export async function createFlashSaleItemRecord(data: {
@@ -208,9 +200,11 @@ export async function createFlashSaleItemRecord(data: {
 	productId: string;
 	discount: number;
 }) {
-	return prisma.flashSaleItem.create({ data });
+	void data;
+	return null;
 }
 
 export async function deleteFlashSaleItemRecord(id: string) {
-	return prisma.flashSaleItem.delete({ where: { id } });
+	void id;
+	return null;
 }

@@ -11,7 +11,7 @@ export async function getSavedItemsAction(): Promise<string[] | null> {
 	if (!userId) return null;
 
 	const savedItems = await prisma.savedItem.findMany({
-		where: { userId },
+		where: { saved: { userId } },
 		select: { productId: true },
 		orderBy: { createdAt: "asc" },
 	});
@@ -30,7 +30,7 @@ export async function setSavedItemAction(
 	const parsedIsSaved = z.boolean().parse(isSaved);
 
 	if (!parsedIsSaved) {
-		await prisma.savedItem.deleteMany({ where: { userId, productId } });
+		await prisma.savedItem.deleteMany({ where: { saved: { userId }, productId } });
 		return;
 	}
 
@@ -42,10 +42,23 @@ export async function setSavedItemAction(
 		throw new Error("This product is unavailable.");
 	}
 
-	await prisma.savedItem.upsert({
-		where: { userId_productId: { userId, productId } },
-		create: { userId, productId },
+	const saved = await prisma.saved.upsert({
+		where: { userId },
+		create: { userId },
 		update: {},
+		select: { id: true },
+	});
+
+	// Items are saved per product (variationId stays null), so the
+	// (savedId, variationId) unique key can't be used for an upsert here.
+	const existing = await prisma.savedItem.findFirst({
+		where: { savedId: saved.id, productId },
+		select: { id: true },
+	});
+	if (existing) return;
+
+	await prisma.savedItem.create({
+		data: { savedId: saved.id, productId },
 	});
 }
 
@@ -53,5 +66,5 @@ export async function clearSavedItemsAction(): Promise<void> {
 	const userId = await getActiveCustomerId();
 	if (!userId) return;
 
-	await prisma.savedItem.deleteMany({ where: { userId } });
+	await prisma.savedItem.deleteMany({ where: { saved: { userId } } });
 }

@@ -24,7 +24,7 @@ import type {
 	ProductCursor,
 	ProductPageOptions,
 } from "../lib/pagination";
-import { toProduct } from "../lib/utilities";
+import { toProduct, toVariationAttributes } from "../lib/utilities";
 
 export type ProductPage = {
 	products: Product[];
@@ -90,8 +90,7 @@ export async function getProductForEdit(
 		variations: row.variations.map((variation) => ({
 			id: variation.id,
 			sku: variation.sku,
-			color: variation.color,
-			size: variation.size,
+			...toVariationAttributes(variation.options),
 			price: variation.price,
 			stock: variation.stock,
 			features: variation.features,

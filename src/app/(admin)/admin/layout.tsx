@@ -24,6 +24,10 @@ export default async function AdminLayout({
 		redirect("/admin/login");
 	}
 
+	if (user.role !== "admin" && user.role !== "super_admin") {
+		redirect("/");
+	}
+
 	return (
 		<div className='flex min-h-screen bg-background'>
 			<Suspense fallback={null}>

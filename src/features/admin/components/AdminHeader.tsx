@@ -43,10 +43,10 @@ export async function AdminHeader({ title }: AdminHeaderProps) {
 				{user ? (
 					<div className='flex items-center gap-2.5'>
 						<span className='flex size-9 items-center justify-center rounded-xl bg-primary text-xs font-bold text-foreground-inverse'>
-							{getInitials(user.name)}
+							{getInitials(user.name ?? user.email)}
 						</span>
 						<span className='hidden flex-col leading-tight sm:flex'>
-							<span className='text-sm font-semibold'>{user.name}</span>
+							<span className='text-sm font-semibold'>{user.name ?? user.email}</span>
 							<span className='text-xs text-muted-foreground'>{roleLabel}</span>
 						</span>
 					</div>

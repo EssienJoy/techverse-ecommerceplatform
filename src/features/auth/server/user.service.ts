@@ -13,6 +13,10 @@ import { redirect } from "next/navigation";
 
 type Role = "user" | "admin" | "super_admin";
 
+export type AdminAccess =
+	| { ok: true; user: Awaited<ReturnType<typeof getCurrentUser>> }
+	| { ok: false; message: string };
+
 /**
  * Resolves the current request's user from the session cookie.
  */
@@ -26,18 +30,20 @@ export async function getCurrentUser() {
 	return user;
 }
 
-export async function requireAdmin() {
+export async function requireAdmin(): Promise<AdminAccess> {
 	const user = await getCurrentUser();
 
 	if (!user) {
 		redirect("/admin/login");
+		return { ok: false, message: "Authentication required." };
 	}
 
 	if (user.role !== "admin" && user.role !== "super_admin") {
-		redirect("/store");
+		redirect("/");
+		return { ok: false, message: "Admin access required." };
 	}
 
-	return user;
+	return { ok: true, user };
 }
 
 export async function registerUser(data: {
@@ -62,7 +68,7 @@ export async function registerUser(data: {
 		role: data.role ?? "user",
 	});
 
-	const { password, ...result } = user;
+	const { password: _password, ...result } = user;
 	return { ok: true as const, user: result };
 }
 
@@ -77,7 +83,7 @@ export async function loginUser(data: { email: string; password: string }) {
 		return { ok: false as const, error: "Incorrect email or password." };
 	}
 
-	const { password, ...result } = user;
+	const { password: _password, ...result } = user;
 	return { ok: true as const, user: result };
 }
 
@@ -112,7 +118,7 @@ export async function createAdminUser(
 		role,
 	});
 
-	const { password, ...result } = user;
+	const { password: _password, ...result } = user;
 	return { ok: true as const, user: result };
 }
 
@@ -126,7 +132,7 @@ export async function updateUserDetails(
 	},
 ) {
 	const user = await updateMe(id, data);
-	const { password, ...result } = user;
+	const { password: _password, ...result } = user;
 	return { ok: true as const, user: result };
 }
 

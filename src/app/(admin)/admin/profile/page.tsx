@@ -53,10 +53,10 @@ export default async function AdminProfilePage() {
 					<Card>
 						<CardContent className='flex flex-col items-center gap-3 text-center'>
 							<span className='flex size-20 items-center justify-center rounded-full bg-primary text-2xl font-bold text-foreground-inverse'>
-								{getInitials(user.name)}
+								{getInitials(user.name ?? user.email)}
 							</span>
 							<div>
-								<p className='text-lg font-semibold'>{user.name}</p>
+								<p className='text-lg font-semibold'>{user.name ?? user.email}</p>
 								<p className='text-sm text-muted-foreground'>{user.email}</p>
 							</div>
 							<Badge variant='secondary'>{roleLabel}</Badge>
@@ -76,7 +76,7 @@ export default async function AdminProfilePage() {
 										<Input
 											id='profile-name'
 											name='name'
-											defaultValue={user.name}
+											defaultValue={user.name ?? ""}
 										/>
 									</div>
 									<div className='flex flex-col gap-2'>

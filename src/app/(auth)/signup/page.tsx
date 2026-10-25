@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Link, siteConfig } from "@/shared";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/shared/components/ui/card";
-import { NormalSignupForm } from "@/features/auth";
+import { AuthShell, NormalSignupForm } from "@/features/auth";
 import { getCurrentUser } from "@/features/auth/server/user.service";
 
 export const metadata: Metadata = {
@@ -20,23 +13,25 @@ export default async function NormalSignupPage() {
 
 	if (user) {
 		if (user.role === "user") {
-			redirect("/store");
+			redirect("/");
 		}
 		redirect("/admin");
 	}
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Create account</CardTitle>
-				<CardDescription>Sign up to shop at {siteConfig.name}.</CardDescription>
-			</CardHeader>
-			<CardContent className='flex flex-col gap-4'>
-				<NormalSignupForm />
-				<p className='text-center text-sm text-muted-foreground'>
-					<Link href='/login'>Already have an account? Sign in</Link>
-				</p>
-			</CardContent>
-		</Card>
+		<AuthShell
+			variant='customer'
+			title='Create your account'
+			description={`Save favourites, track orders and check out faster at ${siteConfig.name}.`}
+			footer={
+				<>
+					Already have an account?{" "}
+					<Link href='/login' className='font-medium hover:underline'>
+						Sign in
+					</Link>
+				</>
+			}>
+			<NormalSignupForm />
+		</AuthShell>
 	);
 }

@@ -3,7 +3,11 @@
 import { redirect } from "next/navigation";
 import { createUserInputSchema } from "@/shared/lib";
 import { getCurrentUser } from "./user.service";
-import { setSessionCookie, clearSessionCookie } from "./middleware/session";
+import {
+	setSessionCookie,
+	clearSessionCookie,
+	getSession,
+} from "./middleware/session";
 import { registerUser, loginUser, createAdminUser } from "./user.service";
 
 export type AuthFormState = {
@@ -35,7 +39,7 @@ export async function loginAction(
 	if (result.user.role === "admin" || result.user.role === "super_admin") {
 		redirect("/admin");
 	}
-	redirect("/store");
+	redirect("/");
 }
 
 export async function userSignupAction(
@@ -52,15 +56,18 @@ export async function userSignupAction(
 		return { fieldErrors: parsed.error.flatten().fieldErrors };
 	}
 
+	const confirmPassword = String(formData.get("confirmPassword") ?? "");
+	if (parsed.data.password !== confirmPassword) {
+		return { fieldErrors: { confirmPassword: ["Passwords do not match."] } };
+	}
+
 	const result = await registerUser({ ...parsed.data, role: "user" });
 	if (!result.ok) {
 		return { error: result.error, success: null };
 	}
 
-	// Optional: auto-login after signup
 	await setSessionCookie(result.user);
-
-	return { success: "Account created successfully.", error: null };
+	redirect("/");
 }
 
 export async function adminSignupAction(
@@ -95,6 +102,11 @@ export async function adminSignupAction(
 }
 
 export async function logoutAction(): Promise<void> {
+	const session = await getSession();
 	await clearSessionCookie();
-	redirect("/admin/login");
+
+	if (session?.role === "admin" || session?.role === "super_admin") {
+		redirect("/admin/login");
+	}
+	redirect("/login");
 }

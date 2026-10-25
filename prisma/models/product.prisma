@@ -8,7 +8,7 @@ model Product {
   slug              String    @unique
   description       String
   imageUrl          String
-   hasVariations Boolean @default(false)
+  hasVariations    Boolean @default(false)
   isActive          Boolean   @default(true)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt

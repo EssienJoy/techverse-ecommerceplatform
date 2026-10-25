@@ -1,20 +1,14 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button, Input } from "@/shared";
-import { Label } from "@/shared/components/ui/label";
+import { Button } from "@/shared";
 import {
 	userSignupAction,
 	type AuthFormState,
 } from "@/features/auth/server/auth.actions";
+import { AuthField, FormMessage, PasswordField } from "./AuthFields";
 
 const initialState: AuthFormState = {};
-
-function FieldError({ messages }: { messages?: string[] }) {
-	if (!messages?.length) return null;
-
-	return <p className='text-xs text-danger'>{messages[0]}</p>;
-}
 
 export function NormalSignupForm() {
 	const [state, formAction, pending] = useActionState(
@@ -24,72 +18,54 @@ export function NormalSignupForm() {
 
 	return (
 		<form action={formAction} className='flex flex-col gap-4'>
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='signup-name'>Full name</Label>
-				<Input
-					id='signup-name'
-					name='name'
-					placeholder='Alex Morgan'
-					autoComplete='name'
-					required
-				/>
-				<FieldError messages={state.fieldErrors?.name} />
-			</div>
+			{state.error ? <FormMessage type='error'>{state.error}</FormMessage> : null}
 
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='signup-email'>Email</Label>
-				<Input
-					id='signup-email'
-					name='email'
-					type='email'
-					placeholder='you@example.com'
-					autoComplete='email'
-					required
-				/>
-				<FieldError messages={state.fieldErrors?.email} />
-			</div>
+			<AuthField
+				id='signup-name'
+				name='name'
+				label='Full name'
+				placeholder='Alex Morgan'
+				autoComplete='name'
+				errors={state.fieldErrors?.name}
+				required
+			/>
 
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='signup-password'>Password</Label>
-				<Input
+			<AuthField
+				id='signup-email'
+				name='email'
+				label='Email'
+				type='email'
+				placeholder='you@example.com'
+				autoComplete='email'
+				errors={state.fieldErrors?.email}
+				required
+			/>
+
+			<div className='grid gap-4 sm:grid-cols-2'>
+				<PasswordField
 					id='signup-password'
 					name='password'
-					type='password'
-					placeholder='At least 8 characters'
+					label='Password'
+					placeholder='8+ characters'
 					autoComplete='new-password'
 					minLength={8}
+					errors={state.fieldErrors?.password}
 					required
 				/>
-				<FieldError messages={state.fieldErrors?.password} />
-			</div>
 
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='signup-confirm'>Confirm password</Label>
-				<Input
+				<PasswordField
 					id='signup-confirm'
 					name='confirmPassword'
-					type='password'
-					placeholder='••••••••'
+					label='Confirm password'
+					placeholder='Repeat password'
 					autoComplete='new-password'
 					minLength={8}
+					errors={state.fieldErrors?.confirmPassword}
 					required
 				/>
-				<FieldError messages={state.fieldErrors?.confirmPassword} />
 			</div>
 
-			{state.error ? (
-				<p role='alert' className='text-sm text-danger'>
-					{state.error}
-				</p>
-			) : null}
-
-			{state.success ? (
-				<p role='status' className='text-sm text-success'>
-					{state.success}
-				</p>
-			) : null}
-
-			<Button type='submit' disabled={pending} className='mt-2 w-full'>
+			<Button type='submit' disabled={pending} className='mt-2 h-11 w-full'>
 				{pending ? "Creating account..." : "Create account"}
 			</Button>
 		</form>

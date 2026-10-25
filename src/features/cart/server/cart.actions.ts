@@ -21,7 +21,7 @@ export async function getCartAction(): Promise<{
 	if (!userId) return null;
 
 	const cartItems = await prisma.cartItem.findMany({
-		where: { userId },
+		where: { cart: { userId } },
 		select: { productId: true, variationId: true, quantity: true },
 		orderBy: { createdAt: "asc" },
 	});
@@ -66,10 +66,16 @@ export async function addCartItemAction(
 	}
 
 	const itemKey = getItemKey(productId, variationId);
+	const cart = await prisma.cart.upsert({
+		where: { userId },
+		create: { userId },
+		update: {},
+		select: { id: true },
+	});
 	await prisma.cartItem.upsert({
-		where: { userId_itemKey: { userId, itemKey } },
+		where: { cartId_itemKey: { cartId: cart.id, itemKey } },
 		create: {
-			userId,
+			cartId: cart.id,
 			productId,
 			variationId,
 			itemKey,
@@ -95,12 +101,12 @@ export async function setCartItemQuantityAction(
 	const itemKey = getItemKey(productId, variationId);
 
 	if (parsedQuantity === 0) {
-		await prisma.cartItem.deleteMany({ where: { userId, itemKey } });
+		await prisma.cartItem.deleteMany({ where: { cart: { userId }, itemKey } });
 		return;
 	}
 
 	await prisma.cartItem.updateMany({
-		where: { userId, itemKey },
+		where: { cart: { userId }, itemKey },
 		data: { quantity: parsedQuantity },
 	});
 }
@@ -118,7 +124,7 @@ export async function removeCartItemAction(
 		: undefined;
 
 	await prisma.cartItem.deleteMany({
-		where: { userId, itemKey: getItemKey(productId, variationId) },
+		where: { cart: { userId }, itemKey: getItemKey(productId, variationId) },
 	});
 }
 
@@ -126,5 +132,5 @@ export async function clearCartAction(): Promise<void> {
 	const userId = await getActiveCustomerId();
 	if (!userId) return;
 
-	await prisma.cartItem.deleteMany({ where: { userId } });
+	await prisma.cartItem.deleteMany({ where: { cart: { userId } } });
 }

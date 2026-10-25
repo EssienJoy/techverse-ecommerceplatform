@@ -1,20 +1,14 @@
 "use client";
 
 import { useActionState } from "react";
-import { Button, Input } from "@/shared";
-import { Label } from "@/shared/components/ui/label";
+import { Button } from "@/shared";
 import {
 	adminSignupAction,
 	type AuthFormState,
 } from "@/features/auth/server/auth.actions";
+import { AuthField, FormMessage, PasswordField } from "./AuthFields";
 
 const initialState: AuthFormState = {};
-
-function FieldError({ messages }: { messages?: string[] }) {
-	if (!messages?.length) return null;
-
-	return <p className='text-xs text-danger'>{messages[0]}</p>;
-}
 
 export function AdminSignupForm() {
 	const [state, formAction, pending] = useActionState(
@@ -24,73 +18,58 @@ export function AdminSignupForm() {
 
 	return (
 		<form action={formAction} className='flex flex-col gap-4'>
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='signup-name'>Full name</Label>
-				<Input
-					id='signup-name'
-					name='name'
-					placeholder='Alex Morgan'
-					autoComplete='name'
-					required
-				/>
-				<FieldError messages={state.fieldErrors?.name} />
-			</div>
-
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='signup-email'>Email</Label>
-				<Input
-					id='signup-email'
-					name='email'
-					type='email'
-					placeholder='you@example.com'
-					autoComplete='email'
-					required
-				/>
-				<FieldError messages={state.fieldErrors?.email} />
-			</div>
-
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='signup-password'>Password</Label>
-				<Input
-					id='signup-password'
-					name='password'
-					type='password'
-					placeholder='At least 8 characters'
-					autoComplete='new-password'
-					minLength={8}
-					required
-				/>
-				<FieldError messages={state.fieldErrors?.password} />
-			</div>
-
-			<div className='flex flex-col gap-2'>
-				<Label htmlFor='signup-confirm'>Confirm password</Label>
-				<Input
-					id='signup-confirm'
-					name='confirmPassword'
-					type='password'
-					placeholder='••••••••'
-					autoComplete='new-password'
-					minLength={8}
-					required
-				/>
-				<FieldError messages={state.fieldErrors?.confirmPassword} />
-			</div>
-
-			{state.error ? (
-				<p role='alert' className='text-sm text-danger'>
-					{state.error}
-				</p>
-			) : null}
-
+			{state.error ? <FormMessage type='error'>{state.error}</FormMessage> : null}
 			{state.success ? (
-				<p role='status' className='text-sm text-success'>
-					{state.success}
-				</p>
+				<FormMessage type='success'>{state.success}</FormMessage>
 			) : null}
 
-			<Button type='submit' disabled={pending} className='mt-2 w-full'>
-				{pending ? "Creating account..." : "Create account"}
+			<AuthField
+				id='admin-signup-name'
+				name='name'
+				label='Full name'
+				placeholder='Alex Morgan'
+				autoComplete='off'
+				errors={state.fieldErrors?.name}
+				required
+			/>
+
+			<AuthField
+				id='admin-signup-email'
+				name='email'
+				label='Work email'
+				type='email'
+				placeholder='admin@example.com'
+				autoComplete='off'
+				errors={state.fieldErrors?.email}
+				required
+			/>
+
+			<div className='grid gap-4 sm:grid-cols-2'>
+				<PasswordField
+					id='admin-signup-password'
+					name='password'
+					label='Temporary password'
+					placeholder='8+ characters'
+					autoComplete='new-password'
+					minLength={8}
+					errors={state.fieldErrors?.password}
+					required
+				/>
+
+				<PasswordField
+					id='admin-signup-confirm'
+					name='confirmPassword'
+					label='Confirm password'
+					placeholder='Repeat password'
+					autoComplete='new-password'
+					minLength={8}
+					errors={state.fieldErrors?.confirmPassword}
+					required
+				/>
+			</div>
+
+			<Button type='submit' disabled={pending} className='mt-2 h-11 w-full'>
+				{pending ? "Creating account..." : "Create admin account"}
 			</Button>
 		</form>
 	);

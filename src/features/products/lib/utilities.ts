@@ -61,6 +61,19 @@ export async function resolveImageUrl(
 	return { ok: true, url: saved.url };
 }
 
+// Variation attributes are stored as options; the UI shows them as color + size.
+export function toVariationAttributes(
+	options: { name: string; value: string }[],
+): { color: string; size: string } {
+	const color = options.find((option) => option.name === "color")?.value ?? "";
+	const size = options
+		.filter((option) => option.name !== "color")
+		.map((option) => option.value)
+		.join(" / ");
+
+	return { color, size };
+}
+
 export function toProduct(row: ProductRecord): Product {
 	const rating = row.ratings.length
 		? row.ratings.reduce((sum, entry) => sum + entry.value, 0) /
@@ -86,8 +99,7 @@ export function toProduct(row: ProductRecord): Product {
 		variations: row.variations.map((variation) => ({
 			id: variation.id,
 			sku: variation.sku,
-			color: variation.color,
-			size: variation.size,
+			...toVariationAttributes(variation.options),
 			price: variation.price,
 			stock: variation.stock,
 			features: variation.features,

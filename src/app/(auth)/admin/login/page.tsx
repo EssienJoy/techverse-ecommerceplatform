@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { siteConfig } from "@/shared";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/shared/components/ui/card";
-import { AdminLoginForm } from "@/features/auth";
+import { Link, siteConfig } from "@/shared";
+import { AdminLoginForm, AuthShell } from "@/features/auth";
 import { getCurrentUser } from "@/features/auth/server/user.service";
 
 export const metadata: Metadata = {
@@ -19,20 +12,23 @@ export default async function AdminLoginPage() {
 	const user = await getCurrentUser();
 
 	if (user) {
-		redirect("/admin");
+		redirect(user.role === "user" ? "/" : "/admin");
 	}
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Sign in</CardTitle>
-				<CardDescription>
-					Access the {siteConfig.name} admin console.
-				</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<AdminLoginForm />
-			</CardContent>
-		</Card>
+		<AuthShell
+			variant='admin'
+			title='Admin sign in'
+			description={`Sign in to manage the ${siteConfig.name} store.`}
+			footer={
+				<>
+					Looking to shop?{" "}
+					<Link href='/login' className='font-medium hover:underline'>
+						Go to customer sign in
+					</Link>
+				</>
+			}>
+			<AdminLoginForm />
+		</AuthShell>
 	);
 }
