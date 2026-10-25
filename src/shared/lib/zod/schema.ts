@@ -11,6 +11,7 @@ export const sessionUserSchema = z.object({
 });
 
 export const createUserInputSchema = z.object({
+	name: z.string().trim().min(1, "Enter your name."),
 	email: z.email(),
 	password: z.string().min(8),
 });

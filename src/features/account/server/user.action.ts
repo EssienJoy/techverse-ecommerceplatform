@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createUserInputSchema } from "@/shared/lib";
 import { getCurrentUser } from "@/features/auth/server/user.service";
 import { updateMe } from "@/features/auth/server/user.repository";
 import {
