@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { AlertMessage, ThemeProvider } from "@/shared";
+import { Suspense } from "react";
 
 const dmSans = DM_Sans({
 	variable: "--font-dm-sans",
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 			<body>
 				<ThemeProvider>
 					<AlertMessage />
-					{children}
+					<Suspense fallback={null}>{children}</Suspense>
 				</ThemeProvider>
 			</body>
 		</html>
