@@ -13,7 +13,7 @@ import { Label } from "@/shared/components/ui/label";
 import { Button, Input, Link } from "@/shared";
 import { PageHeader } from "@/features/admin";
 import { AdminHeader } from "@/features/admin/components/AdminHeader";
-import { getCurrentUser } from "@/features/auth/server/current-user";
+import { getCurrentUser } from "@/features/auth/server/user.service";
 
 const getInitials = (name: string) =>
 	name

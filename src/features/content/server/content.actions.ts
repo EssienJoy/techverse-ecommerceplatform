@@ -2,7 +2,7 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { resolveImageUpload } from "@/shared/lib/uploads";
-import { requireAdmin } from "@/features/auth/server/current-user";
+import { requireAdmin } from "@/features/auth/server/user.service";
 import {
 	createCategory,
 	updateCategory,
