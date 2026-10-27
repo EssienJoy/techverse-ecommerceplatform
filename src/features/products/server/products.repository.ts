@@ -1,7 +1,7 @@
 import "server-only";
 import { prisma } from "@/prisma-client/prisma";
 import { Prisma } from "@/generated/prisma/client";
-import type { ProductInput, ProductUpdateInput } from "@/shared/lib";
+import type { ProductInput, ProductUpdateInput } from "../schema";
 import {
 	isProductSort,
 	normalizeProductPageSize,

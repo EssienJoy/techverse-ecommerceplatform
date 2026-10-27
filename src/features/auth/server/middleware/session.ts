@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { sessionUserSchema, type SessionUser } from "@/shared/lib";
+import { sessionUserSchema, type SessionUser } from "../../schema";
 
 function requireEnv(name: string): string {
 	const value = process.env[name];

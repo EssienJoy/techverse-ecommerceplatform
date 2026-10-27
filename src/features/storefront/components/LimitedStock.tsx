@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Package } from "lucide-react";
 import { Container, Link, formatCurrency } from "@/shared";
-import type { Product } from "@/shared/lib";
+import type { Product } from "@/features/products/schema";
 import {
 	LOW_STOCK_LIMIT,
 	getLowestStockVariation,

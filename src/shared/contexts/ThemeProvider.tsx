@@ -9,7 +9,7 @@ import {
 	useState,
 	type ReactNode,
 } from "react";
-import type { Theme } from "@/shared/lib/zod/schema";
+import type { Theme } from "@/shared/lib/theme";
 
 type ThemeContextValue = {
 	theme: Theme;

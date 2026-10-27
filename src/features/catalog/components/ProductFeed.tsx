@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DotsLoader, useAlertStore } from "@/shared";
 import { ProductCard } from "@/features/products";
-import type { Product } from "@/shared";
+import type { Product } from "@/features/products/schema";
 import {
 	DEFAULT_PRODUCT_PAGE_SIZE,
 	type ProductCursor,

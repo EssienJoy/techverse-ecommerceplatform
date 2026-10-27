@@ -1,9 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export type NotificationKey = "orderUpdates" | "promotions" | "newsletter";
-
-export type NotificationSettings = Record<NotificationKey, boolean>;
+import type { NotificationKey, NotificationSettings } from "../schema";
 
 type SettingsState = {
 	notifications: NotificationSettings;

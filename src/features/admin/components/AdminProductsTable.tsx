@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Pencil } from "lucide-react";
 
 import { DotsLoader, formatCurrency, useAlertStore } from "@/shared";
-import type { Product } from "@/shared/lib";
+import type { Product } from "@/features/products/schema";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";

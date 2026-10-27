@@ -1,3 +1,4 @@
 export * from "./format-currency";
 export * from "./image-validation";
-export * from "./zod/schema";
+export * from "./pagination";
+export * from "./theme";

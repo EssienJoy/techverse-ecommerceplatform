@@ -1,7 +1,7 @@
 import { ProductCard } from "@/features/products";
 import { ProductSection } from "./ProductSection";
 import type { ContentCategory } from "@/features/content/lib/category";
-import type { Product } from "@/shared/lib";
+import type { Product } from "@/features/products/schema";
 
 export function ProductSections({
 	categories,

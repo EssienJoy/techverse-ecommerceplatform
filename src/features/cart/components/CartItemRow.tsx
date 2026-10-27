@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button, formatCurrency } from "@/shared";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
-import type { CartItem } from "@/shared";
+import type { CartItem } from "../schema";
 
 type CartItemRowProps = {
 	item: CartItem;

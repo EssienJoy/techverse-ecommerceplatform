@@ -5,7 +5,7 @@ import { Header } from "@/features/navigation";
 import { ChevronLeft, Search } from "lucide-react";
 import { getCategories } from "@/features/content/server/content.service";
 import { isLowStock } from "@/features/products/lib/stock";
-import type { Product } from "@/shared/lib";
+import type { Product } from "@/features/products/schema";
 
 const tagMeta: Record<string, { label: string }> = {
 	"limited-stock": { label: "Limited Stock" },

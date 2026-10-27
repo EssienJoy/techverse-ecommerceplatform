@@ -1,17 +1,9 @@
 import { create } from "zustand";
-
-export type CheckoutShipping = {
-	fullName: string;
-	email: string;
-	address: string;
-	city: string;
-	phone: string;
-	postalCode: string;
-};
+import type { ShippingAddress } from "../schema";
 
 type CheckoutState = {
-	shipping: CheckoutShipping | null;
-	setShipping: (shipping: CheckoutShipping) => void;
+	shipping: ShippingAddress | null;
+	setShipping: (shipping: ShippingAddress) => void;
 	clearCheckout: () => void;
 };
 

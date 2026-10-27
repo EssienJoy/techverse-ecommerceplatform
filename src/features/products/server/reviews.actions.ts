@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { productReviewInputSchema } from "@/shared/lib";
+import { productReviewInputSchema } from "../schema";
 import { addProductReview } from "./products.service";
 
 export type ReviewFormState = {

@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, Layers, Tag } from "lucide-react";
 import { Button, Input, formatCurrency, useAlertStore } from "@/shared";
-import type { ProductFormValues, ProductVariationInput } from "@/shared/lib";
+import type { ProductFormValues, ProductVariationInput } from "@/features/products/schema";
 import { Badge } from "@/shared/components/ui/badge";
 import {
 	Card,

@@ -1,6 +1,6 @@
 "use server";
 
-import type { Product } from "@/shared/lib";
+import type { Product } from "../schema";
 import { requireAdmin } from "@/features/auth/server/user.service";
 import {
 	getProducts,

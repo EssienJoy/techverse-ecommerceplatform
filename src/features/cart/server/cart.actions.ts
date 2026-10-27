@@ -1,136 +1,83 @@
 "use server";
 
 import { z } from "zod";
-import { prisma } from "@/prisma-client/prisma";
-import { getProductsByIds } from "@/features/products/server/products.service";
-import { cartLineSchema } from "@/shared/lib";
-import { getActiveCustomerId } from "./customer-user";
+import type { CartLine } from "../schema";
+import type { getProductsByIds } from "@/features/products/server/products.service";
+import { resolveShopperOwner } from "./customer-user";
+import {
+	addItem,
+	clearCart,
+	getCart,
+	removeItem,
+	setQuantity,
+} from "./cart.service";
 
-const productIdSchema = z.string().uuid();
-const variationIdSchema = z.string().min(1);
+const idSchema = z.string().uuid();
 
-function getItemKey(productId: string, variationId?: string): string {
-	return variationId ?? productId;
-}
+// Only adding an item creates a guest session. Reads, and changes to an
+// existing cart, never do: a visitor with no session has nothing to change.
+const readOwner = () => resolveShopperOwner({ create: false, admin: "none" });
+const addOwner = () => resolveShopperOwner({ create: true, admin: "throw" });
+const changeOwner = () => resolveShopperOwner({ create: false, admin: "throw" });
 
 export async function getCartAction(): Promise<{
-	cart: z.infer<typeof cartLineSchema>[];
+	cart: CartLine[];
 	products: Awaited<ReturnType<typeof getProductsByIds>>;
-} | null> {
-	const userId = await getActiveCustomerId();
-	if (!userId) return null;
-
-	const cartItems = await prisma.cartItem.findMany({
-		where: { cart: { userId } },
-		select: { productId: true, variationId: true, quantity: true },
-		orderBy: { createdAt: "asc" },
-	});
-
-	const cart = cartItems.map(({ productId, variationId, quantity }) => ({
-			productId,
-			...(variationId ? { variationId } : {}),
-			qty: quantity,
-		}));
-	const products = await getProductsByIds([
-		...new Set(cartItems.map(({ productId }) => productId)),
-	]);
-
-	return { cart, products };
+}> {
+	return getCart(await readOwner());
 }
 
 export async function addCartItemAction(
 	productIdInput: string,
 	variationIdInput?: string,
 ): Promise<void> {
-	const userId = await getActiveCustomerId();
-	if (!userId) return;
+	const owner = await addOwner();
+	if (!owner) return;
 
-	const productId = productIdSchema.parse(productIdInput);
-	const variationId = variationIdInput
-		? variationIdSchema.parse(variationIdInput)
-		: undefined;
-
-	const product = await prisma.product.findFirst({
-		where: {
-			id: productId,
-			isActive: true,
-			...(variationId
-				? { variations: { some: { id: variationId, stock: { gt: 0 } } } }
-				: {}),
-		},
-		select: { id: true },
-	});
-
-	if (!product) {
-		throw new Error("This product or variation is unavailable.");
-	}
-
-	const itemKey = getItemKey(productId, variationId);
-	const cart = await prisma.cart.upsert({
-		where: { userId },
-		create: { userId },
-		update: {},
-		select: { id: true },
-	});
-	await prisma.cartItem.upsert({
-		where: { cartId_itemKey: { cartId: cart.id, itemKey } },
-		create: {
-			cartId: cart.id,
-			productId,
-			variationId,
-			itemKey,
-			quantity: 1,
-		},
-		update: { quantity: { increment: 1 } },
-	});
+	await addItem(
+		owner,
+		idSchema.parse(productIdInput),
+		variationIdInput ? idSchema.parse(variationIdInput) : undefined,
+	);
 }
 
+/**
+ * Returns the quantity actually applied, which may be lower than requested,
+ * or null when there is no cart to change.
+ */
 export async function setCartItemQuantityAction(
 	productIdInput: string,
 	variationIdInput: string | undefined,
 	quantity: number,
-): Promise<void> {
-	const userId = await getActiveCustomerId();
-	if (!userId) return;
+): Promise<number | null> {
+	const owner = await changeOwner();
+	if (!owner) return null;
 
-	const productId = productIdSchema.parse(productIdInput);
-	const variationId = variationIdInput
-		? variationIdSchema.parse(variationIdInput)
-		: undefined;
-	const parsedQuantity = z.number().int().nonnegative().parse(quantity);
-	const itemKey = getItemKey(productId, variationId);
-
-	if (parsedQuantity === 0) {
-		await prisma.cartItem.deleteMany({ where: { cart: { userId }, itemKey } });
-		return;
-	}
-
-	await prisma.cartItem.updateMany({
-		where: { cart: { userId }, itemKey },
-		data: { quantity: parsedQuantity },
-	});
+	return setQuantity(
+		owner,
+		idSchema.parse(productIdInput),
+		variationIdInput ? idSchema.parse(variationIdInput) : undefined,
+		z.number().int().nonnegative().parse(quantity),
+	);
 }
 
 export async function removeCartItemAction(
 	productIdInput: string,
 	variationIdInput?: string,
 ): Promise<void> {
-	const userId = await getActiveCustomerId();
-	if (!userId) return;
+	const owner = await changeOwner();
+	if (!owner) return;
 
-	const productId = productIdSchema.parse(productIdInput);
-	const variationId = variationIdInput
-		? variationIdSchema.parse(variationIdInput)
-		: undefined;
-
-	await prisma.cartItem.deleteMany({
-		where: { cart: { userId }, itemKey: getItemKey(productId, variationId) },
-	});
+	await removeItem(
+		owner,
+		idSchema.parse(productIdInput),
+		variationIdInput ? idSchema.parse(variationIdInput) : undefined,
+	);
 }
 
 export async function clearCartAction(): Promise<void> {
-	const userId = await getActiveCustomerId();
-	if (!userId) return;
+	const owner = await changeOwner();
+	if (!owner) return;
 
-	await prisma.cartItem.deleteMany({ where: { cart: { userId } } });
+	await clearCart(owner);
 }

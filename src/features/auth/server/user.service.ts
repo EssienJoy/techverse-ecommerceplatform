@@ -7,11 +7,20 @@ import {
 	deleteMe,
 	findUserById,
 } from "./user.repository";
-import type { SessionUser } from "@/shared/lib";
+import type { SessionUser } from "../schema";
 import { getSession } from "./middleware/session";
 import { redirect } from "next/navigation";
 
 type Role = "user" | "admin" | "super_admin";
+
+/** A copy of the user that is safe to hand out: never includes the password hash. */
+function withoutPassword<T extends { password: string }>(
+	user: T,
+): Omit<T, "password"> {
+	const copy: Partial<T> = { ...user };
+	delete copy.password;
+	return copy as Omit<T, "password">;
+}
 
 export type AdminAccess =
 	| { ok: true; user: Awaited<ReturnType<typeof getCurrentUser>> }
@@ -68,7 +77,7 @@ export async function registerUser(data: {
 		role: data.role ?? "user",
 	});
 
-	const { password: _password, ...result } = user;
+	const result = withoutPassword(user);
 	return { ok: true as const, user: result };
 }
 
@@ -83,7 +92,16 @@ export async function loginUser(data: { email: string; password: string }) {
 		return { ok: false as const, error: "Incorrect email or password." };
 	}
 
-	const { password: _password, ...result } = user;
+	// A deactivated account would otherwise get a cookie that every page treats
+	// as signed out, with no explanation.
+	if (!user.isActive) {
+		return {
+			ok: false as const,
+			error: "This account has been deactivated. Contact support.",
+		};
+	}
+
+	const result = withoutPassword(user);
 	return { ok: true as const, user: result };
 }
 
@@ -118,7 +136,7 @@ export async function createAdminUser(
 		role,
 	});
 
-	const { password: _password, ...result } = user;
+	const result = withoutPassword(user);
 	return { ok: true as const, user: result };
 }
 
@@ -132,7 +150,7 @@ export async function updateUserDetails(
 	},
 ) {
 	const user = await updateMe(id, data);
-	const { password: _password, ...result } = user;
+	const result = withoutPassword(user);
 	return { ok: true as const, user: result };
 }
 

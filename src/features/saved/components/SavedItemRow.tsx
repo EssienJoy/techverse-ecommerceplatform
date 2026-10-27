@@ -8,7 +8,7 @@ import { cn } from "cn";
 import { Button, formatCurrency } from "@/shared";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
 import { useFavoritesStore } from "@/features/saved/stores/useFavoritesStore";
-import type { Product } from "@/shared";
+import type { Product } from "@/features/products/schema";
 
 type SavedItemRowProps = {
 	product: Product;

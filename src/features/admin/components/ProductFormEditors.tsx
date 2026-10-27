@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Plus, Trash2, X } from "lucide-react";
 import { Button, Input } from "@/shared";
-import type { ProductVariationInput } from "@/shared/lib";
+import type { ProductVariationInput } from "@/features/products/schema";
 import { Label } from "@/shared/components/ui/label";
 import { cn } from "cn";
 import { uploadImageAction } from "../server/uploads.actions";

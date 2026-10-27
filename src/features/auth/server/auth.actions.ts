@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createUserInputSchema } from "@/shared/lib";
+import { createUserInputSchema } from "../schema";
 import { getCurrentUser } from "./user.service";
 import {
 	setSessionCookie,
@@ -9,6 +9,8 @@ import {
 	getSession,
 } from "./middleware/session";
 import { registerUser, loginUser, createAdminUser } from "./user.service";
+import { safeRedirectPath } from "../lib/redirect";
+import { claimGuestActivity } from "@/features/guest/server/merge-guest.service";
 
 export type AuthFormState = {
 	fieldErrors?: Record<string, string[]>;
@@ -39,7 +41,10 @@ export async function loginAction(
 	if (result.user.role === "admin" || result.user.role === "super_admin") {
 		redirect("/admin");
 	}
-	redirect("/");
+
+	// Carry the visitor's guest cart and history into their account.
+	await claimGuestActivity(result.user.id);
+	redirect(safeRedirectPath(formData.get("next")) ?? "/");
 }
 
 export async function userSignupAction(
@@ -67,7 +72,8 @@ export async function userSignupAction(
 	}
 
 	await setSessionCookie(result.user);
-	redirect("/");
+	await claimGuestActivity(result.user.id);
+	redirect(safeRedirectPath(formData.get("next")) ?? "/");
 }
 
 export async function adminSignupAction(

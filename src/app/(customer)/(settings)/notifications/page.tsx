@@ -1,10 +1,8 @@
 "use client";
 
 import { Switch } from "@/shared/components/ui/switch";
-import {
-	useSettingsStore,
-	type NotificationKey,
-} from "@/features/account/stores/useSettingsStore";
+import { useSettingsStore } from "@/features/account/stores/useSettingsStore";
+import type { NotificationKey } from "@/features/account/schema";
 
 const rows: { key: NotificationKey; title: string; description: string }[] = [
 	{

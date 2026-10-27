@@ -1,4 +1,5 @@
-import type { CartItem, CartLine, Product } from "@/shared/lib";
+import type { CartItem, CartLine } from "../schema";
+import type { Product } from "@/features/products/schema";
 
 // Maps a stored cart line to a display item, resolving the variation so price,
 // image, colour and size reflect the exact variation that was added.

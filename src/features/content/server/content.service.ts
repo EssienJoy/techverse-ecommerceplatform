@@ -4,7 +4,8 @@ import type { HeroSlide } from "../lib/banner";
 import type { ContentBrand } from "../lib/brand";
 import type { CategoryIconKey, ContentCategory } from "../lib/category";
 import type { FlashSaleData } from "../lib/flash-sale";
-import type { Product } from "@/shared/lib";
+import type { Product } from "@/features/products/schema";
+import { requireAdmin } from "@/features/auth/server/user.service";
 import {
 	findActiveFlashSale,
 	findBrands,
@@ -121,21 +122,25 @@ export async function getFlashSale(): Promise<FlashSaleDeal | null> {
 
 // Admin getters (uncached, include inactive)
 export async function getAllCategories(): Promise<ContentCategory[]> {
+	await requireAdmin();
 	const rows = await findAllCategories();
 	return rows.map(toContentCategory);
 }
 
 export async function getAllBrands(): Promise<ContentBrand[]> {
+	await requireAdmin();
 	const rows = await findAllBrands();
 	return rows.map(toContentBrand);
 }
 
 export async function getAllHeroSlides(): Promise<HeroSlide[]> {
+	await requireAdmin();
 	const rows = await findAllHeroSlides();
 	return rows.map(toHeroSlide);
 }
 
 export async function getFlashSaleAdmin(): Promise<FlashSaleData> {
+	await requireAdmin();
 	const sale = await findLatestFlashSaleWithItems();
 	if (!sale) return null;
 

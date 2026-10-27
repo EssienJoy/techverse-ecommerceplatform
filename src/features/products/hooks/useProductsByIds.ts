@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useReducer } from "react";
-import type { Product } from "@/shared/lib";
+import type { Product } from "../schema";
 import { fetchProductsByIds } from "../server/products.queries";
 
 const cache = new Map<string, Product>();

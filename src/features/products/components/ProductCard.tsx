@@ -6,7 +6,7 @@ import { Check, ChevronDown, Heart, ShoppingBag, Sparkles, Star } from "lucide-r
 import { cn } from "cn";
 import { Button } from "@/shared/components/Button";
 import { formatCurrency } from "@/shared/lib";
-import type { Product } from "@/shared/lib";
+import type { Product } from "../schema";
 import Link from "next/link";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
 import { useFavoritesStore } from "@/features/saved/stores/useFavoritesStore";

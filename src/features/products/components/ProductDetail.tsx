@@ -19,7 +19,7 @@ import { cn } from "cn";
 import { Button, Container, formatCurrency } from "@/shared";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
 import { useFavoritesStore } from "@/features/saved/stores/useFavoritesStore";
-import type { Product, ProductReviewItem } from "@/shared";
+import type { Product, ProductReviewItem } from "../schema";
 import { ProductReviewForm } from "./ProductReviewForm";
 
 type ProductDetailProps = {

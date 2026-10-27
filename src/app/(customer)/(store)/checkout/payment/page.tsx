@@ -1,17 +1,22 @@
 "use client";
 
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import {
+	useEffect,
+	useMemo,
+	useState,
+	type ChangeEvent,
+	type FormEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button, Container, Input, formatCurrency } from "@/shared";
 import { Header } from "@/features/navigation";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
 import { useCheckoutStore } from "@/features/checkout/stores/useCheckoutStore";
-import type { Product } from "@/shared/lib";
-import {
-	useOrderStore,
-	type Order,
-} from "@/features/orders/stores/useOrderStore";
+import { useProductsByIds } from "@/features/products";
+import { resolveCartItem } from "@/features/cart/lib/resolveCartItem";
+import { useOrderStore } from "@/features/orders/stores/useOrderStore";
+import type { Order } from "@/features/orders/schema";
 import { CheckCircle2, Loader2, Lock } from "lucide-react";
 
 type PaymentForm = {
@@ -37,10 +42,8 @@ export default function PaymentPage() {
 	const shipping = useCheckoutStore((state) => state.shipping);
 	const clearCheckout = useCheckoutStore((state) => state.clearCheckout);
 	const cart = useCartStore((state) => state.cart);
-	const products: Product[] = [];
-	const productsById = new Map(
-		products.map((product) => [product.id, product]),
-	);
+	const productIds = useMemo(() => cart.map((line) => line.productId), [cart]);
+	const { productsById, isLoading } = useProductsByIds(productIds);
 	const clearCart = useCartStore((state) => state.clearCart);
 	const addOrder = useOrderStore((state) => state.addOrder);
 
@@ -108,16 +111,23 @@ export default function PaymentPage() {
 		);
 	}
 
-	const orderItems = cart.map((item) => {
-		const product = productsById.get(item.productId);
+	const orderItems = cart.map((line) => {
+		const product = productsById.get(line.productId);
+		if (!product) {
+			return { productId: line.productId, name: "", price: 0, qty: line.qty };
+		}
+
+		// Price the exact variation that was added, not the product's lowest price.
+		const item = resolveCartItem(line, product);
 		return {
 			productId: item.productId,
-			name: product?.name ?? "",
-			price: product?.price ?? 0,
-			qty: item.qty,
+			name: item.name,
+			price: item.price,
+			qty: item.quantity,
 		};
 	});
-	const hasUnavailableProducts = orderItems.some((item) => !item.name);
+	const hasUnavailableProducts =
+		!isLoading && orderItems.some((item) => !item.name);
 
 	const subtotal = orderItems.reduce(
 		(sum, item) => sum + item.price * item.qty,
@@ -129,7 +139,7 @@ export default function PaymentPage() {
 
 	const handlePay = (event: FormEvent) => {
 		event.preventDefault();
-		if (hasUnavailableProducts || cart.length === 0) {
+		if (isLoading || hasUnavailableProducts || cart.length === 0) {
 			return;
 		}
 		setProcessing(true);
@@ -230,7 +240,10 @@ export default function PaymentPage() {
 							<Button
 								type='submit'
 								disabled={
-									processing || hasUnavailableProducts || cart.length === 0
+									processing ||
+									isLoading ||
+									hasUnavailableProducts ||
+									cart.length === 0
 								}
 								className='mt-5 h-12 w-full gap-2 rounded-full text-base'>
 								{processing ? (

@@ -1,8 +1,8 @@
 import "server-only";
 
 import { saveImageFile } from "@/shared/lib/uploads";
-import { productInputSchema } from "@/shared/lib";
-import type { Product } from "@/shared/lib";
+import { productInputSchema } from "../schema";
+import type { Product } from "../schema";
 import type { ProductRecord } from "../server/products.repository";
 
 const toSlug = (value: string) =>

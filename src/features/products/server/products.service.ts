@@ -19,12 +19,13 @@ import type {
 	ProductFormValues,
 	ProductReviewInput,
 	ProductReviewItem,
-} from "@/shared/lib";
+} from "../schema";
 import type {
 	ProductCursor,
 	ProductPageOptions,
 } from "../lib/pagination";
 import { toProduct, toVariationAttributes } from "../lib/utilities";
+import { requireAdmin } from "@/features/auth/server/user.service";
 
 export type ProductPage = {
 	products: Product[];
@@ -32,8 +33,9 @@ export type ProductPage = {
 	total: number;
 };
 
-// COUNT PRODUCTS
-export function getProductCount(): Promise<number> {
+// COUNT PRODUCTS (ADMIN: includes inactive products)
+export async function getProductCount(): Promise<number> {
+	await requireAdmin();
 	return countProducts({ includeInactive: true });
 }
 
@@ -41,6 +43,9 @@ export function getProductCount(): Promise<number> {
 export async function getProducts(
 	options: ProductPageOptions = {},
 ): Promise<ProductPage> {
+	// Inactive products are admin-only.
+	if (options.includeInactive) await requireAdmin();
+
 	const [{ rows, nextCursor }, total] = await Promise.all([
 		findProductsPage(options),
 		countProducts({
@@ -78,6 +83,7 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
 export async function getProductForEdit(
 	id: string,
 ): Promise<ProductFormValues | null> {
+	await requireAdmin();
 	const row = await findProductById(id);
 	if (!row) return null;
 
