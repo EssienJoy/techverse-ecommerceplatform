@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
 import {
 	BadgeCheck,
 	ChartLine,
@@ -95,60 +94,49 @@ export function AuthShell({
 	footer,
 }: AuthShellProps) {
 	const panel = panels[variant];
+	// The customer store is mobile-only, so its auth pages have no desktop
+	// panel to fill: the form is the whole screen.
+	const showPanel = variant === "admin";
 
 	return (
-		<div className='grid min-h-dvh lg:grid-cols-2'>
-			<aside
-				className={cn(
-					"relative hidden overflow-hidden lg:flex lg:flex-col lg:justify-between lg:p-10",
-					variant === "admin" ? "bg-brand-900" : "bg-brand-700",
-				)}>
-				{variant === "customer" ? (
-					<>
-						<Image
-							src='/hero.jpg'
-							alt=''
-							fill
-							priority
-							sizes='50vw'
-							className='object-cover'
-						/>
-						<div className='absolute inset-0 bg-linear-to-t from-black/85 via-black/50 to-black/30' />
-					</>
-				) : (
+		<div className={cn("min-h-dvh", showPanel && "grid lg:grid-cols-2")}>
+			{showPanel ? (
+				<aside className='relative hidden overflow-hidden bg-brand-900 lg:flex lg:flex-col lg:justify-between lg:p-10'>
 					<div className='absolute -right-24 -top-24 size-96 rounded-full bg-brand-500/30 blur-3xl' />
-				)}
 
-				<div className='relative'>
-					<BrandMark variant={variant} inverse />
-				</div>
+					<div className='relative'>
+						<BrandMark variant={variant} inverse />
+					</div>
 
-				<div className='relative max-w-md'>
-					<p className='text-xs font-semibold uppercase tracking-widest text-white/70'>
-						{panel.eyebrow}
+					<div className='relative max-w-md'>
+						<p className='text-xs font-semibold uppercase tracking-widest text-white/70'>
+							{panel.eyebrow}
+						</p>
+						<h2 className='mt-3 text-3xl font-bold leading-tight text-white'>
+							{panel.heading}
+						</h2>
+						<ul className='mt-8 flex flex-col gap-4'>
+							{panel.perks.map(({ icon: Icon, text }) => (
+								<li
+									key={text}
+									className='flex items-center gap-3 text-sm text-white/90'>
+									<span className='flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/15'>
+										<Icon className='size-4' aria-hidden />
+									</span>
+									{text}
+								</li>
+							))}
+						</ul>
+					</div>
+
+					<p className='relative text-xs text-white/60'>
+						© <CopyrightYear /> {siteConfig.name}
 					</p>
-					<h2 className='mt-3 text-3xl font-bold leading-tight text-white'>
-						{panel.heading}
-					</h2>
-					<ul className='mt-8 flex flex-col gap-4'>
-						{panel.perks.map(({ icon: Icon, text }) => (
-							<li key={text} className='flex items-center gap-3 text-sm text-white/90'>
-								<span className='flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/15'>
-									<Icon className='size-4' aria-hidden />
-								</span>
-								{text}
-							</li>
-						))}
-					</ul>
-				</div>
-
-				<p className='relative text-xs text-white/60'>
-					© <CopyrightYear /> {siteConfig.name}
-				</p>
-			</aside>
+				</aside>
+			) : null}
 
 			<div className='flex flex-col bg-surface-muted px-4 py-8 sm:px-6 lg:bg-background'>
-				<div className='lg:hidden'>
+				<div className={showPanel ? "lg:hidden" : undefined}>
 					<BrandMark variant={variant} />
 				</div>
 

@@ -66,14 +66,19 @@ After signing in or signing up, a customer is sent back to the page in `next`
    visitor never sees a form they cannot submit:
    - [(admin)/admin/layout.tsx](../src/app/(admin)/admin/layout.tsx): no account
      goes to `/admin/login`; a customer goes to `/`.
-   - [(auth)/(guest)/layout.tsx](../src/app/(auth)/(guest)/layout.tsx): turns
-     signed-in users away from `/login`, `/signup` and `/admin/login`. It renders
-     nothing until the check passes, so the form doesn't flash. `/admin/signup`
-     sits outside this group because super admins use it.
-   - [checkout/page.tsx](../src/app/(customer)/(store)/checkout/page.tsx) and
-     [checkout/success/page.tsx](../src/app/(customer)/(store)/checkout/success/page.tsx)
+   - [(customer)/(auth)/layout.tsx](../src/app/(customer)/(auth)/layout.tsx)
+     turns signed-in users away from `/login` and `/signup`, and
+     [(admin)/(auth)/(guest)/layout.tsx](../src/app/(admin)/(auth)/(guest)/layout.tsx)
+     does the same for `/admin/login`. Both render nothing until the check
+     passes, so the form doesn't flash. `/admin/signup` sits outside the admin
+     guest group because super admins use it.
+   - [(customer)/layout.tsx](../src/app/(customer)/layout.tsx) wraps the whole
+     customer store in `ScreenGuard`, which shows a "mobile only" notice from
+     `sm` (640px) up. Admin pages are outside it and stay desktop-capable.
+   - [checkout/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/page.tsx) and
+     [checkout/success/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/success/page.tsx)
      each allow only customers; admins go to `/`.
-     [checkout/payment/page.tsx](../src/app/(customer)/(store)/checkout/payment/page.tsx)
+     [checkout/payment/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/payment/page.tsx)
      keeps the same guard and then redirects to `/checkout`, because payment now
      happens on Stripe's hosted page.
    - Cart and saved item actions use `requireShopperId()` from

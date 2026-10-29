@@ -8,7 +8,7 @@ payment and to `/checkout` when the customer cancels.
 
 ## Flow
 
-1. **Shipping form** ([checkout/page.tsx](../src/app/(customer)/(store)/checkout/page.tsx))
+1. **Shipping form** ([checkout/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/page.tsx))
    posts to `startCheckoutSession` in
    [checkout.service.ts](../src/features/checkout/server/checkout.service.ts).
 2. **The action** re-checks the signed-in customer, validates the address, and
@@ -23,7 +23,7 @@ payment and to `/checkout` when the customer cancels.
    session's `metadata` (`userId`, `ship_name`, `ship_email`, `ship_address`,
    `ship_city`, `ship_postal`, `ship_phone`), one key per field because Stripe
    caps each metadata value at 500 characters.
-5. **The success page** ([checkout/success/page.tsx](../src/app/(customer)/(store)/checkout/success/page.tsx))
+5. **The success page** ([checkout/success/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/success/page.tsx))
    reads `?session_id=...`, loads the session with the secret key, and only
    shows an order when Stripe says `payment_status === "paid"` and the session's
    `metadata.userId` matches the signed-in customer. Everything shown (items,

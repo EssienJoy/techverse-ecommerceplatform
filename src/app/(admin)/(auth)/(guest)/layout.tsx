@@ -3,13 +3,17 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/features/auth/server/user.service";
 
 /**
- * Sign-in and sign-up pages are for visitors who are not signed in.
- * Anyone with a valid account is sent to where they belong instead.
+ * The admin sign-in page is for signed-out visitors only. A signed-in account
+ * is sent to the console (or to the store, for a customer).
  *
- * The check runs behind a Suspense boundary with no fallback, so nothing from
- * these pages is shown until it has passed.
+ * `/admin/signup` sits outside this group because super admins use it while
+ * signed in.
  */
-export default function GuestOnlyLayout({ children }: { children: ReactNode }) {
+export default function AdminGuestLayout({
+	children,
+}: {
+	children: ReactNode;
+}) {
 	return (
 		<Suspense fallback={null}>
 			<GuestGate>{children}</GuestGate>

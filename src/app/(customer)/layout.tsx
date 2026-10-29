@@ -1,16 +1,12 @@
-import { Suspense, type ReactNode } from "react";
-import { SiteNav } from "@/features/navigation";
-import { CartDrawer, ShoppingListsSync } from "@/features/cart";
+import type { ReactNode } from "react";
+import { ScreenGuard } from "@/features/storefront";
 
+/**
+ * The customer store is mobile-only: above `sm` every page under `(customer)`
+ * is replaced by a short "not available on desktop" screen.
+ *
+ * Admin pages live in `(admin)` and are not affected.
+ */
 export default function CustomerLayout({ children }: { children: ReactNode }) {
-	return (
-		<>
-			<main>{children}</main>
-			<ShoppingListsSync />
-			<Suspense fallback={null}>
-				<SiteNav />
-			</Suspense>
-			<CartDrawer />
-		</>
-	);
+	return <ScreenGuard>{children}</ScreenGuard>;
 }
