@@ -19,10 +19,14 @@ payment and to `/checkout` when the customer cancels.
    summary uses, so the screen and the charge cannot disagree.
 4. **The session** is created by `createCheckoutSession` in
    [checkout.repository.ts](../src/features/checkout/server/checkout.repository.ts),
-   and the action redirects to Stripe. The shipping address is stored in the
+   and the action returns its URL. The shipping address is stored in the
    session's `metadata` (`userId`, `ship_name`, `ship_email`, `ship_address`,
    `ship_city`, `ship_postal`, `ship_phone`), one key per field because Stripe
    caps each metadata value at 500 characters.
+   [CheckoutForm](../src/features/checkout/components/CheckoutForm.tsx) sends
+   the top-level window to that URL. Stripe's hosted Checkout refuses to render
+   inside an iframe, so when the store itself is embedded in a preview pane the
+   form shows an "open secure payment page" link that escapes the frame.
 5. **The success page** ([checkout/success/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/success/page.tsx))
    reads `?session_id=...`, loads the session with the secret key, and only
    shows an order when Stripe says `payment_status === "paid"` and the session's

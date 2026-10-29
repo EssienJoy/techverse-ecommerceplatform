@@ -1,7 +1,6 @@
 "use server";
 
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { restrictTo } from "@/features/auth/server/middleware/authorization";
 import { getCart } from "@/features/cart/server/cart.service";
 import { resolveCartItem } from "@/features/cart/lib/resolveCartItem";
@@ -56,8 +55,8 @@ function toLineItem(input: LineItemInput) {
 }
 
 /**
- * Turns the shipping form into a Stripe Checkout Session and sends the browser
- * to Stripe's hosted payment page.
+ * Turns the shipping form into a Stripe Checkout Session and returns the URL of
+ * Stripe's hosted payment page for the browser to navigate to.
  *
  * Prices come from the cart in the database, never from the form, so a client
  * can't change what it is charged.
@@ -190,7 +189,10 @@ export async function startCheckoutSession(
 		return { status: "error", message: "Could not start checkout. Try again." };
 	}
 
-	// Outside the try/catch: redirect() throws internally, and that error must
-	// not be reported as a failed payment session.
-	redirect(url);
+	// The client navigates to this URL. Handled there, not with `redirect()`,
+	// because Stripe's hosted Checkout refuses to run inside an iframe: a
+	// preview pane that embeds the store would leave the payment page framed.
+	// The form sends the top-level window instead and offers a link when the
+	// embed forbids it.
+	return { status: "redirect", url };
 }

@@ -12,7 +12,6 @@ export const shippingAddressSchema = z.object({
 export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
 
 /** Result of the "continue to payment" server action. */
-export type CheckoutActionState = {
-	status: "idle" | "error";
-	message: string;
-};
+export type CheckoutActionState =
+	| { status: "idle" | "error"; message: string }
+	| { status: "redirect"; url: string };
