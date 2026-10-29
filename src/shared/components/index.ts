@@ -6,4 +6,6 @@ export * from "./EmptyState";
 export * from "./Link";
 export * from "./SearchInput";
 export { Input } from "./ui/input";
+export { InputGroup } from "./ui/input-group";
+export { Label } from "./ui/label";
 export { Skeleton } from "./ui/skeleton";

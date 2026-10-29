@@ -2,7 +2,10 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { resolveImageUpload } from "@/shared/lib/uploads";
-import { requireAdmin } from "@/features/auth/server/user.service";
+import {
+	ADMIN_ROLES,
+	restrictTo,
+} from "@/features/auth/server/middleware/authorization";
 import {
 	createCategory,
 	updateCategory,
@@ -57,8 +60,8 @@ export async function categoryFormAction(
 	_prevState: ContentFormState,
 	formData: FormData,
 ): Promise<ContentFormState> {
-	const access = await requireAdmin();
-	if (!access.ok) return { formError: access.message };
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status !== "success") return { formError: access.message };
 
 	const id = str(formData.get("id"));
 	const label = str(formData.get("label"));
@@ -89,7 +92,7 @@ export async function categoryFormAction(
 }
 
 export async function deleteCategoryAction(id: string): Promise<void> {
-	if (!(await requireAdmin()).ok) return;
+	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
 
 	try {
 		await deleteCategory(id);
@@ -105,8 +108,8 @@ export async function brandFormAction(
 	_prevState: ContentFormState,
 	formData: FormData,
 ): Promise<ContentFormState> {
-	const access = await requireAdmin();
-	if (!access.ok) return { formError: access.message };
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status !== "success") return { formError: access.message };
 
 	const id = str(formData.get("id"));
 	const name = str(formData.get("name"));
@@ -134,7 +137,7 @@ export async function brandFormAction(
 }
 
 export async function deleteBrandAction(id: string): Promise<void> {
-	if (!(await requireAdmin()).ok) return;
+	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
 
 	try {
 		await deleteBrand(id);
@@ -150,8 +153,8 @@ export async function heroFormAction(
 	_prevState: ContentFormState,
 	formData: FormData,
 ): Promise<ContentFormState> {
-	const access = await requireAdmin();
-	if (!access.ok) return { formError: access.message };
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status !== "success") return { formError: access.message };
 
 	const id = str(formData.get("id"));
 	const tag = str(formData.get("tag"));
@@ -198,7 +201,7 @@ export async function heroFormAction(
 }
 
 export async function deleteHeroAction(id: string): Promise<void> {
-	if (!(await requireAdmin()).ok) return;
+	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
 
 	try {
 		await deleteHeroSlide(id);
@@ -215,8 +218,8 @@ export async function flashSaleSettingsAction(
 	_prevState: ContentFormState,
 	formData: FormData,
 ): Promise<ContentFormState> {
-	const access = await requireAdmin();
-	if (!access.ok) return { formError: access.message };
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status !== "success") return { formError: access.message };
 
 	const headline = str(formData.get("headline"));
 	const endsAt = str(formData.get("endsAt"));
@@ -242,8 +245,8 @@ export async function addFlashSaleItemAction(
 	_prevState: ContentFormState,
 	formData: FormData,
 ): Promise<ContentFormState> {
-	const access = await requireAdmin();
-	if (!access.ok) return { formError: access.message };
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status !== "success") return { formError: access.message };
 
 	const productId = str(formData.get("productId"));
 	const discount = Number(str(formData.get("discount")));
@@ -267,7 +270,7 @@ export async function addFlashSaleItemAction(
 }
 
 export async function deleteFlashSaleItemAction(id: string): Promise<void> {
-	if (!(await requireAdmin()).ok) return;
+	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
 
 	try {
 		await removeFlashSaleItem(id);

@@ -1,10 +1,15 @@
+// A cart belongs to exactly one owner: a user or a guest session
+// (enforced by a CHECK constraint in the migration). Each owner has at most
+// one cart, because nulls don't collide in the unique indexes.
 model Cart {
-  id        String     @id @default(uuid(7)) @db.Uuid
-  userId    String     @unique @db.Uuid          // 1-to-1 with User
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items     CartItem[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id             String        @id @default(uuid(7)) @db.Uuid
+  userId         String?       @unique @db.Uuid
+  user           User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guestSessionId String?       @unique @db.Uuid
+  guestSession   GuestSession? @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
+  items          CartItem[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@map("carts")
 }

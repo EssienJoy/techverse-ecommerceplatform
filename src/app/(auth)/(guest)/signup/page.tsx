@@ -1,22 +1,18 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { Link, siteConfig } from "@/shared";
 import { AuthShell, NormalSignupForm } from "@/features/auth";
-import { getCurrentUser } from "@/features/auth/server/user.service";
+import { safeRedirectPath, withNext } from "@/features/auth/lib/redirect";
 
 export const metadata: Metadata = {
 	title: "Create account",
 };
 
-export default async function NormalSignupPage() {
-	const user = await getCurrentUser();
-
-	if (user) {
-		if (user.role === "user") {
-			redirect("/");
-		}
-		redirect("/admin");
-	}
+export default async function NormalSignupPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ next?: string }>;
+}) {
+	const next = safeRedirectPath((await searchParams).next);
 
 	return (
 		<AuthShell
@@ -26,12 +22,14 @@ export default async function NormalSignupPage() {
 			footer={
 				<>
 					Already have an account?{" "}
-					<Link href='/login' className='font-medium hover:underline'>
+					<Link
+						href={withNext("/login", next)}
+						className='font-medium hover:underline'>
 						Sign in
 					</Link>
 				</>
 			}>
-			<NormalSignupForm />
+			<NormalSignupForm next={next} />
 		</AuthShell>
 	);
 }

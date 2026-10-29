@@ -38,7 +38,7 @@ export function Categories({ categories }: { categories: ContentCategory[] }) {
 										<LayoutGrid className='size-5 text-primary' />
 									) : (
 										<Image
-											src={item.imageUrl}
+											src={item.imageUrl ?? null}
 											alt={item.label}
 											width={88}
 											height={88}

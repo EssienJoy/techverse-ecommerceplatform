@@ -11,13 +11,14 @@ model User {
   name         String?
   email        String   @unique
   password     String
-  role         UserRole @default(admin)
+  role         UserRole @default(user)
   isActive     Boolean  @default(true)
   lastLoginAt  DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   cart    Cart?
   saved Saved?
+  views ProductView[]
 
   @@map("users")
 }

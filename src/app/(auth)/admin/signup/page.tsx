@@ -11,9 +11,10 @@ export const metadata: Metadata = {
 
 export default async function AdminSignupPage() {
 	const user = await getCurrentUser();
+	if (!user) redirect("/admin/login");
 
-	if (!user) {
-		redirect("/admin/login");
+	if (user.role === "user") {
+		redirect("/");
 	}
 
 	if (user.role !== "super_admin") {

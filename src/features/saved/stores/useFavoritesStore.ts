@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { alert } from "@/shared";
+import { blockAdminShopping } from "@/features/auth/stores/useViewerStore";
 import {
 	clearSavedItemsAction,
 	setSavedItemAction,
@@ -21,6 +22,7 @@ export const useFavoritesStore = create<Favorites>()(
 		(set, get) => ({
 			favorites: [],
 			addToFavorites: (productId) => {
+				if (blockAdminShopping()) return;
 				if (get().favorites.includes(productId)) return;
 				void setSavedItemAction(productId, true).catch(() => {
 					alert.error("Could not save this item to your account.");
@@ -40,6 +42,7 @@ export const useFavoritesStore = create<Favorites>()(
 				}));
 			},
 			toggleFavorite: (productId) => {
+				if (blockAdminShopping()) return;
 				const isSaved = get().favorites.includes(productId);
 				void setSavedItemAction(productId, !isSaved).catch(() => {
 					alert.error("Could not update your saved items.");

@@ -1,14 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
-import { sessionUserSchema, type SessionUser } from "../../schema";
-
-function requireEnv(name: string): string {
-	const value = process.env[name];
-	if (!value) {
-		throw new Error(`${name} is not set`);
-	}
-	return value;
-}
+import { cookies, headers } from "next/headers";
+import { requireEnv } from "@/shared/lib/utils";
 
 const JWT_SECRET = requireEnv("JWT_SECRET");
 const JWT_EXPIRES = requireEnv("JWT_EXPIRES");
@@ -24,42 +16,58 @@ const secret = new TextEncoder().encode(JWT_SECRET);
 
 export { SESSION_COOKIE };
 
-export async function createSessionToken(user: SessionUser): Promise<string> {
-	return new SignJWT({ name: user.name, email: user.email, role: user.role })
+export async function createSessionToken(userId: string): Promise<string> {
+	return new SignJWT({})
 		.setProtectedHeader({ alg: "HS256" })
-		.setSubject(user.id)
+		.setSubject(userId)
 		.setIssuedAt()
 		.setExpirationTime(JWT_EXPIRES)
 		.sign(secret);
 }
 
+/**
+ * Verifies the token signature and returns its subject: the user id.
+ * Nothing else in the payload is trusted.
+ */
 export async function verifySessionToken(
 	token: string,
-): Promise<SessionUser | null> {
+): Promise<string | null> {
 	try {
 		const { payload } = await jwtVerify(token, secret);
-		const parsed = sessionUserSchema.safeParse({
-			id: payload.sub,
-			name: payload.name,
-			email: payload.email,
-			role: payload.role,
-		});
-		return parsed.success ? parsed.data : null;
+		return typeof payload.sub === "string" && payload.sub.length > 0
+			? payload.sub
+			: null;
 	} catch {
 		return null;
 	}
 }
 
-export async function getSession(): Promise<SessionUser | null> {
-	const token = (await cookies()).get(SESSION_COOKIE)?.value;
+/**
+ * Reads the session token from the `Authorization: Bearer <token>` header,
+ * falling back to the session cookie when the header is absent.
+ */
+export async function getSessionToken(): Promise<string | null> {
+	const authorization = (await headers()).get("authorization");
+
+	if (authorization) {
+		const match = /^Bearer\s+(.+)$/i.exec(authorization.trim());
+		return match ? match[1].trim() : null;
+	}
+
+	return (await cookies()).get(SESSION_COOKIE)?.value ?? null;
+}
+
+/** Returns the signed-in user's id from the bearer token or session cookie. */
+export async function getSession(): Promise<string | null> {
+	const token = await getSessionToken();
 	if (!token) {
 		return null;
 	}
 	return verifySessionToken(token);
 }
 
-export async function setSessionCookie(user: SessionUser): Promise<void> {
-	(await cookies()).set(SESSION_COOKIE, await createSessionToken(user), {
+export async function setSessionCookie(userId: string): Promise<void> {
+	(await cookies()).set(SESSION_COOKIE, await createSessionToken(userId), {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === "production",
 		sameSite: "lax",

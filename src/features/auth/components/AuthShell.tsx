@@ -47,6 +47,12 @@ const panels: Record<
 	},
 };
 
+// Cached so the year is computed once instead of on every prerender.
+async function CopyrightYear() {
+	"use cache";
+	return new Date().getFullYear();
+}
+
 function BrandMark({ variant, inverse }: { variant: AuthVariant; inverse?: boolean }) {
 	return (
 		<Link
@@ -137,7 +143,7 @@ export function AuthShell({
 				</div>
 
 				<p className='relative text-xs text-white/60'>
-					© {new Date().getFullYear()} {siteConfig.name}
+					© <CopyrightYear /> {siteConfig.name}
 				</p>
 			</aside>
 

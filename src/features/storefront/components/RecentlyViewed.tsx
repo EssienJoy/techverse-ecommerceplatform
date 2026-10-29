@@ -1,9 +1,13 @@
+import Image from "next/image";
 import { History, Package } from "lucide-react";
 import { Container, Link, formatCurrency } from "@/shared";
-import type { Product } from "@/shared/lib";
+import { resolveShopperOwner } from "@/features/cart/server/customer-user";
+import { getRecentlyViewed } from "@/features/history/server/history.service";
 
-export function RecentlyViewed() {
-	const recentlyViewed: Product[] = [];
+/** Reads the visitor's session, so render it inside a <Suspense> boundary. */
+export async function RecentlyViewed() {
+	const owner = await resolveShopperOwner({ create: false, admin: "none" });
+	const recentlyViewed = await getRecentlyViewed(owner);
 
 	if (recentlyViewed.length === 0) return null;
 
@@ -20,10 +24,20 @@ export function RecentlyViewed() {
 					{recentlyViewed.map((product) => (
 						<li key={product.id} className='w-28 shrink-0'>
 							<Link
-								href={`/shop?product=${product.slug}`}
+								href={`/product/${product.id}`}
 								className='group flex flex-col'>
-								<div className='flex h-24 items-center justify-center rounded-2xl border border-border bg-gradient-to-br from-surface to-brand-50 text-brand-400 transition-colors group-hover:border-brand-200'>
-									<Package className='size-6' />
+								<div className='flex h-24 items-center justify-center overflow-hidden rounded-2xl border border-border bg-white text-brand-400 transition-colors group-hover:border-brand-200'>
+									{product.imageUrl ? (
+										<Image
+											src={product.imageUrl}
+											alt={product.name}
+											width={224}
+											height={192}
+											className='size-full object-contain'
+										/>
+									) : (
+										<Package className='size-6' />
+									)}
 								</div>
 								<h3 className='mt-1.5 line-clamp-2 text-[0.6875rem] font-medium text-foreground-subtle'>
 									{product.name}

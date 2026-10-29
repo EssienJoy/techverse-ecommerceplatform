@@ -2,7 +2,10 @@
 
 import { z } from "zod";
 import { prisma } from "@/prisma-client/prisma";
-import { getActiveCustomerId } from "@/features/cart/server/customer-user";
+import {
+	getActiveCustomerId,
+	requireShopperId,
+} from "@/features/cart/server/customer-user";
 
 const productIdSchema = z.string().uuid();
 
@@ -23,7 +26,7 @@ export async function setSavedItemAction(
 	productIdInput: string,
 	isSaved: boolean,
 ): Promise<void> {
-	const userId = await getActiveCustomerId();
+	const userId = await requireShopperId();
 	if (!userId) return;
 
 	const productId = productIdSchema.parse(productIdInput);
@@ -63,7 +66,7 @@ export async function setSavedItemAction(
 }
 
 export async function clearSavedItemsAction(): Promise<void> {
-	const userId = await getActiveCustomerId();
+	const userId = await requireShopperId();
 	if (!userId) return;
 
 	await prisma.savedItem.deleteMany({ where: { saved: { userId } } });

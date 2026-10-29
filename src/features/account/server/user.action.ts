@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/features/auth/server/user.service";
+import { guard } from "@/features/auth/server/middleware/authorization";
 import { updateMe } from "@/features/auth/server/user.repository";
 import {
 	hashPassword,
@@ -19,8 +19,9 @@ export async function updateProfileAction(
 	_prev: ProfileFormState,
 	formData: FormData,
 ): Promise<ProfileFormState> {
-	const user = await getCurrentUser();
-	if (!user) return { error: "You must be signed in." };
+	const access = await guard();
+	if (access.status !== "success") return { error: access.message };
+	const user = access.data;
 
 	const name = String(formData.get("name") ?? "").trim();
 	const email = String(formData.get("email") ?? "")
@@ -55,8 +56,9 @@ export async function updatePasswordAction(
 	_prev: ProfileFormState,
 	formData: FormData,
 ): Promise<ProfileFormState> {
-	const user = await getCurrentUser();
-	if (!user) return { error: "You must be signed in." };
+	const access = await guard();
+	if (access.status !== "success") return { error: access.message };
+	const user = access.data;
 
 	const currentPassword = String(formData.get("currentPassword") ?? "");
 	const password = String(formData.get("password") ?? "");

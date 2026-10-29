@@ -1,20 +1,12 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { Link, siteConfig } from "@/shared";
 import { AdminLoginForm, AuthShell } from "@/features/auth";
-import { getCurrentUser } from "@/features/auth/server/user.service";
 
 export const metadata: Metadata = {
 	title: "Admin sign in",
 };
 
-export default async function AdminLoginPage() {
-	const user = await getCurrentUser();
-
-	if (user) {
-		redirect(user.role === "user" ? "/" : "/admin");
-	}
-
+export default function AdminLoginPage() {
 	return (
 		<AuthShell
 			variant='admin'

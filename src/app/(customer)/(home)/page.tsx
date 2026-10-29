@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
 	Brands,
 	Categories,
@@ -5,6 +6,8 @@ import {
 	Hero,
 	LimitedStock,
 	ProductSections,
+	RecentlyViewed,
+	RecentlyViewedSkeleton,
 	SearchBar,
 } from "@/features/storefront";
 import {
@@ -14,6 +17,8 @@ import {
 	getHeroSlides,
 } from "@/features/content";
 import { getProducts } from "@/features/products/server/products.service";
+
+export const metadata = { title: "Store Front" };
 
 export default async function Home() {
 	const [slides, categories, sale, brands, productPage] = await Promise.all([
@@ -33,6 +38,9 @@ export default async function Home() {
 			<Deals sale={sale} />
 			<Brands brands={brands} />
 			<LimitedStock products={products} />
+			<Suspense fallback={<RecentlyViewedSkeleton />}>
+				<RecentlyViewed />
+			</Suspense>
 			<ProductSections categories={categories} products={products} />
 		</>
 	);

@@ -19,6 +19,7 @@ model Product {
   collections CollectionProduct[]
   cartItems   CartItem[]
   savedItems  SavedItem[]
+  views       ProductView[]
 
 
   @@index([categoryId])
@@ -55,3 +56,5 @@ model ProductRating {
   @@index([productId])
   @@map("product_ratings")
 }
+
+

@@ -5,7 +5,10 @@ import type { ContentBrand } from "../lib/brand";
 import type { CategoryIconKey, ContentCategory } from "../lib/category";
 import type { FlashSaleData } from "../lib/flash-sale";
 import type { Product } from "@/features/products/schema";
-import { requireAdmin } from "@/features/auth/server/user.service";
+import {
+	ADMIN_ROLES,
+	guard,
+} from "@/features/auth/server/middleware/authorization";
 import {
 	findActiveFlashSale,
 	findBrands,
@@ -122,25 +125,33 @@ export async function getFlashSale(): Promise<FlashSaleDeal | null> {
 
 // Admin getters (uncached, include inactive)
 export async function getAllCategories(): Promise<ContentCategory[]> {
-	await requireAdmin();
+	const access = await guard(ADMIN_ROLES);
+	if (access.status !== "success") return [];
+
 	const rows = await findAllCategories();
 	return rows.map(toContentCategory);
 }
 
 export async function getAllBrands(): Promise<ContentBrand[]> {
-	await requireAdmin();
+	const access = await guard(ADMIN_ROLES);
+	if (access.status !== "success") return [];
+
 	const rows = await findAllBrands();
 	return rows.map(toContentBrand);
 }
 
 export async function getAllHeroSlides(): Promise<HeroSlide[]> {
-	await requireAdmin();
+	const access = await guard(ADMIN_ROLES);
+	if (access.status !== "success") return [];
+
 	const rows = await findAllHeroSlides();
 	return rows.map(toHeroSlide);
 }
 
 export async function getFlashSaleAdmin(): Promise<FlashSaleData> {
-	await requireAdmin();
+	const access = await guard(ADMIN_ROLES);
+	if (access.status !== "success") return null;
+
 	const sale = await findLatestFlashSaleWithItems();
 	if (!sale) return null;
 

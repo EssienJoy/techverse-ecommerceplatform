@@ -10,7 +10,7 @@ import { AuthField, FormMessage, PasswordField } from "./AuthFields";
 
 const initialState: AuthFormState = {};
 
-export function NormalLoginForm() {
+export function NormalLoginForm({ next }: { next?: string | null }) {
 	const [state, formAction, pending] = useActionState(
 		loginAction,
 		initialState,
@@ -18,6 +18,7 @@ export function NormalLoginForm() {
 
 	return (
 		<form action={formAction} className='flex flex-col gap-4'>
+			{next ? <input type='hidden' name='next' value={next} /> : null}
 			{state.error ? <FormMessage type='error'>{state.error}</FormMessage> : null}
 
 			<AuthField

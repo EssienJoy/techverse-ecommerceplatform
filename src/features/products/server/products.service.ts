@@ -25,7 +25,10 @@ import type {
 	ProductPageOptions,
 } from "../lib/pagination";
 import { toProduct, toVariationAttributes } from "../lib/utilities";
-import { requireAdmin } from "@/features/auth/server/user.service";
+import {
+	ADMIN_ROLES,
+	guard,
+} from "@/features/auth/server/middleware/authorization";
 
 export type ProductPage = {
 	products: Product[];
@@ -35,7 +38,9 @@ export type ProductPage = {
 
 // COUNT PRODUCTS (ADMIN: includes inactive products)
 export async function getProductCount(): Promise<number> {
-	await requireAdmin();
+	const access = await guard(ADMIN_ROLES);
+	if (access.status !== "success") return 0;
+
 	return countProducts({ includeInactive: true });
 }
 
@@ -44,7 +49,12 @@ export async function getProducts(
 	options: ProductPageOptions = {},
 ): Promise<ProductPage> {
 	// Inactive products are admin-only.
-	if (options.includeInactive) await requireAdmin();
+	if (options.includeInactive) {
+		const access = await guard(ADMIN_ROLES);
+		if (access.status !== "success") {
+			return { products: [], nextCursor: null, total: 0 };
+		}
+	}
 
 	const [{ rows, nextCursor }, total] = await Promise.all([
 		findProductsPage(options),
@@ -83,7 +93,9 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
 export async function getProductForEdit(
 	id: string,
 ): Promise<ProductFormValues | null> {
-	await requireAdmin();
+	const access = await guard(ADMIN_ROLES);
+	if (access.status !== "success") return null;
+
 	const row = await findProductById(id);
 	if (!row) return null;
 

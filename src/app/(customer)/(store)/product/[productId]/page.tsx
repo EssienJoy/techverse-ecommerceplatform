@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { ProductDetail } from "@/features/products";
+import { ProductViewTracker } from "@/features/history";
 import {
 	getProduct,
 	getProductReviews,
@@ -38,5 +39,10 @@ async function ProductContent({
 		notFound();
 	}
 
-	return <ProductDetail product={product} reviews={reviews} />;
+	return (
+		<>
+			<ProductViewTracker productId={product.id} />
+			<ProductDetail product={product} reviews={reviews} />
+		</>
+	);
 }

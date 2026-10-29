@@ -1,7 +1,6 @@
 "use server";
 
 import type { Product } from "../schema";
-import { requireAdmin } from "@/features/auth/server/user.service";
 import {
 	getProducts,
 	getProductsByIds,
@@ -35,11 +34,6 @@ export async function fetchProductsPage(
 	if (!options || typeof options !== "object") return emptyPage;
 
 	const includeInactive = options.includeInactive === true;
-
-	if (includeInactive) {
-		const access = await requireAdmin();
-		if (!access.ok) return emptyPage;
-	}
 
 	return getProducts({
 		...options,

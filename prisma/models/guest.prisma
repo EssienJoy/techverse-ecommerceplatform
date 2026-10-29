@@ -1,0 +1,37 @@
+// An anonymous visitor. The browser holds a random token; only its SHA-256
+// hash is stored here, so a database leak doesn't expose usable guest tokens.
+// A session is claimed once, when its owner signs up or logs in.
+model GuestSession {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  tokenHash       String        @unique
+  expiresAt       DateTime
+  lastSeenAt      DateTime      @default(now())
+  claimedAt       DateTime?
+  claimedByUserId String?       @db.Uuid
+  createdAt       DateTime      @default(now())
+  cart            Cart?
+  views           ProductView[]
+
+  @@index([expiresAt])
+  @@map("guest_sessions")
+}
+
+// Browsing history. Owned by exactly one of userId / guestSessionId
+// (enforced by a CHECK constraint in the migration).
+model ProductView {
+  id             String        @id @default(uuid(7)) @db.Uuid
+  userId         String?       @db.Uuid
+  user           User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guestSessionId String?       @db.Uuid
+  guestSession   GuestSession? @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
+  productId      String        @db.Uuid
+  product        Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  viewCount      Int           @default(1)
+  lastViewedAt   DateTime      @default(now())
+
+  @@unique([userId, productId])
+  @@unique([guestSessionId, productId])
+  @@index([userId, lastViewedAt])
+  @@index([guestSessionId, lastViewedAt])
+  @@map("product_views")
+}

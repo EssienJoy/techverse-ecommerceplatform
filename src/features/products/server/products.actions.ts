@@ -2,7 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin } from "@/features/auth/server/user.service";
+import {
+	ADMIN_ROLES,
+	restrictTo,
+} from "@/features/auth/server/middleware/authorization";
 import {
 	createProduct,
 	updateProduct,
@@ -19,8 +22,8 @@ export async function createProductAction(
 	_prevState: ProductFormState,
 	formData: FormData,
 ): Promise<ProductFormState> {
-	const access = await requireAdmin();
-	if (!access.ok) return { formError: access.message };
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status !== "success") return { formError: access.message };
 
 	const { parsed, imageFile, existingImageUrl, removeBackground } =
 		parseProductForm(formData);
@@ -54,8 +57,8 @@ export async function updateProductAction(
 	_prevState: ProductFormState,
 	formData: FormData,
 ): Promise<ProductFormState> {
-	const access = await requireAdmin();
-	if (!access.ok) return { formError: access.message };
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status !== "success") return { formError: access.message };
 
 	const id = String(formData.get("id") ?? "").trim();
 	if (!id) return { formError: "Could not find the product to update." };
@@ -89,7 +92,7 @@ export async function updateProductAction(
 }
 
 export async function deleteProductAction(id: string): Promise<void> {
-	if (!(await requireAdmin()).ok) return;
+	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
 
 	try {
 		await deleteProduct(id);
