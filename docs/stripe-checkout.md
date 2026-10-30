@@ -36,8 +36,9 @@ payment and to `/checkout` when the customer cancels.
    clears the cart and saves the order in the local order store (see the
    limitations below).
 
-`/checkout/payment` no longer has a card form. It keeps the customer-only guard
-and redirects to `/checkout`, so old links still work.
+There is no payment page in this app. Stripe hosts it at `session.url`, so no
+card form is rendered or styled here. The only routes under `/checkout` are the
+shipping form and the success page.
 
 ## Money
 

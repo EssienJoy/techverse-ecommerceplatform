@@ -106,6 +106,8 @@ The admin console requires a signed-in account. The super admin is created direc
 | `npx prisma migrate dev` | Create and apply development database migrations |
 | `npx prisma generate`    | Generate the Prisma Client                       |
 | `npx prisma db seed`     | Run the database seed script                     |
+| `npm run seed:hero-slides` | Insert or refresh the three storefront hero slides |
+| `npm run seed:category-images` | Set the category chip images on the home page |
 
 There is currently no test script defined in `package.json`.
 

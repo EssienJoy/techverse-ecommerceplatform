@@ -10,7 +10,7 @@ How TechNest decides who can see and do what. There are three kinds of visitor:
 
 | Route | Guest | Customer | Admin |
 | --- | --- | --- | --- |
-| `/checkout`, `/checkout/payment`, `/checkout/success` | Redirect to `/login?next=<path>` | Allowed | Redirect to `/` |
+| `/checkout`, `/checkout/success` | Redirect to `/login?next=<path>` | Allowed | Redirect to `/` |
 | `/profile` | Redirect to `/login?next=/profile` | Allowed | Allowed |
 | `/admin/*` | Redirect to `/admin/login` | Redirect to `/` | Allowed |
 | `/admin/signup` | Redirect to `/admin/login` | Redirect to `/` | Super admin only; other admins go to `/admin` |
@@ -78,9 +78,8 @@ After signing in or signing up, a customer is sent back to the page in `next`
    - [checkout/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/page.tsx) and
      [checkout/success/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/success/page.tsx)
      each allow only customers; admins go to `/`.
-     [checkout/payment/page.tsx](../src/app/(customer)/(shop)/(store)/checkout/payment/page.tsx)
-     keeps the same guard and then redirects to `/checkout`, because payment now
-     happens on Stripe's hosted page.
+     Payment itself happens on Stripe's hosted page, so the app has no payment
+     route.
    - Cart and saved item actions use `requireShopperId()` from
      [customer-user.ts](../src/features/cart/server/customer-user.ts). It returns
      `null` for guests (their cart stays in the browser) and throws for admins.

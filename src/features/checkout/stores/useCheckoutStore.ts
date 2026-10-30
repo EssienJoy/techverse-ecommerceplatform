@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ShippingAddress } from "../schema";
+import type { ShippingAddress } from "../types";
 
 type CheckoutState = {
 	shipping: ShippingAddress | null;
