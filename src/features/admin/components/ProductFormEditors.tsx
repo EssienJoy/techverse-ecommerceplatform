@@ -53,7 +53,7 @@ export function ProductFeaturesEditor({
 					{features.map((feature, index) => (
 						<li
 							key={`${feature}-${index}`}
-							className='flex items-center gap-1 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-medium'>
+							className='flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium'>
 							{feature}
 							<button
 								type='button'
@@ -124,7 +124,7 @@ function VariationImages({
 
 	return (
 		<div className='flex flex-col gap-1'>
-			<div className='flex flex-wrap items-center gap-1.5'>
+			<div className='flex flex-wrap items-center gap-2'>
 				<input
 					ref={inputRef}
 					type='file'
@@ -229,7 +229,7 @@ export function ProductVariationsEditor({
 				</div>
 			) : (
 				<div className='overflow-hidden rounded-lg border border-border'>
-					<div className='hidden grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)_minmax(0,0.7fr)_minmax(0,0.8fr)_minmax(0,0.7fr)_auto] gap-2 border-b border-border bg-muted/50 px-2.5 py-1.5 text-[11px] font-medium tracking-wide text-muted-foreground uppercase lg:grid'>
+					<div className='hidden grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)_minmax(0,0.7fr)_minmax(0,0.8fr)_minmax(0,0.7fr)_auto] gap-2 border-b border-border bg-muted/50 px-3 py-2 text-[11px] font-medium tracking-wide text-muted-foreground uppercase lg:grid'>
 						<span>SKU</span>
 						<span>Color</span>
 						<span>Size</span>
@@ -242,7 +242,7 @@ export function ProductVariationsEditor({
 						{variations.map((variation, index) => (
 							<div
 								key={index}
-								className='grid grid-cols-2 gap-2 px-2.5 py-2 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)_minmax(0,0.7fr)_minmax(0,0.8fr)_minmax(0,0.7fr)_auto] lg:items-center'>
+								className='grid grid-cols-2 gap-2 px-3 py-2 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)_minmax(0,0.7fr)_minmax(0,0.8fr)_minmax(0,0.7fr)_auto] lg:items-center'>
 								<Input
 									aria-label='SKU'
 									placeholder='SKU'

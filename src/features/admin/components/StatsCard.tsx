@@ -36,10 +36,10 @@ export function StatsCard({
 						{value}
 					</p>
 					{change !== undefined ? (
-						<div className='mt-2 flex items-center gap-1.5'>
+						<div className='mt-2 flex items-center gap-2'>
 							<span
 								className={cn(
-									"inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
+									"inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-xs font-medium",
 									isUp
 										? "bg-success-muted text-success-foreground"
 										: "bg-danger-muted text-danger-foreground",

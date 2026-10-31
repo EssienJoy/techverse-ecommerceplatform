@@ -1,7 +1,17 @@
 import { redirect } from "next/navigation";
+import { Container } from "@/shared";
+import {
+	LogoutButton,
+	ProfileHeader,
+	ProfileIdentity,
+	ProfileMenu,
+	ProfileStats,
+} from "@/features/account";
 import { getCurrentUser } from "@/features/auth/server/user.service";
-import { ProfileForm } from "@/features/account/components/ProfileForm";
-import { UpdatePasswordForm } from "@/features/account/components/UpdatePasswordForm";
+
+// Reading the session cookie is uncached data, so this route must block rather
+// than prerender.
+export const instant = false;
 
 export const metadata = { title: "My Profile" };
 
@@ -10,43 +20,31 @@ export default async function ProfilePage() {
 	if (!user) redirect("/login?next=%2Fprofile");
 
 	return (
-		<>
-			<header className='mb-8'>
-				<h1 className='font-heading text-2xl font-semibold text-foreground'>
-					My Profile
-				</h1>
-				<p className='mt-1 text-sm text-foreground-subtle'>
-					Manage your account details and password.
-				</p>
-			</header>
+		<div className='pb-4'>
+			<ProfileHeader
+				title='My account'
+				subtitle='Shopping, wallet and preferences'
+				back={false}
+			/>
 
-			{/* Avatar + identity */}
-			<section className='mb-6 flex items-center gap-4 rounded-xl border border-border bg-card p-5 shadow-sm'>
-				<div
-					aria-hidden
-					className='flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-lg font-semibold text-foreground-primary'>
-					{(user.name?.[0] ?? user.email[0]).toUpperCase()}
-				</div>
-				<div className='min-w-0'>
-					<p className='truncate font-medium text-card-foreground'>
-						{user.name ?? "Unnamed user"}
-					</p>
-					<p className='truncate text-sm text-foreground-muted'>{user.email}</p>
-					<span className='mt-1 inline-block rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground'>
-						{user.role.replace("_", " ")}
-					</span>
-				</div>
-			</section>
-
-			<div className='space-y-6'>
-				<ProfileForm
-					defaultValues={{
-						name: user.name ?? "",
-						email: user.email,
-					}}
+			<Container className='space-y-6'>
+				<ProfileIdentity
+					name={user.name}
+					email={user.email}
+					role={user.role}
+					memberSince={user.createdAt}
 				/>
-				<UpdatePasswordForm />
-			</div>
-		</>
+
+				<ProfileStats />
+
+				<ProfileMenu />
+
+				<LogoutButton />
+
+				<p className='pb-2 text-center text-[11px] text-muted-foreground'>
+					Signed in as {user.email}
+				</p>
+			</Container>
+		</div>
 	);
 }

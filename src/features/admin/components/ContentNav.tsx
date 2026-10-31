@@ -26,7 +26,7 @@ export function ContentNav() {
 						href={href}
 						aria-current={active ? "page" : undefined}
 						className={cn(
-							"inline-flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors",
+							"inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
 							active
 								? "border-primary bg-primary text-foreground-inverse"
 								: "border-border bg-card text-muted-foreground hover:text-foreground",

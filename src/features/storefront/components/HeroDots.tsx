@@ -31,7 +31,7 @@ export function HeroDots({ slides }: HeroDotsProps) {
 	return (
 		<div
 			className='absolute bottom-4 left-1/2 z-20 flex 
-	 mt-6	-translate-x-1/2 items-center gap-1.5'>
+	 mt-6	-translate-x-1/2 items-center gap-2'>
 			{slides.map((slide, index) => (
 				<button
 					key={slide.id}

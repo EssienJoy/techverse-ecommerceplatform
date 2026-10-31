@@ -1,39 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
-import { Container, EmptyState, Skeleton, useAlertStore } from "@/shared";
+import { Container } from "@/shared";
 import { Header } from "@/features/navigation";
-import { Heart } from "lucide-react";
-import { SavedItemRow } from "@/features/saved";
+import { SavedList } from "@/features/saved";
 import { useFavoritesStore } from "@/features/saved/stores/useFavoritesStore";
-import { useProductsByIds } from "@/features/products";
+import { BadgeCheck, Sparkles } from "lucide-react";
 
 export default function SavedPage() {
 	const favorites = useFavoritesStore((state) => state.favorites);
-	const removeFromFavorites = useFavoritesStore(
-		(state) => state.removeFromFavorites,
-	);
-	const showAlert = useAlertStore((state) => state.show);
-	const { productsById, isLoading, missingIds } = useProductsByIds(favorites);
-	const missingKey = missingIds.join("|");
-
-	useEffect(() => {
-		if (isLoading || !missingKey) return;
-
-		missingKey.split("|").forEach((productId) => {
-			removeFromFavorites(productId);
-		});
-		showAlert(
-			"info",
-			"Some saved items are no longer available and were removed.",
-		);
-	}, [isLoading, missingKey, removeFromFavorites, showAlert]);
-
-	const savedProducts = favorites.flatMap((productId) => {
-		const product = productsById.get(productId);
-
-		return product ? [product] : [];
-	});
 
 	return (
 		<>
@@ -43,34 +17,25 @@ export default function SavedPage() {
 				showBack={false}
 				saved
 			/>
+
 			<section>
 				<Container>
-					{isLoading && favorites.length > 0 && savedProducts.length === 0 ? (
-						<div className='flex flex-col gap-2'>
-							{favorites.map((productId) => (
-								<Skeleton
-									key={productId}
-									className='h-28 w-full rounded-2xl'
-								/>
-							))}
+					<div className='mb-4 flex items-start gap-3 rounded-2xl border border-border/80 bg-card px-4 py-3 shadow-sm'>
+						<span className='flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-primary'>
+							<Sparkles className='size-4' aria-hidden />
+						</span>
+						<div className='text-xs leading-relaxed text-muted-foreground'>
+							<p className='font-medium text-foreground'>
+								Your shortlist, kept in sync
+							</p>
+							<p className='flex items-center gap-1'>
+								<BadgeCheck className='size-3 shrink-0 text-success' aria-hidden />
+								Prices update automatically. Unavailable items are removed.
+							</p>
 						</div>
-					) : savedProducts.length === 0 ? (
-						<div className=''>
-							<EmptyState
-								icon={Heart}
-								title='No saved items yet'
-								description='Tap the heart on any product to save it here for later.'
-								actionLabel='Browse products'
-								actionHref='/shop'
-							/>
-						</div>
-					) : (
-						<div className='flex flex-col gap-2'>
-							{savedProducts.map((product) => (
-								<SavedItemRow key={product.id} product={product} />
-							))}
-						</div>
-					)}
+					</div>
+
+					<SavedList />
 				</Container>
 			</section>
 		</>

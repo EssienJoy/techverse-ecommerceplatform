@@ -17,7 +17,7 @@ export default async function AdminDashboardPage() {
 	return (
 		<>
 			<AdminHeader title='Dashboard' />
-			<div className='flex flex-1 flex-col gap-6 p-4 pb-24 md:p-6'>
+			<div className='flex flex-1 flex-col gap-6 p-gutter pb-24'>
 				<PageHeader description='Overview of your store performance.' />
 
 				<div className='grid gap-3 sm:grid-cols-2 xl:grid-cols-4'>

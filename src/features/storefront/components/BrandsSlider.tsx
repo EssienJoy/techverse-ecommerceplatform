@@ -54,7 +54,7 @@ export function BrandsSlider({ brands }: { brands: ContentBrand[] }) {
 				<span className='pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent' />
 			</div>
 
-			<div className='flex shrink-0 gap-0.5'>
+			<div className='flex shrink-0 gap-1'>
 				<Button
 					type='button'
 					variant='ghost'

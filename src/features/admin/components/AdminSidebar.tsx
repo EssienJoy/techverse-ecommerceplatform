@@ -47,10 +47,10 @@ export function AdminSidebar() {
 				className={cn(
 					"flex items-center",
 					isCollapsed
-						? "flex-col gap-2 lg:flex-row lg:justify-between lg:gap-2 lg:px-1.5"
-						: "justify-between gap-2 px-1.5",
+						? "flex-col gap-2 lg:flex-row lg:justify-between lg:gap-2 lg:px-2"
+						: "justify-between gap-2 px-2",
 				)}>
-				<Link href='/admin' className='flex items-center gap-2.5'>
+				<Link href='/admin' className='flex items-center gap-3'>
 					<span className='flex size-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-foreground-inverse'>
 						{siteConfig.name.charAt(0)}
 					</span>
@@ -82,12 +82,12 @@ export function AdminSidebar() {
 
 			<nav
 				className={cn(
-					"flex flex-1 flex-col lg:mt-7",
-					isCollapsed ? "mt-6" : "mt-7",
+					"flex flex-1 flex-col lg:mt-6",
+					isCollapsed ? "mt-6" : "mt-8",
 				)}>
 				<p
 					className={cn(
-						"px-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground",
+						"px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground",
 						isCollapsed && "hidden lg:block",
 					)}>
 					Menu
@@ -104,7 +104,7 @@ export function AdminSidebar() {
 									aria-label={isCollapsed ? label : undefined}
 									title={isCollapsed ? label : undefined}
 									className={cn(
-										"group relative flex items-center rounded-xl px-2.5 py-2 text-sm transition-colors",
+										"group relative flex items-center rounded-xl px-3 py-2 text-sm transition-colors",
 										isCollapsed
 											? "justify-center lg:justify-start lg:gap-3"
 											: "gap-3",

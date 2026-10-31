@@ -89,7 +89,7 @@ export function ProductFeed({
 				</p>
 			</section>
 
-			<section className='my-6 grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4'>
+			<section className='my-6 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4'>
 				{products.map((product) => (
 					<ProductCard key={product.id} product={product} />
 				))}

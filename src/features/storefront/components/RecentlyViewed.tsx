@@ -39,10 +39,10 @@ export async function RecentlyViewed() {
 										<Package className='size-6' />
 									)}
 								</div>
-								<h3 className='mt-1.5 line-clamp-2 text-[0.6875rem] font-medium text-foreground-subtle'>
+								<h3 className='mt-2 line-clamp-2 text-[0.6875rem] font-medium text-foreground-subtle'>
 									{product.name}
 								</h3>
-								<span className='mt-0.5 text-xs font-bold text-primary'>
+								<span className='mt-1 text-xs font-bold text-primary'>
 									{formatCurrency(product.price)}
 								</span>
 							</Link>

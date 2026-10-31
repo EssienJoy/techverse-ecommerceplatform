@@ -13,6 +13,8 @@ export function Container({
 	children,
 }: ContainerProps) {
 	return (
-		<Tag className={cn("mx-auto  max-w-7xl px-2", className)}>{children}</Tag>
+		<Tag className={cn("mx-auto max-w-7xl px-gutter", className)}>
+			{children}
+		</Tag>
 	);
 }

@@ -45,7 +45,7 @@ export function Categories({ categories }: { categories: ContentCategory[] }) {
 						<li key={item.id} className='shrink-0'>
 							<Link
 								href={item.slug ? `/shop/category/${item.slug}` : "/shop"}
-								className='flex w-16 flex-col items-center gap-1.5'>
+								className='flex w-16 flex-col items-center gap-2'>
 								<span className='relative flex size-11 items-center justify-center overflow-hidden rounded-full bg-white'>
 									{item.imageUrl ? (
 										<Image
@@ -53,7 +53,7 @@ export function Categories({ categories }: { categories: ContentCategory[] }) {
 											alt={item.label}
 											width={88}
 											height={88}
-											className='h-full w-full object-contain p-1.5'
+											className='h-full w-full object-contain p-2'
 										/>
 									) : (
 										<CategoryGlyph icon={item.icon} />

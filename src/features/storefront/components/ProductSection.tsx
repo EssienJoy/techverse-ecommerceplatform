@@ -17,7 +17,7 @@ export function ProductSection({ title, href, children }: ProductSectionProps) {
 					{href ? (
 						<Link
 							href={href}
-							className='inline-flex items-center gap-0.5 text-sm font-medium'>
+							className='inline-flex items-center gap-1 text-sm font-medium'>
 							See all
 							<ChevronRight className='size-4' />
 						</Link>

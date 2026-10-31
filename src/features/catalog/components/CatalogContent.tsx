@@ -229,7 +229,7 @@ export async function CatalogContent({
 
 	return (
 		<>
-			<section className='relative my-4 w-full overflow-hidden bg-gradient-to-br from-zinc-950 via-neutral-900 to-black text-white'>
+			<section className='relative my-6 w-full overflow-hidden bg-gradient-to-br from-zinc-950 via-neutral-900 to-black text-white'>
 					<div className='pointer-events-none absolute -top-20 -right-10 size-56 rounded-full bg-white/10 blur-3xl' />
 					<div className='pointer-events-none absolute -bottom-24 left-1/4 size-56 rounded-full bg-brand-500/20 blur-3xl' />
 					<div className='pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.16)_1px,transparent_0)] [background-size:18px_18px]' />
@@ -239,7 +239,7 @@ export async function CatalogContent({
 
 					<Container className='relative flex min-h-40 flex-col justify-end py-6 sm:min-h-48'>
 						{mode !== "all" ? <CatalogBreadcrumb /> : null}
-						<span className='inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold tracking-[0.16em] uppercase backdrop-blur'>
+						<span className='inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] uppercase backdrop-blur'>
 							<span className='size-1.5 rounded-full bg-brand-400' />
 							{heroKind}
 						</span>
@@ -294,7 +294,7 @@ export async function CatalogContent({
 										href={categoryHref(item.slug)}
 										aria-current={selected ? "page" : undefined}
 										className={cn(
-											"shrink-0 rounded-full border border-primary px-4 py-1.5 text-sm font-medium transition-colors",
+											"shrink-0 rounded-full border border-primary px-4 py-2 text-sm font-medium transition-colors",
 											selected
 												? "bg-primary text-foreground-inverse"
 												: "bg-transparent text-primary hover:bg-primary/10",
@@ -324,7 +324,7 @@ export async function CatalogContent({
 											href={brandHref(selected ? null : item.slug)}
 											aria-current={selected ? "page" : undefined}
 											className={cn(
-												"shrink-0 rounded-full border border-border px-4 py-1.5 text-sm font-medium capitalize transition-colors",
+												"shrink-0 rounded-full border border-border px-4 py-2 text-sm font-medium capitalize transition-colors",
 												selected
 													? "border-primary bg-primary text-foreground-inverse"
 													: "bg-transparent text-muted-foreground hover:border-primary hover:text-primary",
@@ -345,7 +345,7 @@ export async function CatalogContent({
 								<ChevronDown className='size-3.5 text-muted-foreground transition-transform group-open:rotate-180' />
 							</summary>
 							<div className='absolute left-0 top-full z-30 mt-2 w-60 overflow-hidden rounded-xl border border-border bg-background p-1 shadow-lg'>
-								<p className='px-3 py-1.5 text-[10px] font-semibold tracking-[0.12em] text-muted-foreground uppercase'>
+								<p className='px-3 py-2 text-[10px] font-semibold tracking-[0.12em] text-muted-foreground uppercase'>
 									Sort by
 								</p>
 								{sortOptions.map((option) => {
@@ -374,7 +374,7 @@ export async function CatalogContent({
 							href={filterHref({ stock: !inStockOnly })}
 							aria-current={inStockOnly ? "page" : undefined}
 							className={cn(
-								"rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+								"rounded-full border px-3 py-2 text-xs font-medium transition-colors",
 								inStockOnly
 									? "border-primary bg-primary text-foreground-inverse"
 									: "border-border bg-background text-muted-foreground hover:text-foreground",

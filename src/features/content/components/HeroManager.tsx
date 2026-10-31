@@ -209,7 +209,7 @@ export function HeroManager({ slides }: { slides: HeroSlide[] }) {
 									alt={slide.title}
 									className='h-32 w-full object-contain'
 								/>
-								<span className='absolute top-2 left-2 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white uppercase backdrop-blur-sm'>
+								<span className='absolute top-2 left-2 rounded-full bg-black/60 px-3 py-1 text-[10px] font-semibold tracking-wide text-white uppercase backdrop-blur-sm'>
 									{slide.tag || "Slide"}
 								</span>
 								<Badge
@@ -220,7 +220,7 @@ export function HeroManager({ slides }: { slides: HeroSlide[] }) {
 							</div>
 							<div className='min-w-0'>
 								<p className='font-medium'>{slide.title}</p>
-								<p className='mt-0.5 line-clamp-2 text-xs text-muted-foreground'>
+								<p className='mt-1 line-clamp-2 text-xs text-muted-foreground'>
 									{slide.subtitle}
 								</p>
 							</div>

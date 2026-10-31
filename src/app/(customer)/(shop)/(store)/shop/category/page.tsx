@@ -16,7 +16,7 @@ export default async function CategoriesPage() {
 			<Header text='Categories' showBack={false} showSaved />
 			<section className='pb-12'>
 				<Container>
-					<div className='my-4 grid grid-cols-2 gap-2 sm:grid-cols-3'>
+					<div className='my-6 grid grid-cols-2 gap-3 sm:grid-cols-3'>
 						{categories.map((category) => (
 							<Link
 								key={category.id}

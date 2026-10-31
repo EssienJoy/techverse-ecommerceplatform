@@ -159,7 +159,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 			) : null}
 
 			<Container className='relative z-10 -mt-6 pb-12 sm:-mt-10'>
-				<div className='mx-auto max-w-6xl rounded-3xl border border-border/70 bg-background p-5 sm:p-8 lg:p-10'>
+				<div className='mx-auto max-w-6xl rounded-3xl border border-border/70 bg-background p-6 sm:p-8 lg:p-10'>
 					{meta ? (
 						<p className='text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground'>
 							{meta}
@@ -170,9 +170,9 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 						{product.name}
 					</h1>
 
-					<div className='mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm'>
+					<div className='mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm'>
 						{hasReviews ? (
-							<span className='inline-flex items-center gap-1.5'>
+							<span className='inline-flex items-center gap-2'>
 								<Star className='size-4 fill-amber-400 text-amber-400' />
 								<span className='font-medium'>{product.rating.toFixed(1)}</span>
 								<span className='text-muted-foreground'>
@@ -185,7 +185,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 						<span className='text-border'>/</span>
 						<span
 							className={cn(
-								"inline-flex items-center gap-1.5",
+								"inline-flex items-center gap-2",
 								activeStock <= 0
 									? "text-danger"
 									: activeStock <= 10
@@ -201,9 +201,9 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 						</span>
 					</div>
 
-					<div className='mt-7 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12'>
+					<div className='mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12'>
 						<aside className='order-first h-fit lg:order-last lg:sticky lg:top-24'>
-							<div className='rounded-2xl border border-border/70 bg-surface-muted/40 p-5'>
+							<div className='rounded-2xl border border-border/70 bg-surface-muted/40 p-6'>
 								<div className='flex items-center justify-between gap-3'>
 									<span className='text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground'>
 										Price
@@ -228,7 +228,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 								</p>
 
 								{selectedVariation ? (
-									<p className='mt-1.5 text-xs text-muted-foreground'>
+									<p className='mt-2 text-xs text-muted-foreground'>
 										{selectedVariation.color} · {selectedVariation.size} · SKU{" "}
 										{selectedVariation.sku}
 									</p>
@@ -273,7 +273,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 											</span>
 										) : null}
 									</div>
-									<div className='mt-2.5 flex flex-wrap gap-2'>
+									<div className='mt-3 flex flex-wrap gap-2'>
 										{product.variations.map((variation, index) => {
 											const selected = selectedVariationIndex === index;
 
@@ -287,7 +287,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 													setActiveImage(0);
 												}}
 												className={cn(
-													"inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm transition-colors",
+													"inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors",
 													selected
 														? "border-brand-500 bg-brand-50 text-brand-700"
 														: "border-border hover:border-muted-foreground",
@@ -321,7 +321,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 											<li
 												key={`${feature}-${index}`}
 												className='flex items-start gap-2 text-sm text-muted-foreground'>
-												<Check className='mt-0.5 size-4 shrink-0 text-brand-600' />
+												<Check className='mt-1 size-4 shrink-0 text-brand-600' />
 												{feature}
 											</li>
 										))}
@@ -336,7 +336,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 					<div className='flex flex-wrap items-center justify-between gap-3'>
 						<div>
 							<h2 className='text-lg font-semibold'>Reviews</h2>
-							<p className='mt-0.5 text-sm text-muted-foreground'>
+							<p className='mt-1 text-sm text-muted-foreground'>
 								{hasReviews
 									? `${product.rating.toFixed(1)} out of 5 · ${product.reviews} ${
 											product.reviews === 1 ? "review" : "reviews"

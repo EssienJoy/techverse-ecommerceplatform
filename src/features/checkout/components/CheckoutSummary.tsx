@@ -43,18 +43,18 @@ export function CheckoutSummary() {
 
 	return (
 		<details className='group mt-4 overflow-hidden rounded-3xl border border-border/80 bg-card shadow-sm'>
-			<summary className='flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5 [&::-webkit-details-marker]:hidden'>
+			<summary className='flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 [&::-webkit-details-marker]:hidden'>
 				<span className='flex min-w-0 items-center gap-2'>
 					<span className='truncate text-sm font-semibold text-foreground'>
 						Order summary
 					</span>
 					{itemCount > 0 && (
-						<span className='shrink-0 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground'>
+						<span className='shrink-0 rounded-full bg-muted px-2 py-1 text-[11px] font-medium text-muted-foreground'>
 							{itemCount} {itemCount === 1 ? "item" : "items"}
 						</span>
 					)}
 				</span>
-				<span className='flex shrink-0 items-center gap-1.5'>
+				<span className='flex shrink-0 items-center gap-2'>
 					<span className='text-base font-bold text-foreground'>
 						{formatCurrency(total)}
 					</span>

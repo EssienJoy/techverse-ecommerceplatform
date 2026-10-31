@@ -75,12 +75,12 @@ export function ProductCard({
 
 					<div className='absolute left-2 top-2 flex flex-col items-start gap-1'>
 						{hasDiscount ? (
-							<span className='rounded-full bg-danger px-2 py-0.5 text-[10px] font-bold tracking-wide text-white shadow-sm'>
+							<span className='rounded-full bg-danger px-2 py-1 text-[10px] font-bold tracking-wide text-white shadow-sm'>
 								-{discountPercent}%
 							</span>
 						) : null}
 						{isTopRated ? (
-							<span className='inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-brand-700 shadow-sm backdrop-blur'>
+							<span className='inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-brand-700 shadow-sm backdrop-blur'>
 								<Sparkles className='size-3' />
 								Top rated
 							</span>
@@ -108,7 +108,7 @@ export function ProductCard({
 					(activeStock <= 0 || isLowStock(activeStock)) ? (
 						<span
 							className={cn(
-								"absolute bottom-2 left-2 rounded-full px-2 py-0.5 text-[10px] font-semibold shadow-sm backdrop-blur",
+								"absolute bottom-2 left-2 rounded-full px-2 py-1 text-[10px] font-semibold shadow-sm backdrop-blur",
 								activeStock <= 0
 									? "bg-danger-muted/95 text-danger-foreground"
 									: "bg-warning-muted/95 text-warning-foreground",
@@ -118,7 +118,7 @@ export function ProductCard({
 					) : null}
 				</div>
 
-				<div className='flex flex-col px-2.5 pb-1 pt-3'>
+				<div className='flex flex-col px-3 pb-1 pt-3'>
 					<h3
 						className='text-sm font-semibold leading-5 text-foreground
 					 transition-colors group-hover/card:text-brand-700'>
@@ -146,7 +146,7 @@ export function ProductCard({
 									event.stopPropagation();
 									setIsVariationOpen((value) => !value);
 								}}
-								className='flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-medium transition-colors hover:border-brand-300'>
+								className='flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2 text-[11px] font-medium transition-colors hover:border-brand-300'>
 								<span className='truncate'>
 									{selectedVariation
 										? `${selectedVariation.color} · ${selectedVariation.size}`
@@ -182,7 +182,7 @@ export function ProductCard({
 													setIsVariationOpen(false);
 												}}
 												className={cn(
-													"flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-left text-[11px] transition-colors hover:bg-surface-muted",
+													"flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-[11px] transition-colors hover:bg-surface-muted",
 													selected && "bg-brand-50 text-brand-700",
 													isOutOfStock && "text-muted-foreground",
 												)}>
@@ -193,13 +193,13 @@ export function ProductCard({
 													)}>
 													{variation.color} · {variation.size}
 												</span>
-												<span className='flex shrink-0 items-center gap-1.5'>
+												<span className='flex shrink-0 items-center gap-2'>
 													{isOutOfStock ? (
-														<span className='rounded-full bg-danger-muted px-1.5 py-0.5 text-[9px] font-medium text-danger-foreground'>
+														<span className='rounded-full bg-danger-muted px-2 py-1 text-[9px] font-medium text-danger-foreground'>
 															Out
 														</span>
 													) : isLow ? (
-														<span className='rounded-full bg-warning-muted px-1.5 py-0.5 text-[9px] font-medium text-warning-foreground'>
+														<span className='rounded-full bg-warning-muted px-2 py-1 text-[9px] font-medium text-warning-foreground'>
 															Low
 														</span>
 													) : null}
@@ -220,14 +220,14 @@ export function ProductCard({
 							{formatCurrency(activePrice)}
 						</span>
 						{oldPrice ? (
-							<span className='pb-0.5 text-xs text-muted-foreground line-through'>
+							<span className='pb-1 text-xs text-muted-foreground line-through'>
 								{formatCurrency(oldPrice)}
 							</span>
 						) : null}
 					</div>
 
 					{ratingLabel ? (
-						<div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+						<div className='flex items-center gap-2 text-xs text-muted-foreground'>
 							<Star className='size-3.5 fill-amber-400 text-amber-400' />
 							<span className='font-medium text-foreground'>
 								{ratingLabel}
@@ -240,7 +240,7 @@ export function ProductCard({
 				</div>
 			</section>
 
-			<div className='px-2.5 pt-2'>
+			<div className='px-3 pt-2'>
 				{cartItem ? (
 					<div className='flex items-center justify-between gap-2'>
 						<Button

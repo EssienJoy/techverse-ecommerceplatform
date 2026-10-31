@@ -11,7 +11,7 @@ export default async function NewProductPage() {
 	return (
 		<>
 			<AdminHeader title='Add product' />
-			<div className='flex flex-1 flex-col gap-6 p-4 pb-24 md:p-6'>
+			<div className='flex flex-1 flex-col gap-6 p-gutter pb-24'>
 				<PageHeader description='Create a product and its purchasable variations.' />
 
 				<NewProductForm

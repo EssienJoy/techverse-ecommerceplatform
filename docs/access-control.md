@@ -11,7 +11,7 @@ How TechNest decides who can see and do what. There are three kinds of visitor:
 | Route | Guest | Customer | Admin |
 | --- | --- | --- | --- |
 | `/checkout`, `/checkout/success` | Redirect to `/login?next=<path>` | Allowed | Redirect to `/` |
-| `/profile` | Redirect to `/login?next=/profile` | Allowed | Allowed |
+| `/profile`, `/profile/*` | Redirect to `/login?next=<path>` | Allowed | Allowed |
 | `/admin/*` | Redirect to `/admin/login` | Redirect to `/` | Allowed |
 | `/admin/signup` | Redirect to `/admin/login` | Redirect to `/` | Super admin only; other admins go to `/admin` |
 | `/login`, `/signup`, `/admin/login` | Allowed | Redirect to `/` | Redirect to `/admin` |
@@ -40,7 +40,7 @@ After signing in or signing up, a customer is sent back to the page in `next`
 2. **The proxy ([src/proxy.ts](../src/proxy.ts))**: a fast filter for visitors
    with no valid session. It only verifies the signed cookie and never looks at
    the role, because a cookie can outlive its account. Without a valid cookie,
-   `/admin/*` goes to `/admin/login` and `/profile` and `/checkout` go to
+   `/admin/*` goes to `/admin/login` and `/profile/*` and `/checkout/*` go to
    `/login?next=...`.
 3. **The backend guard**
    ([authorization.ts](../src/features/auth/server/middleware/authorization.ts)):

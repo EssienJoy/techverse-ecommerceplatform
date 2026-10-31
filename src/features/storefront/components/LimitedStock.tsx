@@ -20,7 +20,7 @@ export function LimitedStock({ products }: { products: Product[] }) {
 	if (lowStock.length === 0) return null;
 
 	return (
-		<section className='py-1'>
+		<section className='my-6'>
 			<Container>
 				<div className='flex items-center justify-between'>
 					<div className='flex items-center gap-2'>
@@ -72,7 +72,7 @@ export function LimitedStock({ products }: { products: Product[] }) {
 											style={{ width: `${pct}%` }}
 										/>
 									</div>
-									<span className='mt-1.5 flex items-center gap-1 text-[0.625rem] font-semibold text-danger'>
+									<span className='mt-2 flex items-center gap-1 text-[0.625rem] font-semibold text-danger'>
 										<span className='size-1.5 animate-pulse rounded-full bg-danger' />
 										Only {variation.stock} left
 									</span>

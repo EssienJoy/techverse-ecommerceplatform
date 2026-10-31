@@ -61,6 +61,49 @@
   --primitive-shadow-lg: 0 10px 15px rgb(0 0 0 / 0.1);
   --primitive-shadow-brand: 0 8px 24px rgb(70 64 222 / 0.2);
 
+  /* ---------------------------------------------------------------------
+     4pt spacing system
+     ---------------------------------------------------------------------
+     Every spacing decision is a multiple of 4px. Values are named by their
+     pixel size so the scale reads the same in Figma and in code.
+
+       1 = 4px    2 = 8px    3 = 12px   4 = 16px
+       5 = 20px   6 = 24px   8 = 32px   10 = 40px
+       12 = 48px  16 = 64px
+
+     Numeric Tailwind utilities (p-4, gap-2, mt-6) map to this scale. The
+     semantic tokens below give the recurring layout roles one source of
+     truth so pages do not drift.
+
+     Hierarchy, smallest to largest:
+       inline 8  → icon/label pairs, badge groups
+       stack  16 → related blocks inside a card
+       card   16 → standard card padding
+       card-lg 24 → feature cards, page headers
+       gutter 24 → horizontal breathing room at the screen edge
+       section 24 → space between page sections
+       48+ → major breaks (footer clearance, detail page splits)
+  */
+  --space-0: 0px;
+  --space-1: 4px; /* icon ↔ label, badge padding */
+  --space-2: 8px; /* inline controls, compact gaps */
+  --space-3: 12px; /* compact cards, list rows */
+  --space-4: 16px; /* default stack and card padding */
+  --space-5: 20px;
+  --space-6: 24px; /* container gutter, section rhythm */
+  --space-8: 32px; /* major section separation */
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Layout roles */
+  --layout-gutter: var(--space-6); /* 24px between content and screen edge */
+  --layout-section: var(--space-6); /* 24px between page sections */
+  --layout-stack: var(--space-4); /* 16px between related blocks */
+  --layout-card: var(--space-4); /* 16px standard card padding */
+  --layout-card-lg: var(--space-6); /* 24px feature card padding */
+  --layout-inline: var(--space-2); /* 8px inline control gap */
+
   /* Semantic: background and surfaces */
   --background: var(--brand-50);
   --background-subtle: var(--neutral-50);
@@ -219,6 +262,25 @@
   --color-info-muted: var(--info-muted);
   --color-info-foreground: var(--info-foreground);
   --color-info-border: var(--info-border);
+
+  /* 4pt spacing scale and layout roles */
+  --spacing-0: var(--space-0);
+  --spacing-1: var(--space-1);
+  --spacing-2: var(--space-2);
+  --spacing-3: var(--space-3);
+  --spacing-4: var(--space-4);
+  --spacing-5: var(--space-5);
+  --spacing-6: var(--space-6);
+  --spacing-8: var(--space-8);
+  --spacing-10: var(--space-10);
+  --spacing-12: var(--space-12);
+  --spacing-16: var(--space-16);
+  --spacing-gutter: var(--layout-gutter);
+  --spacing-section: var(--layout-section);
+  --spacing-stack: var(--layout-stack);
+  --spacing-card: var(--layout-card);
+  --spacing-card-lg: var(--layout-card-lg);
+  --spacing-inline: var(--layout-inline);
 
   /* Typography and shadows */
   --font-sans: var(--font-sans-stack);

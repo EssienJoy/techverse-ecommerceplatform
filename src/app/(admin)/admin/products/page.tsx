@@ -72,7 +72,7 @@ export default function AdminProductsPage({
 	return (
 		<>
 			<AdminHeader title='Products' />
-			<div className='flex flex-1 flex-col gap-6 p-4 pb-24 md:p-6'>
+			<div className='flex flex-1 flex-col gap-6 p-gutter pb-24'>
 				<PageHeader description='Manage your catalogue, stock and pricing.'>
 					<Button
 						nativeButton={false}

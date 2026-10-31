@@ -44,7 +44,7 @@ export function MobileNav() {
 									<Icon className='size-5' />
 									{(href === "/cart" || count > 0) && (
 										<span
-											className='absolute -right-2 -top-1.5 flex min-w-4
+											className='absolute -right-2 -top-2 flex min-w-4
 										 items-center justify-center rounded-full bg-danger px-1 text-[10px]
 										  font-semibold leading-4 text-white'>
 											{count}

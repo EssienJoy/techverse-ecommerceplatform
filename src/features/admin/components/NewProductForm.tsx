@@ -157,7 +157,7 @@ function ProductForm({
 						</CardHeader>
 						<CardContent className='flex flex-col gap-4'>
 							<div className='grid gap-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]'>
-								<div className='flex flex-col gap-1.5'>
+								<div className='flex flex-col gap-2'>
 									<Label htmlFor='name'>
 										Product name <RequiredMark />
 									</Label>
@@ -172,7 +172,7 @@ function ProductForm({
 									<FieldError message={fieldErrors.name?.[0]} />
 								</div>
 
-								<div className='flex flex-col gap-1.5'>
+								<div className='flex flex-col gap-2'>
 									<Label htmlFor='slug'>
 										Slug <RequiredMark />
 									</Label>
@@ -191,7 +191,7 @@ function ProductForm({
 								</div>
 							</div>
 
-							<div className='flex flex-col gap-1.5'>
+							<div className='flex flex-col gap-2'>
 								<Label htmlFor='description'>
 									Description <RequiredMark />
 								</Label>
@@ -218,7 +218,7 @@ function ProductForm({
 						</CardHeader>
 						<CardContent className='flex flex-col gap-4'>
 							<div className='grid gap-3 sm:grid-cols-2'>
-								<div className='flex flex-col gap-1.5'>
+								<div className='flex flex-col gap-2'>
 									<Label>
 										Category <RequiredMark />
 									</Label>
@@ -249,7 +249,7 @@ function ProductForm({
 									<FieldError message={fieldErrors.categoryId?.[0]} />
 								</div>
 
-								<div className='flex flex-col gap-1.5'>
+								<div className='flex flex-col gap-2'>
 									<Label>
 										Brand <RequiredMark />
 									</Label>
@@ -324,7 +324,7 @@ function ProductForm({
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='flex flex-col gap-3'>
-							<div className='flex flex-col gap-1.5'>
+							<div className='flex flex-col gap-2'>
 								<Label>Cover image</Label>
 								<ImageUpload
 									compact
@@ -336,7 +336,7 @@ function ProductForm({
 								<FieldError message={fieldErrors.imageUrl?.[0]} />
 							</div>
 
-							<div className='flex flex-col gap-0.5'>
+							<div className='flex flex-col gap-1'>
 								<span className='text-sm font-semibold'>
 									{name.trim() || "Untitled product"}
 								</span>
@@ -345,7 +345,7 @@ function ProductForm({
 								</span>
 							</div>
 
-							<div className='flex flex-wrap gap-1.5'>
+							<div className='flex flex-wrap gap-2'>
 								<Badge variant='secondary'>
 									{categoryLabel ?? "No category"}
 								</Badge>
@@ -355,22 +355,22 @@ function ProductForm({
 								</Badge>
 							</div>
 
-							<dl className='grid grid-cols-2 gap-2 rounded-lg bg-muted/50 p-2.5'>
-								<div className='flex flex-col gap-0.5'>
+							<dl className='grid grid-cols-2 gap-2 rounded-lg bg-muted/50 p-3'>
+								<div className='flex flex-col gap-1'>
 									<dt className='text-[11px] text-muted-foreground'>Price</dt>
 									<dd className='text-sm font-semibold'>{priceLabel}</dd>
 								</div>
-								<div className='flex flex-col gap-0.5'>
+								<div className='flex flex-col gap-1'>
 									<dt className='text-[11px] text-muted-foreground'>Stock</dt>
 									<dd className='text-sm font-semibold'>{totalStock}</dd>
 								</div>
-								<div className='flex flex-col gap-0.5'>
+								<div className='flex flex-col gap-1'>
 									<dt className='text-[11px] text-muted-foreground'>
 										Variations
 									</dt>
 									<dd className='text-sm font-semibold'>{variations.length}</dd>
 								</div>
-								<div className='flex flex-col gap-0.5'>
+								<div className='flex flex-col gap-1'>
 									<dt className='text-[11px] text-muted-foreground'>
 										Features
 									</dt>
@@ -379,14 +379,14 @@ function ProductForm({
 							</dl>
 
 							{colors.length > 0 ? (
-								<div className='flex flex-wrap items-center gap-1.5'>
+								<div className='flex flex-wrap items-center gap-2'>
 									<span className='text-[11px] text-muted-foreground'>
 										Colors
 									</span>
 									{colors.map((color) => (
 										<span
 											key={color}
-											className='rounded-full border border-border px-2 py-0.5 text-[11px] font-medium'>
+											className='rounded-full border border-border px-2 py-1 text-[11px] font-medium'>
 											{color}
 										</span>
 									))}

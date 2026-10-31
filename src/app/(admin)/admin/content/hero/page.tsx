@@ -9,7 +9,7 @@ export default async function HeroContentPage() {
 	return (
 		<>
 			<AdminHeader title='Content' />
-			<div className='flex flex-1 flex-col gap-6 p-4 pb-24 md:p-6'>
+			<div className='flex flex-1 flex-col gap-6 p-gutter pb-24'>
 				<ContentNav />
 				<PageHeader
 					title='Hero slides'

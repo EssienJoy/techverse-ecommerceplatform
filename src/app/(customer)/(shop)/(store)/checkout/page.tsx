@@ -68,7 +68,7 @@ export default async function CheckoutPage() {
 	return (
 		<>
 			<Header text='Checkout' />
-			<section className='my-4'>
+			<section className='my-6'>
 				<Container>
 					<CheckoutProgress />
 					<CheckoutSummary />

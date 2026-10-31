@@ -2,16 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
 import "@/styles/globals.css";
 import { AlertMessage, ThemeProvider } from "@/shared";
-import { THEME_STORAGE_KEY } from "@/shared/lib/theme";
 import { Suspense } from "react";
 
 const dmSans = DM_Sans({
 	variable: "--font-dm-sans",
 	subsets: ["latin"],
 });
-
-const themeScript = `(function(){try{var t=localStorage.getItem("${THEME_STORAGE_KEY}");var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);}catch(e){}})();`;
-
 
 export const viewport: Viewport = {
 	viewportFit: "cover",
@@ -28,10 +24,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
 	return (
-		<html lang='en' className={dmSans.variable} suppressHydrationWarning>
-			<head>
-				<script dangerouslySetInnerHTML={{ __html: themeScript }} />
-			</head>
+		<html lang='en' className={dmSans.variable}>
 			<body>
 				<ThemeProvider>
 					<AlertMessage />

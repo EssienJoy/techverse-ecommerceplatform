@@ -16,7 +16,7 @@ export default function AdminSettingsPage() {
 	return (
 		<>
 			<AdminHeader title='Settings' />
-			<div className='flex flex-1 flex-col gap-6 p-4 pb-24 md:p-6'>
+			<div className='flex flex-1 flex-col gap-6 p-gutter pb-24'>
 				<PageHeader description='Manage your store details and branding.' />
 
 				<div className='grid gap-4 lg:grid-cols-2'>

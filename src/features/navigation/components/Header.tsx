@@ -15,7 +15,6 @@ type HeaderProps = {
 	showSaved?: boolean;
 	number?: string;
 	showBack?: boolean;
-	backHref?: string;
 	showMenu?: boolean;
 	onMenuClick?: () => void;
 };
@@ -27,7 +26,6 @@ export function Header({
 	showSaved = false,
 	number,
 	showBack = true,
-	backHref,
 	showMenu = false,
 	onMenuClick,
 }: HeaderProps) {
@@ -67,16 +65,9 @@ export function Header({
 							aria-label='Saved'
 							className='relative flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted'>
 							<Heart className='size-4' />
-							<span className='absolute -right-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold leading-4 text-white'>
+							<span className='absolute -right-1 -top-1 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold leading-4 text-white'>
 								{savedCount}
 							</span>
-						</Link>
-					) : showBack && backHref ? (
-						<Link
-							href={backHref}
-							aria-label='Go back'
-							className='flex size-9 items-center justify-center rounded-full border border-border/80 bg-background text-foreground shadow-sm transition-transform active:scale-95'>
-							<ChevronLeft className='size-5' />
 						</Link>
 					) : showBack ? (
 						<Button
@@ -109,7 +100,7 @@ export function Header({
 							aria-label='Cart'
 							className='relative flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted'>
 							<ShoppingCart className='size-4' />
-							<span className='absolute -right-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold leading-4 text-white'>
+							<span className='absolute -right-1 -top-1 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold leading-4 text-white'>
 								{cartCount}
 							</span>
 						</button>

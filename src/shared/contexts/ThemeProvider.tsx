@@ -6,10 +6,10 @@ import {
 	useContext,
 	useEffect,
 	useMemo,
-	useState,
+	useSyncExternalStore,
 	type ReactNode,
 } from "react";
-import { THEME_STORAGE_KEY, type Theme } from "@/shared/lib/theme";
+import { themeSchema, type Theme } from "@/shared/lib/theme";
 
 type ThemeContextValue = {
 	theme: Theme;
@@ -19,41 +19,66 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-const isTheme = (value: string | null): value is Theme =>
-	value === "light" || value === "dark" || value === "system";
+const THEME_STORAGE_KEY = "technest-theme";
+const listeners = new Set<() => void>();
 
-const readStoredTheme = (): Theme | null => {
+function readStoredTheme(): Theme {
+	if (typeof window === "undefined") return "light";
+
 	try {
-		const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-		return isTheme(stored) ? stored : null;
+		const parsed = themeSchema.safeParse(
+			window.localStorage.getItem(THEME_STORAGE_KEY),
+		);
+
+		return parsed.success ? parsed.data : "light";
 	} catch {
-		return null;
+		// Storage can be unavailable (private mode, blocked cookies); fall back
+		// to the default theme rather than breaking the page.
+		return "light";
 	}
-};
+}
+
+function subscribe(listener: () => void) {
+	listeners.add(listener);
+
+	const onStorage = (event: StorageEvent) => {
+		if (event.key === THEME_STORAGE_KEY) listener();
+	};
+
+	window.addEventListener("storage", onStorage);
+
+	return () => {
+		listeners.delete(listener);
+		window.removeEventListener("storage", onStorage);
+	};
+}
+
+function writeTheme(theme: Theme) {
+	try {
+		window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+	} catch {
+		// The theme still applies for this session.
+	}
+
+	listeners.forEach((listener) => listener());
+}
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-	const [theme, setThemeState] = useState<Theme>("light");
+	// The stored theme lives in localStorage, so it is read through an external
+	// store. The server snapshot is "light" and React swaps in the stored value
+	// after hydration without a setState-in-effect.
+	const theme = useSyncExternalStore<Theme>(
+		subscribe,
+		readStoredTheme,
+		() => "light",
+	);
 
-	const setTheme = useCallback((next: Theme) => {
-		setThemeState(next);
+	const setTheme = useCallback((next: Theme) => writeTheme(next), []);
 
-		try {
-			window.localStorage.setItem(THEME_STORAGE_KEY, next);
-		} catch {
-			// Storage can be unavailable in private browsing; the theme still applies.
-		}
-	}, []);
-
-	const toggleTheme = useCallback(() => {
-		setTheme(theme === "dark" ? "light" : "dark");
-	}, [setTheme, theme]);
-
-	// The inline script in the root layout applies the stored theme before the
-	// first paint. This keeps React's copy of the value in step with it.
-	useEffect(() => {
-		const stored = readStoredTheme();
-		if (stored) setThemeState(stored);
-	}, []);
+	const toggleTheme = useCallback(
+		() => writeTheme(readStoredTheme() === "dark" ? "light" : "dark"),
+		[],
+	);
 
 	useEffect(() => {
 		const root = document.documentElement;

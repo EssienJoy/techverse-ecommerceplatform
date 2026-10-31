@@ -9,16 +9,16 @@ export function Deals({ sale }: { sale: FlashSaleDeal | null }) {
 	}
 
 	return (
-		<section className='py-1'>
+		<section className='my-6'>
 			<Container>
-				<div className='relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 p-4 text-white shadow-brand'>
+				<div className='relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 p-6 text-white shadow-brand'>
 					<div className='pointer-events-none absolute -top-16 -right-12 size-40 rounded-full bg-brand-400/40 blur-3xl' />
 					<div className='pointer-events-none absolute -bottom-20 -left-12 size-40 rounded-full bg-brand-500/30 blur-3xl' />
 
 					<section
 						className='relative flex items-center 
 						mb-6 justify-between gap-3'>
-						<div className='flex items-center gap-2.5'>
+						<div className='flex items-center gap-3'>
 							<span className='flex size-10 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/20 backdrop-blur'>
 								<Zap className='size-5 fill-white' />
 							</span>
@@ -44,14 +44,14 @@ export function Deals({ sale }: { sale: FlashSaleDeal | null }) {
 									className='group flex flex-col overflow-hidden rounded-2xl bg-white p-2 text-foreground transition-transform hover:-translate-y-0.5'>
 									<div className='relative flex h-24 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-200 text-brand-500'>
 										<ShoppingBag className='size-7' />
-										<span className='absolute top-1.5 left-1.5 rounded-full bg-danger px-2 py-0.5 text-[0.625rem] font-bold text-white shadow-sm'>
+										<span className='absolute top-2 left-2 rounded-full bg-danger px-2 py-1 text-[0.625rem] font-bold text-white shadow-sm'>
 											-{discount}%
 										</span>
 									</div>
 									<h3 className='mt-2 line-clamp-2 text-[0.6875rem] font-medium'>
 										{product.name}
 									</h3>
-									<div className='mt-1 flex items-baseline gap-1.5'>
+									<div className='mt-1 flex items-baseline gap-2'>
 										<span className='text-sm font-bold text-primary'>
 											{formatCurrency(product.price)}
 										</span>

@@ -2,201 +2,245 @@
 
 import { useState } from "react";
 import {
-	CheckCircle2,
 	MapPin,
-	Pencil,
 	Plus,
+	Star,
 	Trash2,
+	X,
 } from "lucide-react";
-import { alert, Button, Container, Skeleton, useMounted } from "@/shared";
+import { cn } from "cn";
+import { Button } from "@/shared";
 import { useAddressStore } from "../stores/useAddressStore";
-import type { AddressInput } from "../schema";
-import { AddressForm } from "./AddressForm";
+import type { AddressEntry } from "../schema";
+
+type AddressDraft = Omit<AddressEntry, "id" | "isDefault">;
+
+const emptyDraft: AddressDraft = {
+	label: "Home",
+	fullName: "",
+	phone: "",
+	address: "",
+	city: "",
+	postalCode: "",
+};
+
+const fields: {
+	name: keyof AddressDraft;
+	label: string;
+	placeholder: string;
+	autoComplete: string;
+}[] = [
+	{
+		name: "label",
+		label: "Label",
+		placeholder: "Home or Office",
+		autoComplete: "off",
+	},
+	{
+		name: "fullName",
+		label: "Full name",
+		placeholder: "Ada Obi",
+		autoComplete: "name",
+	},
+	{
+		name: "phone",
+		label: "Phone",
+		placeholder: "+234 800 000 0000",
+		autoComplete: "tel",
+	},
+	{
+		name: "address",
+		label: "Street address",
+		placeholder: "12 Admiralty Way",
+		autoComplete: "street-address",
+	},
+	{
+		name: "city",
+		label: "City",
+		placeholder: "Lekki, Lagos",
+		autoComplete: "address-level2",
+	},
+	{
+		name: "postalCode",
+		label: "Postal code",
+		placeholder: "106104",
+		autoComplete: "postal-code",
+	},
+];
+
+const inputClass =
+	"h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/40";
 
 export function AddressBook() {
 	const addresses = useAddressStore((state) => state.addresses);
 	const addAddress = useAddressStore((state) => state.addAddress);
-	const updateAddress = useAddressStore((state) => state.updateAddress);
 	const removeAddress = useAddressStore((state) => state.removeAddress);
 	const setDefaultAddress = useAddressStore(
 		(state) => state.setDefaultAddress,
 	);
-	const mounted = useMounted();
-	const [adding, setAdding] = useState(false);
-	const [editingId, setEditingId] = useState<string | null>(null);
 
-	if (!mounted) {
-		return (
-			<Container className='space-y-2 pb-6'>
-				<Skeleton className='h-28 w-full rounded-3xl' />
-				<Skeleton className='h-28 w-full rounded-3xl' />
-			</Container>
+	const [isAdding, setIsAdding] = useState(false);
+	const [draft, setDraft] = useState<AddressDraft>(emptyDraft);
+	const [error, setError] = useState<string | null>(null);
+
+	const closeForm = () => {
+		setIsAdding(false);
+		setDraft(emptyDraft);
+		setError(null);
+	};
+
+	const submit = () => {
+		const missing = fields.find(
+			(field) => !draft[field.name].trim(),
 		);
-	}
 
-	const handleAdd = (input: AddressInput) => {
-		addAddress(input);
-		setAdding(false);
-		alert.success("Address saved.");
-	};
+		if (missing) {
+			setError(`Enter your ${missing.label.toLowerCase()}.`);
+			return;
+		}
 
-	const handleUpdate = (id: string, input: AddressInput) => {
-		updateAddress(id, input);
-		setEditingId(null);
-		alert.success("Address updated.");
-	};
-
-	const handleDelete = (id: string) => {
-		if (!window.confirm("Delete this address?")) return;
-		removeAddress(id);
-		alert.info("Address removed.");
+		addAddress(
+			Object.fromEntries(
+				fields.map((field) => [field.name, draft[field.name].trim()]),
+			) as AddressDraft,
+		);
+		closeForm();
 	};
 
 	return (
-		<Container className='space-y-3 pb-6'>
-			<div className='flex items-center justify-between gap-2'>
-				<div>
-					<h2 className='text-sm font-semibold text-foreground'>
-						Delivery addresses
-					</h2>
-					<p className='mt-0.5 text-xs text-muted-foreground'>
-						{addresses.length === 0
-							? "Add an address for faster checkout."
-							: `${addresses.length} saved ${addresses.length === 1 ? "address" : "addresses"}.`}
-					</p>
-				</div>
-				{!adding ? (
-					<Button
-						type='button'
-						size='sm'
-						variant='outline'
-						className='rounded-full'
-						onClick={() => {
-							setAdding(true);
-							setEditingId(null);
-						}}>
-						<Plus className='size-3.5' />
-						Add
-					</Button>
-				) : null}
-			</div>
-
-			{adding ? (
-				<AddressForm
-					onSave={handleAdd}
-					onCancel={() => setAdding(false)}
-				/>
-			) : null}
-
-			{addresses.length === 0 && !adding ? (
+		<div className='space-y-3'>
+			{addresses.length === 0 && !isAdding ? (
 				<div className='flex flex-col items-center rounded-3xl border border-dashed border-border bg-card/50 px-6 py-10 text-center'>
-					<span className='flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary'>
-						<MapPin className='size-6' />
+					<span className='flex size-14 items-center justify-center rounded-full bg-primary-subtle text-primary'>
+						<MapPin className='size-6' aria-hidden />
 					</span>
-					<h3 className='mt-4 text-sm font-semibold text-foreground'>
-						No addresses yet
-					</h3>
-					<p className='mt-1 max-w-xs text-xs text-muted-foreground'>
-						Save a delivery address here and it will be ready when you check
-						out.
+					<p className='mt-4 text-sm font-semibold text-foreground'>
+						No saved addresses
 					</p>
-					<Button
-						type='button'
-						className='mt-4 rounded-full'
-						onClick={() => setAdding(true)}>
-						<Plus className='size-4' />
-						Add your first address
-					</Button>
+					<p className='mt-1 max-w-[16rem] text-xs leading-relaxed text-muted-foreground'>
+						Add a delivery address so checkout is quicker next time.
+					</p>
 				</div>
 			) : null}
 
 			<ul className='space-y-2'>
-				{addresses.map((address) =>
-					editingId === address.id ? (
-						<li key={address.id}>
-							<AddressForm
-								initial={address}
-								onSave={(input) => handleUpdate(address.id, input)}
-								onCancel={() => setEditingId(null)}
-							/>
-						</li>
-					) : (
-						<li
-							key={address.id}
-							className='rounded-3xl border border-border bg-card p-4 shadow-sm'>
-							<div className='flex items-start justify-between gap-2'>
-								<div className='flex min-w-0 items-start gap-3'>
-									<span className='flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary'>
-										<MapPin className='size-4' />
-									</span>
-									<div className='min-w-0'>
-										<div className='flex flex-wrap items-center gap-1.5'>
-											<h3 className='text-sm font-semibold text-foreground'>
-												{address.label}
-											</h3>
-											{address.isDefault ? (
-												<span className='inline-flex items-center gap-1 rounded-full bg-success-muted px-2 py-0.5 text-[10px] font-medium text-success-foreground'>
-													<CheckCircle2 className='size-3' />
-													Default
-												</span>
-											) : null}
-										</div>
-										<p className='mt-1 text-xs font-medium text-foreground'>
-											{address.fullName}
-										</p>
-										<p className='mt-0.5 text-xs text-muted-foreground'>
-											{address.address}
-											{address.city ? `, ${address.city}` : ""}
-											{address.postalCode ? ` ${address.postalCode}` : ""}
-										</p>
-										<p className='mt-1 text-xs text-muted-foreground'>
-											{address.phone}
-										</p>
-									</div>
+				{addresses.map((address) => (
+					<li
+						key={address.id}
+						className={cn(
+							"rounded-3xl border bg-card p-4 shadow-sm",
+							address.isDefault
+								? "border-primary/40"
+								: "border-border/80",
+						)}>
+						<div className='flex items-start justify-between gap-3'>
+							<div className='min-w-0'>
+								<div className='flex flex-wrap items-center gap-2'>
+									<p className='text-sm font-semibold text-foreground'>
+										{address.fullName}
+									</p>
+									{address.isDefault ? (
+										<span className='rounded-full bg-primary-subtle px-2 py-1 text-[10px] font-semibold tracking-wide text-foreground-primary uppercase'>
+											Default
+										</span>
+									) : null}
 								</div>
+								<p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
+									{address.address}, {address.city} {address.postalCode}
+								</p>
+								<p className='text-xs text-muted-foreground'>{address.phone}</p>
 							</div>
 
-							<div className='mt-3 flex flex-wrap items-center gap-2 border-t border-border/70 pt-3'>
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									className='rounded-full'
-									onClick={() => {
-										setEditingId(address.id);
-										setAdding(false);
-									}}>
-									<Pencil className='size-3.5' />
-									Edit
-								</Button>
-								{!address.isDefault ? (
-									<Button
-										type='button'
-										variant='outline'
-										size='sm'
-										className='rounded-full'
-										onClick={() => {
-											setDefaultAddress(address.id);
-											alert.success("Default address updated.");
-										}}>
-										<CheckCircle2 className='size-3.5' />
-										Set default
-									</Button>
-								) : null}
-								<Button
-									type='button'
-									variant='ghost'
-									size='sm'
-									className='ml-auto rounded-full text-danger hover:bg-danger-muted'
-									onClick={() => handleDelete(address.id)}>
-									<Trash2 className='size-3.5' />
-									Remove
-								</Button>
-							</div>
-						</li>
-					),
-				)}
+							<button
+								type='button'
+								aria-label={`Delete address for ${address.fullName}`}
+								onClick={() => removeAddress(address.id)}
+								className='flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-danger-muted hover:text-danger'>
+								<Trash2 className='size-4' />
+							</button>
+						</div>
+
+						{!address.isDefault ? (
+							<button
+								type='button'
+								onClick={() => setDefaultAddress(address.id)}
+								className='mt-3 inline-flex items-center gap-2 text-xs font-medium text-primary'>
+								<Star className='size-3.5' />
+								Make default
+							</button>
+						) : null}
+					</li>
+				))}
 			</ul>
-		</Container>
+
+			{isAdding ? (
+				<section className='rounded-3xl border border-border/80 bg-card p-4 shadow-sm'>
+					<div className='flex items-center justify-between'>
+						<h2 className='text-sm font-semibold text-foreground'>
+							New address
+						</h2>
+						<button
+							type='button'
+							aria-label='Cancel'
+							onClick={closeForm}
+							className='flex size-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted'>
+							<X className='size-4' />
+						</button>
+					</div>
+
+					<form
+						className='mt-3 space-y-3'
+						onSubmit={(event) => {
+							event.preventDefault();
+							submit();
+						}}>
+						{fields.map((field) => (
+							<div key={field.name} className='space-y-1'>
+								<label
+									htmlFor={`address-${field.name}`}
+									className='text-xs font-medium text-foreground'>
+									{field.label}
+								</label>
+								<input
+									id={`address-${field.name}`}
+									name={field.name}
+									value={draft[field.name]}
+									placeholder={field.placeholder}
+									autoComplete={field.autoComplete}
+									onChange={(event) =>
+										setDraft((current) => ({
+											...current,
+											[field.name]: event.target.value,
+										}))
+									}
+									className={inputClass}
+								/>
+							</div>
+						))}
+
+						{error ? (
+							<p
+								role='alert'
+								className='rounded-xl border border-error-border bg-error-muted px-3 py-2 text-xs text-error-foreground'>
+								{error}
+							</p>
+						) : null}
+
+						<Button type='submit' className='h-11 w-full rounded-full'>
+							Save address
+						</Button>
+					</form>
+				</section>
+			) : (
+				<Button
+					type='button'
+					variant='outline'
+					className='h-11 w-full rounded-full'
+					onClick={() => setIsAdding(true)}>
+					<Plus className='size-4' />
+					Add a new address
+				</Button>
+			)}
+		</div>
 	);
 }

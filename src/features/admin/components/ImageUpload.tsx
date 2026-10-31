@@ -118,7 +118,7 @@ export function ImageUpload({
 				</button>
 			)}
 			{pendingUrl ? (
-				<div className='flex flex-col gap-1.5'>
+				<div className='flex flex-col gap-2'>
 					<p className='text-xs text-muted-foreground'>
 						Uploads when you save.
 					</p>

@@ -22,7 +22,7 @@ export default async function EditProductPage({
 	return (
 		<>
 			<AdminHeader title='Edit product' />
-			<div className='flex flex-1 flex-col gap-6 p-4 pb-24 md:p-6'>
+			<div className='flex flex-1 flex-col gap-6 p-gutter pb-24'>
 				<PageHeader description={`Update "${product.name}".`} />
 
 				<EditProductForm

@@ -18,7 +18,7 @@ export function CategoriesSkeleton() {
 					{Array.from({ length: 8 }).map((_, index) => (
 						<li
 							key={index}
-							className='flex w-16 shrink-0 flex-col items-center gap-1.5'>
+							className='flex w-16 shrink-0 flex-col items-center gap-2'>
 							<Skeleton className='size-11 rounded-full' />
 							<Skeleton className='h-3 w-10' />
 						</li>
@@ -31,13 +31,13 @@ export function CategoriesSkeleton() {
 
 export function DealsSkeleton() {
 	return (
-		<section className='py-1'>
+		<section className='my-6'>
 			<Container>
-				<div className='rounded-3xl bg-surface-muted p-4'>
+				<div className='rounded-3xl bg-surface-muted p-6'>
 					<div className='mb-6 flex items-center justify-between gap-3'>
-						<div className='flex items-center gap-2.5'>
+						<div className='flex items-center gap-3'>
 							<Skeleton className='size-10 rounded-2xl' />
-							<div className='flex flex-col gap-1.5'>
+							<div className='flex flex-col gap-2'>
 								<Skeleton className='h-4 w-24' />
 								<Skeleton className='h-2.5 w-32' />
 							</div>
@@ -73,7 +73,7 @@ export function BrandsSkeleton() {
 							</li>
 						))}
 					</ul>
-					<div className='flex shrink-0 gap-0.5'>
+					<div className='flex shrink-0 gap-1'>
 						<Skeleton className='size-7 rounded-lg' />
 						<Skeleton className='size-7 rounded-lg' />
 					</div>
@@ -85,7 +85,7 @@ export function BrandsSkeleton() {
 
 export function LimitedStockSkeleton() {
 	return (
-		<section className='py-1'>
+		<section className='my-6'>
 			<Container>
 				<div className='flex items-center justify-between'>
 					<Skeleton className='h-6 w-32' />
@@ -99,7 +99,7 @@ export function LimitedStockSkeleton() {
 								<Skeleton className='mt-2 h-3 w-full' />
 								<Skeleton className='mt-1 h-4 w-16' />
 								<Skeleton className='mt-2 h-1.5 w-full rounded-full' />
-								<Skeleton className='mt-1.5 h-2.5 w-16' />
+								<Skeleton className='mt-2 h-2.5 w-16' />
 							</div>
 						</li>
 					))}
@@ -122,8 +122,8 @@ export function RecentlyViewedSkeleton() {
 						<li key={index} className='w-28 shrink-0'>
 							<div className='flex flex-col'>
 								<Skeleton className='h-24 w-full rounded-2xl' />
-								<Skeleton className='mt-1.5 h-3 w-full' />
-								<Skeleton className='mt-0.5 h-3 w-14' />
+								<Skeleton className='mt-2 h-3 w-full' />
+								<Skeleton className='mt-1 h-3 w-14' />
 							</div>
 						</li>
 					))}
@@ -149,7 +149,7 @@ export function ProductSectionsSkeleton() {
 									key={index}
 									className='w-[50%] shrink-0 space-y-2 rounded-xl border border-border/70 bg-card pb-2 shadow-sm'>
 									<Skeleton className='h-34 w-full rounded-t-xl' />
-									<div className='space-y-2 px-2.5 pt-1'>
+									<div className='space-y-2 px-3 pt-1'>
 										<Skeleton className='h-4 w-full' />
 										<Skeleton className='h-4 w-2/3' />
 										<Skeleton className='h-5 w-20' />

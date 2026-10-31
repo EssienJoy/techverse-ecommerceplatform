@@ -46,7 +46,7 @@ export function AlertMessage() {
 							"pointer-events-auto flex items-start gap-3 rounded-xl border p-3 shadow-lg shadow-black/5 animate-in fade-in slide-in-from-top-2 duration-200",
 							container,
 						)}>
-						<Icon className={cn("mt-0.5 size-4 shrink-0", icon)} />
+						<Icon className={cn("mt-1 size-4 shrink-0", icon)} />
 
 						<p className='flex-1 text-sm leading-5 font-medium'>
 							{entry.message}

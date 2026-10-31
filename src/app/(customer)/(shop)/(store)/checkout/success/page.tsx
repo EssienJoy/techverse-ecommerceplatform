@@ -47,7 +47,7 @@ export default async function CheckoutSuccessPage({
 		return (
 			<>
 				<Header text='Payment' />
-				<section className='my-4'>
+				<section className='my-6'>
 					<Container>
 						<div className='mt-10 flex flex-col items-center text-center'>
 							<span className='flex size-16 items-center justify-center rounded-full bg-amber-50 text-amber-600'>
@@ -135,7 +135,7 @@ export default async function CheckoutSuccessPage({
 	return (
 		<>
 			<Header text='Order placed' />
-			<section className='my-4'>
+			<section className='my-6'>
 				<Container>
 					<OrderConfirmation order={order} />
 				</Container>

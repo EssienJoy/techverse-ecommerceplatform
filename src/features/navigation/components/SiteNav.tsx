@@ -10,7 +10,7 @@ export function SiteNav() {
 	if (!navRoutes.includes(pathname)) return null;
 
 	return (
-		<footer className='mt-25'>
+		<footer className='mt-24'>
 			<MobileNav />
 		</footer>
 	);

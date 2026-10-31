@@ -21,11 +21,11 @@ export async function AdminHeader({ title }: AdminHeaderProps) {
 		user?.role === "super_admin" ? "Super admin" : "Administrator";
 
 	return (
-		<header className='sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-border bg-card px-4 md:px-6'>
+		<header className='sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-border bg-card px-gutter'>
 			<h1 className='min-w-0 truncate text-base font-semibold'>{title}</h1>
 
 			<div className='flex items-center gap-2 md:gap-3'>
-				<div className='hidden items-center gap-2 rounded-xl border border-border px-3 py-1.5 md:flex'>
+				<div className='hidden items-center gap-2 rounded-xl border border-border px-3 py-2 md:flex'>
 					<CalendarDays className='size-3.5 text-muted-foreground' />
 					<span className='text-xs font-medium'>{weekRange}</span>
 				</div>
@@ -41,7 +41,7 @@ export async function AdminHeader({ title }: AdminHeaderProps) {
 				<div className='hidden h-6 w-px bg-border sm:block' />
 
 				{user ? (
-					<div className='flex items-center gap-2.5'>
+					<div className='flex items-center gap-3'>
 						<span className='flex size-9 items-center justify-center rounded-xl bg-primary text-xs font-bold text-foreground-inverse'>
 							{getInitials(user.name ?? user.email)}
 						</span>
@@ -51,7 +51,7 @@ export async function AdminHeader({ title }: AdminHeaderProps) {
 						</span>
 					</div>
 				) : (
-					<div className='flex items-center gap-2.5'>
+					<div className='flex items-center gap-3'>
 						<span className='flex size-9 items-center justify-center rounded-xl bg-muted text-muted-foreground'>
 							<UserRound className='size-4' />
 						</span>

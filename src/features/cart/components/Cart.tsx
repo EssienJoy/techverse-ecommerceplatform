@@ -28,9 +28,10 @@ export function Cart() {
 		(sum, item) => sum + item.price * item.quantity,
 		0,
 	);
+	const itemCount = cart.reduce((sum, line) => sum + line.qty, 0);
 
 	return (
-		<Container>
+		<Container className='pb-2'>
 			{cart.length === 0 ? (
 				<div className=''>
 					<EmptyState
@@ -42,8 +43,17 @@ export function Cart() {
 					/>
 				</div>
 			) : (
-				<div className=' grid gap-2'>
-					<section className='space-y-2'>
+				<div className='grid gap-6'>
+					<section className='space-y-3'>
+						<div className='flex items-center justify-between px-1'>
+							<h2 className='text-sm font-semibold text-foreground'>
+								Your items
+							</h2>
+							<span className='text-xs text-muted-foreground'>
+								{itemCount} {itemCount === 1 ? "item" : "items"}
+							</span>
+						</div>
+
 						{items.map((item) => (
 							<CartItemRow
 								key={item.variationId ?? item.productId}

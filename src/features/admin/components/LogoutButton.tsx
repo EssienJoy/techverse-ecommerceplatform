@@ -16,7 +16,7 @@ export function LogoutButton({ className, collapsed }: LogoutButtonProps) {
 				type='submit'
 				title={collapsed ? "Log out" : undefined}
 				className={cn(
-					"flex w-full items-center rounded-xl px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-danger-muted hover:text-danger",
+					"flex w-full items-center rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-danger-muted hover:text-danger",
 					collapsed ? "justify-center lg:justify-start lg:gap-3" : "gap-3",
 					className,
 				)}>

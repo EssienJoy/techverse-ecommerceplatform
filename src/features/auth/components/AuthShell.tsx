@@ -56,7 +56,7 @@ function BrandMark({ variant, inverse }: { variant: AuthVariant; inverse?: boole
 	return (
 		<Link
 			href={variant === "admin" ? "/admin" : "/"}
-			className='inline-flex items-center gap-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'>
+			className='inline-flex items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'>
 			<span
 				className={cn(
 					"flex size-10 items-center justify-center rounded-xl text-sm font-bold",
@@ -135,7 +135,7 @@ export function AuthShell({
 				</aside>
 			) : null}
 
-			<div className='flex flex-col bg-surface-muted px-4 py-8 sm:px-6 lg:bg-background'>
+			<div className='flex flex-col bg-surface-muted px-gutter py-8 lg:bg-background'>
 				<div className={showPanel ? "lg:hidden" : undefined}>
 					<BrandMark variant={variant} />
 				</div>
@@ -143,7 +143,7 @@ export function AuthShell({
 				<div className='mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-8'>
 					<div className='rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none'>
 						{variant === "admin" ? (
-							<span className='mb-4 inline-flex items-center gap-1.5 rounded-full bg-primary-subtle px-2.5 py-1 text-xs font-medium text-foreground-primary'>
+							<span className='mb-4 inline-flex items-center gap-2 rounded-full bg-primary-subtle px-3 py-1 text-xs font-medium text-foreground-primary'>
 								<ShieldCheck className='size-3.5' aria-hidden />
 								Restricted access
 							</span>
@@ -151,7 +151,7 @@ export function AuthShell({
 						<h1 className='text-2xl font-bold tracking-tight text-foreground'>
 							{title}
 						</h1>
-						<p className='mt-1.5 text-sm text-muted-foreground'>{description}</p>
+						<p className='mt-2 text-sm text-muted-foreground'>{description}</p>
 
 						<div className='mt-6'>{children}</div>
 

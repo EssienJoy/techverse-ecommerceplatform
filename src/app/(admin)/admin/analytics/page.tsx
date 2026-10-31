@@ -6,7 +6,7 @@ export default function AdminAnalyticsPage() {
 	return (
 		<>
 			<AdminHeader title='Analytics' />
-			<div className='flex flex-1 flex-col gap-6 p-4 pb-24 md:p-6'>
+			<div className='flex flex-1 flex-col gap-6 p-gutter pb-24'>
 				<PageHeader description='Track revenue, profit, orders and product performance.' />
 
 				<Card>

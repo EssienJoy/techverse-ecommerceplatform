@@ -57,7 +57,7 @@ export default async function AdminContentPage() {
 	return (
 		<>
 			<AdminHeader title='Content' />
-			<div className='flex flex-1 flex-col gap-6 p-4 pb-24 md:p-6'>
+			<div className='flex flex-1 flex-col gap-6 p-gutter pb-24'>
 				<PageHeader description='Manage everything shoppers see on the storefront.' />
 
 				<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>

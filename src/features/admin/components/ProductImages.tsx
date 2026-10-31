@@ -68,7 +68,7 @@ function SlidePreview({
 			{/* eslint-disable-next-line @next/next/no-img-element */}
 			<img src={image} alt='Product slide' className='h-24 w-full object-contain' />
 			{isMain ? (
-				<span className='absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-foreground-inverse'>
+				<span className='absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-[10px] font-semibold text-foreground-inverse'>
 					<Star className='size-2.5 fill-current' />
 					Main
 				</span>
@@ -77,7 +77,7 @@ function SlidePreview({
 				type='button'
 				aria-label='Remove slide'
 				onClick={onRemove}
-				className='absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:bg-background'>
+				className='absolute top-2 right-2 flex size-6 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:bg-background'>
 				<X className='size-3.5' />
 			</button>
 		</div>

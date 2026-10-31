@@ -54,11 +54,11 @@ export function ProductReviewForm({
 	return (
 		<form
 			action={formAction}
-			className='flex flex-col gap-3 rounded-xl border border-border bg-muted/30 p-3'>
+			className='flex flex-col gap-3 rounded-xl border border-border bg-muted/30 p-4'>
 			<input type='hidden' name='productId' value={productId} />
 			<input type='hidden' name='rating' value={rating} />
 
-			<div className='flex flex-col gap-1.5'>
+			<div className='flex flex-col gap-2'>
 				<Label>Your rating</Label>
 				<div
 					className='flex items-center gap-1'
@@ -74,7 +74,7 @@ export function ProductReviewForm({
 								aria-pressed={rating === value}
 								onMouseEnter={() => setHovered(value)}
 								onClick={() => setRating(value)}
-								className='rounded-md p-0.5 transition-transform hover:scale-110'>
+								className='rounded-md p-1 transition-transform hover:scale-110'>
 								<Star
 									className={cn(
 										"size-6 transition-colors",
@@ -94,7 +94,7 @@ export function ProductReviewForm({
 			</div>
 
 			<div className='grid gap-3 sm:grid-cols-2'>
-				<div className='flex flex-col gap-1.5'>
+				<div className='flex flex-col gap-2'>
 					<Label htmlFor='reviewerName'>Name (optional)</Label>
 					<Input
 						id='reviewerName'
@@ -104,7 +104,7 @@ export function ProductReviewForm({
 					/>
 					<FieldError message={fieldErrors.reviewerName?.[0]} />
 				</div>
-				<div className='flex flex-col gap-1.5'>
+				<div className='flex flex-col gap-2'>
 					<Label htmlFor='title'>Title (optional)</Label>
 					<Input
 						id='title'
@@ -116,7 +116,7 @@ export function ProductReviewForm({
 				</div>
 			</div>
 
-			<div className='flex flex-col gap-1.5'>
+			<div className='flex flex-col gap-2'>
 				<Label htmlFor='body'>Review</Label>
 				<Textarea
 					id='body'

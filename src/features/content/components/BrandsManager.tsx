@@ -148,7 +148,7 @@ export function BrandsManager({ brands }: { brands: ContentBrand[] }) {
 								<span className='truncate text-sm font-medium'>
 									{brand.name}
 								</span>
-								<div className='flex shrink-0 gap-0.5'>
+								<div className='flex shrink-0 gap-1'>
 									<Button
 										variant='ghost'
 										size='icon-sm'

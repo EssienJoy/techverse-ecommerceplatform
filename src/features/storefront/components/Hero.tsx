@@ -18,7 +18,7 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
 	}
 
 	return (
-		<section className='my-4'>
+		<section className='my-6'>
 			<Carousel>
 				<CarouselContent className='ml-0 gap-2'>
 					{slides.map((slide, index) => (
@@ -38,14 +38,14 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
 								<div className='absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent' />
 								<section
 									className='absolute inset-0 flex flex-col justify-center
-									 gap-3.5 px-5 text-white'>
+									 gap-4 px-5 text-white'>
 									<span
 										className='w-fit rounded-full bg-white/15
 										 px-3 py-1 text-[0.625rem] font-semibold tracking-[0.14em] 
 										 uppercase ring-1 ring-white/25 backdrop-blur-sm'>
 										{slide.tag}
 									</span>
-									<div className='flex flex-col gap-1.5'>
+									<div className='flex flex-col gap-2'>
 										<h2 className='max-w-[15rem] text-[1.75rem] leading-[1.12] font-extrabold tracking-tight'>
 											{slide.title}
 										</h2>

@@ -46,7 +46,7 @@ export function SavedItemRow({ product }: SavedItemRowProps) {
 					) : (
 						<Heart className='size-7 text-brand-700' />
 					)}
-					<span className='absolute left-2 top-2 rounded-full bg-white/85 px-1.5 py-0.5 text-[10px] font-medium tracking-[0.12em] text-brand-700 uppercase shadow-sm'>
+					<span className='absolute left-2 top-2 rounded-full bg-white/85 px-2 py-1 text-[10px] font-medium tracking-[0.12em] text-brand-700 uppercase shadow-sm'>
 						Saved
 					</span>
 				</Link>
@@ -92,7 +92,7 @@ export function SavedItemRow({ product }: SavedItemRowProps) {
 										)}${variationOutOfStock ? " · Out of stock" : ""}`}
 										onClick={() => setSelectedVariationIndex(index)}
 										className={cn(
-											"rounded-full border px-1.5 py-0.5 text-[10px] font-medium transition-colors disabled:line-through disabled:opacity-40",
+											"rounded-full border px-2 py-1 text-[10px] font-medium transition-colors disabled:line-through disabled:opacity-40",
 											selected
 												? "border-brand-500 bg-brand-50 text-brand-700"
 												: "border-border text-muted-foreground hover:border-brand-300",

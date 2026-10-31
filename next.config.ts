@@ -4,6 +4,22 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  async redirects() {
+    return [
+      { source: "/settings", destination: "/profile/settings", permanent: false },
+      {
+        source: "/appearance",
+        destination: "/profile/appearance",
+        permanent: false,
+      },
+      {
+        source: "/notifications",
+        destination: "/profile/settings",
+        permanent: false,
+      },
+      { source: "/contact", destination: "/profile/support", permanent: false },
+    ];
+  },
   images: {
     remotePatterns: [
       {

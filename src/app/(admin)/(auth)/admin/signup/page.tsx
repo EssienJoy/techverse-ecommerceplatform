@@ -29,7 +29,7 @@ export default async function AdminSignupPage() {
 			footer={
 				<Link
 					href='/admin'
-					className='inline-flex items-center gap-1.5 font-medium hover:underline'>
+					className='inline-flex items-center gap-2 font-medium hover:underline'>
 					<ArrowLeft className='size-4' aria-hidden />
 					Back to dashboard
 				</Link>

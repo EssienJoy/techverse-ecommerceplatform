@@ -50,7 +50,7 @@ export function TrackOrder({ orderId }: { orderId: string }) {
 			<Header text='Track order' />
 			<section>
 				<Container>
-					<div className='mt-4 rounded-3xl border border-border/80 bg-card p-4 shadow-sm sm:p-5'>
+					<div className='mt-4 rounded-3xl border border-border/80 bg-card p-4 shadow-sm sm:p-6'>
 						<div className='flex items-center justify-between gap-3'>
 							<div>
 								<p className='text-[10px] uppercase tracking-[0.14em] text-muted-foreground'>
@@ -60,7 +60,7 @@ export function TrackOrder({ orderId }: { orderId: string }) {
 									{order.id}
 								</h2>
 							</div>
-							<span className='rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700'>
+							<span className='rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700'>
 								Processing
 							</span>
 						</div>
@@ -82,7 +82,7 @@ export function TrackOrder({ orderId }: { orderId: string }) {
 												index + 1
 											)}
 										</span>
-										<span className='mt-1.5 text-[10px] font-medium text-muted-foreground'>
+										<span className='mt-2 text-[10px] font-medium text-muted-foreground'>
 											{step.label}
 										</span>
 									</div>
@@ -157,7 +157,7 @@ export function TrackOrder({ orderId }: { orderId: string }) {
 						</div>
 					</div>
 
-					<div className='mt-4 rounded-3xl border border-border/80 bg-card p-4 shadow-sm sm:p-5'>
+					<div className='mt-4 rounded-3xl border border-border/80 bg-card p-4 shadow-sm sm:p-6'>
 						<h2 className='text-lg font-bold tracking-tight text-foreground'>
 							Shipping address
 						</h2>

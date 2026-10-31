@@ -42,7 +42,7 @@ export async function updateProfileAction(
 
 	try {
 		await updateMe(user.id, { name: name || null, email });
-		revalidatePath("/profile");
+		revalidatePath("/profile", "layout");
 		return { success: "Profile updated.", error: null };
 	} catch (err) {
 		console.error(err);

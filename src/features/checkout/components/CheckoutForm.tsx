@@ -136,7 +136,7 @@ function Section({
 		<section
 			aria-labelledby={id}
 			className='rounded-3xl border border-border/80 bg-card p-4 shadow-sm'>
-			<div className='flex items-center gap-2.5'>
+			<div className='flex items-center gap-3'>
 				<span className='flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary'>
 					<Icon className='size-4' aria-hidden />
 				</span>
@@ -181,7 +181,7 @@ export function CheckoutForm({
 
 	if (checkoutUrl) {
 		return (
-			<div className='mt-4 rounded-3xl border border-border/80 bg-card p-5 text-center shadow-sm'>
+			<div className='mt-4 rounded-3xl border border-border/80 bg-card p-6 text-center shadow-sm'>
 				<span className='mx-auto flex size-12 items-center justify-center rounded-full bg-success-muted text-success-foreground'>
 					<Lock className='size-5' aria-hidden />
 				</span>
@@ -213,7 +213,7 @@ export function CheckoutForm({
 				: null;
 
 	return (
-		<form action={formAction} className='mt-4 space-y-3'>
+		<form action={formAction} className='mt-6 space-y-4'>
 			<Section
 				id='contact-heading'
 				icon={UserRound}
@@ -247,13 +247,13 @@ export function CheckoutForm({
 			{state.status === "error" && (
 				<div
 					role='alert'
-					className='flex items-start gap-2 rounded-2xl border border-danger-border bg-danger-muted px-3 py-2.5 text-sm text-danger-foreground'>
-					<AlertCircle className='mt-0.5 size-4 shrink-0' aria-hidden />
+					className='flex items-start gap-2 rounded-2xl border border-danger-border bg-danger-muted px-3 py-3 text-sm text-danger-foreground'>
+					<AlertCircle className='mt-1 size-4 shrink-0' aria-hidden />
 					<p>{state.message}</p>
 				</div>
 			)}
 
-			<div className='sticky bottom-0 z-10 -mx-2 mt-6 border-t border-border/70 bg-background/95 px-2 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur'>
+			<div className='sticky bottom-0 z-10 -mx-6 mt-6 border-t border-border/70 bg-background/95 px-6 pt-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur'>
 				<div className='flex items-baseline justify-between gap-3'>
 					<span className='text-sm text-muted-foreground'>
 						Total
@@ -273,7 +273,7 @@ export function CheckoutForm({
 					type='submit'
 					disabled={isPending || !canContinue}
 					aria-busy={isPending}
-					className='mt-2.5 h-12 w-full gap-2 rounded-full text-base'>
+					className='mt-3 h-12 w-full gap-2 rounded-full text-base'>
 					{isPending ? (
 						<>
 							<Loader2 className='size-4 animate-spin' aria-hidden />
@@ -287,13 +287,13 @@ export function CheckoutForm({
 					)}
 				</Button>
 
-				<p className='mt-2 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground'>
+				<p className='mt-2 flex items-center justify-center gap-2 text-[11px] text-muted-foreground'>
 					<Lock className='size-3' aria-hidden />
 					Payments are handled by Stripe. Card details never touch this store.
 				</p>
 
 				{disabledReason && !isPending && (
-					<p className='mt-1.5 text-center text-xs text-muted-foreground'>
+					<p className='mt-2 text-center text-xs text-muted-foreground'>
 						{disabledReason}{" "}
 						<Link
 							href={items.length === 0 ? "/shop" : "/cart"}

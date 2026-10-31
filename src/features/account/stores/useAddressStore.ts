@@ -1,19 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Address, AddressInput } from "../schema";
+import type { AddressEntry } from "../schema";
 
 type AddressState = {
-	addresses: Address[];
-	addAddress: (input: AddressInput) => void;
-	updateAddress: (id: string, input: AddressInput) => void;
+	addresses: AddressEntry[];
+	addAddress: (input: Omit<AddressEntry, "id" | "isDefault">) => void;
 	removeAddress: (id: string) => void;
 	setDefaultAddress: (id: string) => void;
 };
-
-const createId = () =>
-	typeof crypto !== "undefined" && "randomUUID" in crypto
-		? crypto.randomUUID()
-		: `addr_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
 export const useAddressStore = create<AddressState>()(
 	persist(
@@ -21,62 +15,32 @@ export const useAddressStore = create<AddressState>()(
 			addresses: [],
 			addAddress: (input) =>
 				set((state) => {
-					const isFirst = state.addresses.length === 0;
-					const address: Address = {
+					const entry: AddressEntry = {
 						...input,
-						id: createId(),
-						isDefault: isFirst,
+						id: crypto.randomUUID(),
+						isDefault: state.addresses.length === 0,
 					};
 
-					return {
-						addresses: isFirst
-							? [
-									address,
-									...state.addresses.map((item) => ({
-										...item,
-										isDefault: false,
-									})),
-								]
-							: [address, ...state.addresses],
-					};
+					return { addresses: [...state.addresses, entry] };
 				}),
-			updateAddress: (id, input) =>
-				set((state) => ({
-					addresses: state.addresses.map((address) =>
-						address.id === id ? { ...address, ...input } : address,
-					),
-				})),
 			removeAddress: (id) =>
 				set((state) => {
-					const remaining = state.addresses.filter(
-						(address) => address.id !== id,
-					);
+					const addresses = state.addresses.filter((item) => item.id !== id);
 
-					if (remaining.length === 0) return { addresses: [] };
-					if (remaining.some((address) => address.isDefault)) {
-						return { addresses: remaining };
+					// Keep exactly one default address when the list is not empty.
+					if (addresses.length > 0 && !addresses.some((item) => item.isDefault)) {
+						addresses[0] = { ...addresses[0], isDefault: true };
 					}
 
-					return {
-						addresses: remaining.map((address, index) => ({
-							...address,
-							isDefault: index === 0,
-						})),
-					};
+					return { addresses };
 				}),
 			setDefaultAddress: (id) =>
-				set((state) => {
-					if (!state.addresses.some((address) => address.id === id)) {
-						return state;
-					}
-
-					return {
-						addresses: state.addresses.map((address) => ({
-							...address,
-							isDefault: address.id === id,
-						})),
-					};
-				}),
+				set((state) => ({
+					addresses: state.addresses.map((item) => ({
+						...item,
+						isDefault: item.id === id,
+					})),
+				})),
 		}),
 		{ name: "technest-addresses" },
 	),

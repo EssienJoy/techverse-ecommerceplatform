@@ -15,8 +15,8 @@ export function UpdatePasswordForm() {
 	);
 
 	return (
-		<section className='rounded-xl border border-border bg-card p-5 shadow-sm'>
-			<h2 className='mb-4 font-heading text-lg font-semibold text-card-foreground'>
+		<section className='rounded-3xl border border-border/80 bg-card p-4 shadow-sm'>
+			<h2 className='mb-3 text-sm font-semibold text-card-foreground'>
 				Password
 			</h2>
 
@@ -54,7 +54,7 @@ export function UpdatePasswordForm() {
 				<button
 					type='submit'
 					disabled={pending}
-					className='inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover active:bg-primary-active disabled:opacity-60'>
+					className='inline-flex h-11 w-full items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover active:bg-primary-active disabled:opacity-60'>
 					{pending ? "Updating…" : "Update password"}
 				</button>
 			</form>
@@ -75,7 +75,7 @@ function PasswordField({
 }) {
 	const id = `pw-${name}`;
 	return (
-		<div className='space-y-1.5'>
+		<div className='space-y-2'>
 			<label htmlFor={id} className='text-sm font-medium text-foreground'>
 				{label}
 			</label>
@@ -86,7 +86,7 @@ function PasswordField({
 				autoComplete={autoComplete}
 				aria-invalid={errors ? true : undefined}
 				aria-describedby={errors ? `${id}-error` : undefined}
-				className='w-full rounded-md border border-input-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-input-placeholder focus:border-input-focus focus:outline-none focus:ring-2 focus:ring-ring/50 aria-[invalid=true]:border-error'
+				className='h-10 w-full rounded-xl border border-input-border bg-surface px-3 text-sm text-foreground placeholder:text-input-placeholder focus:border-input-focus focus:outline-none focus:ring-2 focus:ring-ring/50 aria-[invalid=true]:border-error'
 			/>
 			{errors?.map((e) => (
 				<p key={e} id={`${id}-error`} className='text-sm text-error'>
