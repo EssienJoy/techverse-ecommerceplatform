@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 	title: "Admin sign in",
 };
 
-export default function AdminLoginPage() {
+export default async function AdminLoginPage() {
 	return (
 		<AuthShell
 			variant='admin'

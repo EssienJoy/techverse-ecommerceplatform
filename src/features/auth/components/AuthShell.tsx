@@ -24,7 +24,11 @@ type AuthShellProps = {
 
 const panels: Record<
 	AuthVariant,
-	{ eyebrow: string; heading: string; perks: { icon: LucideIcon; text: string }[] }
+	{
+		eyebrow: string;
+		heading: string;
+		perks: { icon: LucideIcon; text: string }[];
+	}
 > = {
 	customer: {
 		eyebrow: "Gadgets & tech essentials",
@@ -52,7 +56,13 @@ async function CopyrightYear() {
 	return new Date().getFullYear();
 }
 
-function BrandMark({ variant, inverse }: { variant: AuthVariant; inverse?: boolean }) {
+function BrandMark({
+	variant,
+	inverse,
+}: {
+	variant: AuthVariant;
+	inverse?: boolean;
+}) {
 	return (
 		<Link
 			href={variant === "admin" ? "/admin" : "/"}
@@ -99,7 +109,7 @@ export function AuthShell({
 	const showPanel = variant === "admin";
 
 	return (
-		<div className={cn("min-h-dvh", showPanel && "grid lg:grid-cols-2")}>
+		<section className={cn("min-h-dvh", showPanel && "grid lg:grid-cols-2")}>
 			{showPanel ? (
 				<aside className='relative hidden overflow-hidden bg-brand-900 lg:flex lg:flex-col lg:justify-between lg:p-10'>
 					<div className='absolute -right-24 -top-24 size-96 rounded-full bg-brand-500/30 blur-3xl' />
@@ -135,7 +145,7 @@ export function AuthShell({
 				</aside>
 			) : null}
 
-			<div className='flex flex-col bg-surface-muted px-gutter py-8 lg:bg-background'>
+			<section className='flex flex-col bg-surface-muted px-gutter py-8 lg:bg-background'>
 				<div className={showPanel ? "lg:hidden" : undefined}>
 					<BrandMark variant={variant} />
 				</div>
@@ -162,7 +172,7 @@ export function AuthShell({
 						) : null}
 					</div>
 				</div>
-			</div>
-		</div>
+			</section>
+		</section>
 	);
 }

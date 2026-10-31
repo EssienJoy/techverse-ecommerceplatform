@@ -8,7 +8,7 @@
 
   color-scheme: light;
 
-  /* #FF6B4A */
+  /* #FF6B4Anp */
   /* Primitives: brand */
   --brand: #4640de;
   --brand-50: #F1F0FF;
@@ -85,24 +85,36 @@
        48+ → major breaks (footer clearance, detail page splits)
   */
   --space-0: 0px;
-  --space-1: 4px; /* icon ↔ label, badge padding */
-  --space-2: 8px; /* inline controls, compact gaps */
-  --space-3: 12px; /* compact cards, list rows */
-  --space-4: 16px; /* default stack and card padding */
+  --space-1: 4px;
+  /* icon ↔ label, badge padding */
+  --space-2: 8px;
+  /* inline controls, compact gaps */
+  --space-3: 12px;
+  /* compact cards, list rows */
+  --space-4: 16px;
+  /* default stack and card padding */
   --space-5: 20px;
-  --space-6: 24px; /* container gutter, section rhythm */
-  --space-8: 32px; /* major section separation */
+  --space-6: 24px;
+  /* container gutter, section rhythm */
+  --space-8: 32px;
+  /* major section separation */
   --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
 
   /* Layout roles */
-  --layout-gutter: var(--space-6); /* 24px between content and screen edge */
-  --layout-section: var(--space-6); /* 24px between page sections */
-  --layout-stack: var(--space-4); /* 16px between related blocks */
-  --layout-card: var(--space-4); /* 16px standard card padding */
-  --layout-card-lg: var(--space-6); /* 24px feature card padding */
-  --layout-inline: var(--space-2); /* 8px inline control gap */
+  --layout-gutter: var(--space-4);
+  /* 24px between content and screen edge */
+  --layout-section: var(--space-6);
+  /* 24px between page sections */
+  --layout-stack: var(--space-4);
+  /* 16px between related blocks */
+  --layout-card: var(--space-4);
+  /* 16px standard card padding */
+  --layout-card-lg: var(--space-6);
+  /* 24px feature card padding */
+  --layout-inline: var(--space-2);
+  /* 8px inline control gap */
 
   /* Semantic: background and surfaces */
   --background: var(--brand-50);
