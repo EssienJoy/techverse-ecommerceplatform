@@ -11,6 +11,11 @@ import {
 	removeItem,
 	setQuantity,
 } from "./cart.service";
+import {
+	actionSuccess,
+	databaseError,
+	type ActionOutcome,
+} from "@/shared/lib/error";
 
 const idSchema = z.string().uuid();
 
@@ -30,15 +35,21 @@ export async function getCartAction(): Promise<{
 export async function addCartItemAction(
 	productIdInput: string,
 	variationIdInput?: string,
-): Promise<void> {
-	const owner = await addOwner();
-	if (!owner) return;
+): Promise<ActionOutcome> {
+	try {
+		const owner = await addOwner();
+		if (!owner) return actionSuccess();
 
-	await addItem(
-		owner,
-		idSchema.parse(productIdInput),
-		variationIdInput ? idSchema.parse(variationIdInput) : undefined,
-	);
+		await addItem(
+			owner,
+			idSchema.parse(productIdInput),
+			variationIdInput ? idSchema.parse(variationIdInput) : undefined,
+		);
+
+		return actionSuccess();
+	} catch (error) {
+		return databaseError(error, "Could not add this item to your cart.");
+	}
 }
 
 /**
@@ -49,35 +60,53 @@ export async function setCartItemQuantityAction(
 	productIdInput: string,
 	variationIdInput: string | undefined,
 	quantity: number,
-): Promise<number | null> {
-	const owner = await changeOwner();
-	if (!owner) return null;
+): Promise<ActionOutcome<number | null>> {
+	try {
+		const owner = await changeOwner();
+		if (!owner) return actionSuccess(null);
 
-	return setQuantity(
-		owner,
-		idSchema.parse(productIdInput),
-		variationIdInput ? idSchema.parse(variationIdInput) : undefined,
-		z.number().int().nonnegative().parse(quantity),
-	);
+		const applied = await setQuantity(
+			owner,
+			idSchema.parse(productIdInput),
+			variationIdInput ? idSchema.parse(variationIdInput) : undefined,
+			z.number().int().nonnegative().parse(quantity),
+		);
+
+		return actionSuccess(applied);
+	} catch (error) {
+		return databaseError(error, "Could not save this cart change.");
+	}
 }
 
 export async function removeCartItemAction(
 	productIdInput: string,
 	variationIdInput?: string,
-): Promise<void> {
-	const owner = await changeOwner();
-	if (!owner) return;
+): Promise<ActionOutcome> {
+	try {
+		const owner = await changeOwner();
+		if (!owner) return actionSuccess();
 
-	await removeItem(
-		owner,
-		idSchema.parse(productIdInput),
-		variationIdInput ? idSchema.parse(variationIdInput) : undefined,
-	);
+		await removeItem(
+			owner,
+			idSchema.parse(productIdInput),
+			variationIdInput ? idSchema.parse(variationIdInput) : undefined,
+		);
+
+		return actionSuccess();
+	} catch (error) {
+		return databaseError(error, "Could not save this cart change.");
+	}
 }
 
-export async function clearCartAction(): Promise<void> {
-	const owner = await changeOwner();
-	if (!owner) return;
+export async function clearCartAction(): Promise<ActionOutcome> {
+	try {
+		const owner = await changeOwner();
+		if (!owner) return actionSuccess();
 
-	await clearCart(owner);
+		await clearCart(owner);
+
+		return actionSuccess();
+	} catch (error) {
+		return databaseError(error, "Could not clear your cart.");
+	}
 }

@@ -87,7 +87,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 		) : null;
 
 	return (
-		<div className='min-h-screen pb-24 lg:pb-16'>
+		<section className=''>
 			<header className='pointer-events-none fixed inset-x-0 top-0 z-50'>
 				<div className='mx-auto flex h-16 max-w-7xl items-center justify-between px-4'>
 					<button
@@ -116,7 +116,9 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 				</div>
 			</header>
 
-			<section className='relative w-full overflow-hidden bg-surface-muted/40'>
+			<section
+				className='relative w-full overflow-hidden
+			 bg-white'>
 				<div className='relative mx-auto h-[54vh] max-w-7xl sm:h-[64vh] lg:h-[76vh]'>
 					<Image
 						src={images[imageIndex]}
@@ -130,7 +132,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 			</section>
 
 			{images.length > 1 ? (
-				<Container className='relative z-10 -mt-8'>
+				<Container className='my-4'>
 					<div className='flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
 						{images.map((src, index) => (
 							<button
@@ -158,8 +160,8 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 				</Container>
 			) : null}
 
-			<Container className='relative z-10 -mt-6 pb-12 sm:-mt-10'>
-				<div className='mx-auto max-w-6xl rounded-3xl border border-border/70 bg-background p-6 sm:p-8 lg:p-10'>
+			<Container className=''>
+				<div className=''>
 					{meta ? (
 						<p className='text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground'>
 							{meta}
@@ -278,28 +280,28 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 											const selected = selectedVariationIndex === index;
 
 											return (
-											<button
-												key={variation.id ?? variation.sku}
-												type='button'
-												aria-pressed={selected}
-												onClick={() => {
-													setSelectedVariationIndex(index);
-													setActiveImage(0);
-												}}
-												className={cn(
-													"inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors",
-													selected
-														? "border-brand-500 bg-brand-50 text-brand-700"
-														: "border-border hover:border-muted-foreground",
-													variation.stock === 0 && "text-muted-foreground",
-												)}>
-												{variation.color} · {variation.size}
-												{variation.stock === 0 ? (
-													<span className='text-[10px] font-medium uppercase text-danger'>
-														Out
-													</span>
-												) : null}
-											</button>
+												<button
+													key={variation.id ?? variation.sku}
+													type='button'
+													aria-pressed={selected}
+													onClick={() => {
+														setSelectedVariationIndex(index);
+														setActiveImage(0);
+													}}
+													className={cn(
+														"inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors",
+														selected
+															? "border-brand-500 bg-brand-50 text-brand-700"
+															: "border-border hover:border-muted-foreground",
+														variation.stock === 0 && "text-muted-foreground",
+													)}>
+													{variation.color} · {variation.size}
+													{variation.stock === 0 ? (
+														<span className='text-[10px] font-medium uppercase text-danger'>
+															Out
+														</span>
+													) : null}
+												</button>
 											);
 										})}
 									</div>
@@ -354,6 +356,7 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 						</Button>
 					</div>
 
+					<ProductReviewForm productId={product.id} />
 					{reviews.length > 0 ? (
 						<div className='mt-5 max-w-3xl divide-y divide-border'>
 							{reviews.map((review) => (
@@ -388,28 +391,29 @@ export function ProductDetail({ product, reviews = [] }: ProductDetailProps) {
 				</section>
 			</Container>
 
-			<div className='fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur lg:hidden'>
-				<Container className='flex items-center justify-between gap-4 py-3'>
-					<div className='flex flex-col'>
-						<span className='text-[11px] text-muted-foreground'>Total</span>
-						<span className='text-lg leading-tight font-bold'>
-							{formatCurrency(activePrice * quantity)}
-						</span>
-					</div>
+			<Container
+				className='flex sticky bottom-0 left-0 w-full bg-surface-muted
+				shadoew-lg rounded-2xl mt-15
+			 items-center justify-between gap-4 py-3'>
+				<div className='flex flex-col'>
+					<span className='text-[11px] text-muted-foreground'>Total</span>
+					<span className='text-lg leading-tight font-bold'>
+						{formatCurrency(activePrice * quantity)}
+					</span>
+				</div>
 
-					{cartItem ? (
-						quantityControl()
-					) : (
-						<Button
-							disabled={activeStock <= 0}
-							className='h-10 gap-2 rounded-full px-5'
-							onClick={addToCart}>
-							<ShoppingBag className='size-4' />
-							{activeStock <= 0 ? "Out of stock" : "Add to cart"}
-						</Button>
-					)}
-				</Container>
-			</div>
-		</div>
+				{cartItem ? (
+					quantityControl()
+				) : (
+					<Button
+						disabled={activeStock <= 0}
+						className='h-10 gap-2 rounded-full px-5'
+						onClick={addToCart}>
+						<ShoppingBag className='size-4' />
+						{activeStock <= 0 ? "Out of stock" : "Add to cart"}
+					</Button>
+				)}
+			</Container>
+		</section>
 	);
 }

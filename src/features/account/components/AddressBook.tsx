@@ -11,9 +11,7 @@ import {
 import { cn } from "cn";
 import { Button } from "@/shared";
 import { useAddressStore } from "../stores/useAddressStore";
-import type { AddressEntry } from "../schema";
-
-type AddressDraft = Omit<AddressEntry, "id" | "isDefault">;
+import type { AddressDraft, AddressField } from "../types";
 
 const emptyDraft: AddressDraft = {
 	label: "Home",
@@ -24,12 +22,7 @@ const emptyDraft: AddressDraft = {
 	postalCode: "",
 };
 
-const fields: {
-	name: keyof AddressDraft;
-	label: string;
-	placeholder: string;
-	autoComplete: string;
-}[] = [
+const fields: AddressField[] = [
 	{
 		name: "label",
 		label: "Label",

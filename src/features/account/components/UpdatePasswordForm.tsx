@@ -1,18 +1,17 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-	updatePasswordAction,
-	type ProfileFormState,
-} from "../server/user.action";
+import { updatePasswordAction } from "../server/user.action";
+import type { PasswordFieldProps, ProfileFormState } from "../types";
 
-const initialState: ProfileFormState = {};
+const initialState: ProfileFormState = { status: "idle" };
 
 export function UpdatePasswordForm() {
 	const [state, formAction, pending] = useActionState(
 		updatePasswordAction,
 		initialState,
 	);
+	const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
 
 	return (
 		<section className='rounded-3xl border border-border/80 bg-card p-4 shadow-sm'>
@@ -24,30 +23,30 @@ export function UpdatePasswordForm() {
 				<PasswordField
 					label='Current password'
 					name='currentPassword'
-					errors={state.fieldErrors?.currentPassword}
+					errors={fieldErrors?.currentPassword}
 					autoComplete='current-password'
 				/>
 				<PasswordField
 					label='New password'
 					name='password'
-					errors={state.fieldErrors?.password}
+					errors={fieldErrors?.password}
 					autoComplete='new-password'
 				/>
 				<PasswordField
 					label='Confirm new password'
 					name='confirmPassword'
-					errors={state.fieldErrors?.confirmPassword}
+					errors={fieldErrors?.confirmPassword}
 					autoComplete='new-password'
 				/>
 
-				{state.error && (
+				{state.status === "error" && state.message && !state.fieldErrors && (
 					<p className='rounded-md border border-error-border bg-error-muted px-3 py-2 text-sm text-error-foreground'>
-						{state.error}
+						{state.message}
 					</p>
 				)}
-				{state.success && (
+				{state.status === "success" && state.message && (
 					<p className='rounded-md border border-success-border bg-success-muted px-3 py-2 text-sm text-success-foreground'>
-						{state.success}
+						{state.message}
 					</p>
 				)}
 
@@ -67,12 +66,7 @@ function PasswordField({
 	name,
 	errors,
 	autoComplete,
-}: {
-	label: string;
-	name: string;
-	errors?: string[];
-	autoComplete?: string;
-}) {
+}: PasswordFieldProps) {
 	const id = `pw-${name}`;
 	return (
 		<div className='space-y-2'>

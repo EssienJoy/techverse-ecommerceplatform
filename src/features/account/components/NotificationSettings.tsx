@@ -2,13 +2,9 @@
 
 import { Switch } from "@/shared/components/ui/switch";
 import { useSettingsStore } from "../stores/useSettingsStore";
-import type { NotificationKey } from "../schema";
+import type { NotificationRow } from "../types";
 
-const rows: {
-	key: NotificationKey;
-	title: string;
-	description: string;
-}[] = [
+const rows: NotificationRow[] = [
 	{
 		key: "orderUpdates",
 		title: "Order updates",

@@ -8,19 +8,22 @@ import {
 	verifyPassword,
 } from "@/features/auth/server/middleware/password";
 import { findUserByEmail } from "@/features/auth/server/user.repository";
-
-export type ProfileFormState = {
-	fieldErrors?: Record<string, string[]>;
-	error?: string | null;
-	success?: string | null;
-};
+import {
+	actionError,
+	actionSuccess,
+	databaseError,
+	validationError,
+} from "@/shared/lib/error";
+import type { ProfileFormState } from "../types";
 
 export async function updateProfileAction(
 	_prev: ProfileFormState,
 	formData: FormData,
 ): Promise<ProfileFormState> {
 	const access = await guard();
-	if (access.status !== "success") return { error: access.message };
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 	const user = access.data;
 
 	const name = String(formData.get("name") ?? "").trim();
@@ -29,26 +32,23 @@ export async function updateProfileAction(
 		.toLowerCase();
 
 	if (!email) {
-		return { fieldErrors: { email: ["Email is required."] } };
+		return validationError({ email: ["Email is required."] });
 	}
 
 	// Email uniqueness if changed
 	if (email !== user.email) {
 		const existing = await findUserByEmail(email);
 		if (existing && existing.id !== user.id) {
-			return { fieldErrors: { email: ["That email is already in use."] } };
+			return validationError({ email: ["That email is already in use."] });
 		}
 	}
 
 	try {
 		await updateMe(user.id, { name: name || null, email });
 		revalidatePath("/profile", "layout");
-		return { success: "Profile updated.", error: null };
-	} catch (err) {
-		console.error(err);
-		return {
-			error: err instanceof Error ? err.message : "Could not update profile.",
-		};
+		return actionSuccess(undefined, "Profile updated.");
+	} catch (error) {
+		return databaseError(error, "Could not update profile. Try again.");
 	}
 }
 
@@ -57,7 +57,9 @@ export async function updatePasswordAction(
 	formData: FormData,
 ): Promise<ProfileFormState> {
 	const access = await guard();
-	if (access.status !== "success") return { error: access.message };
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 	const user = access.data;
 
 	const currentPassword = String(formData.get("currentPassword") ?? "");
@@ -72,21 +74,18 @@ export async function updatePasswordAction(
 	if (password !== confirmPassword)
 		fieldErrors.confirmPassword = ["Passwords do not match."];
 
-	if (Object.keys(fieldErrors).length > 0) return { fieldErrors };
+	if (Object.keys(fieldErrors).length > 0) return validationError(fieldErrors);
 
 	const ok = await verifyPassword(currentPassword, user.password);
 	if (!ok) {
-		return { fieldErrors: { currentPassword: ["Incorrect password."] } };
+		return validationError({ currentPassword: ["Incorrect password."] });
 	}
 
 	try {
 		const hashed = await hashPassword(password);
 		await updateMe(user.id, { password: hashed });
-		return { success: "Password updated.", error: null };
-	} catch (err) {
-		console.error(err);
-		return {
-			error: err instanceof Error ? err.message : "Could not update password.",
-		};
+		return actionSuccess(undefined, "Password updated.");
+	} catch (error) {
+		return databaseError(error, "Could not update password. Try again.");
 	}
 }

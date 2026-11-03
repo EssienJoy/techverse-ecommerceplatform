@@ -17,7 +17,7 @@ import {
 type Draft = { name: string; logoUrl: string };
 
 const emptyDraft: Draft = { name: "", logoUrl: "" };
-const initialState: ContentFormState = {};
+const initialState: ContentFormState = { status: "idle" };
 
 export function BrandsManager({ brands }: { brands: ContentBrand[] }) {
 	const [editingId, setEditingId] = useState<string | null>(null);
@@ -43,7 +43,7 @@ export function BrandsManager({ brands }: { brands: ContentBrand[] }) {
 
 		startTransition(async () => {
 			const result = await brandFormAction(initialState, formData);
-			if (result.success) {
+			if (result.status === "success") {
 				resetForm();
 			} else {
 				setState(result);
@@ -60,11 +60,13 @@ export function BrandsManager({ brands }: { brands: ContentBrand[] }) {
 
 	const handleDelete = (id: string) => {
 		startTransition(async () => {
-			await deleteBrandAction(id);
+			const result = await deleteBrandAction(id);
+			if (result.status === "error") setState(result);
 		});
 	};
 
-	const fieldErrors = state.fieldErrors ?? {};
+	const fieldErrors =
+		state.status === "error" ? (state.fieldErrors ?? {}) : {};
 
 	return (
 		<>
@@ -113,9 +115,11 @@ export function BrandsManager({ brands }: { brands: ContentBrand[] }) {
 												: "Add brand"}
 									</Button>
 								</div>
-								{state.formError ? (
+								{state.status === "error" &&
+								state.message &&
+								!state.fieldErrors ? (
 									<p className='rounded-lg border border-danger/30 bg-danger-muted px-3 py-2 text-sm text-danger'>
-										{state.formError}
+										{state.message}
 									</p>
 								) : null}
 							</div>

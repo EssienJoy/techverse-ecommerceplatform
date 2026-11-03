@@ -27,7 +27,7 @@ type Draft = {
 
 const emptyDraft: Draft = { label: "", title: "", icon: "grid", imageUrl: "" };
 
-const initialState: ContentFormState = {};
+const initialState: ContentFormState = { status: "idle" };
 
 export function CategoriesManager({
 	categories,
@@ -57,7 +57,7 @@ export function CategoriesManager({
 
 		startTransition(async () => {
 			const result = await categoryFormAction(initialState, formData);
-			if (result.success) {
+			if (result.status === "success") {
 				resetForm();
 			} else {
 				setState(result);
@@ -79,11 +79,13 @@ export function CategoriesManager({
 
 	const handleDelete = (id: string) => {
 		startTransition(async () => {
-			await deleteCategoryAction(id);
+			const result = await deleteCategoryAction(id);
+			if (result.status === "error") setState(result);
 		});
 	};
 
-	const fieldErrors = state.fieldErrors ?? {};
+	const fieldErrors =
+		state.status === "error" ? (state.fieldErrors ?? {}) : {};
 
 	return (
 		<>
@@ -158,9 +160,11 @@ export function CategoriesManager({
 										</Button>
 									</div>
 								</div>
-								{state.formError ? (
+								{state.status === "error" &&
+								state.message &&
+								!state.fieldErrors ? (
 									<p className='rounded-lg border border-danger/30 bg-danger-muted px-3 py-2 text-sm text-danger'>
-										{state.formError}
+										{state.message}
 									</p>
 								) : null}
 							</div>

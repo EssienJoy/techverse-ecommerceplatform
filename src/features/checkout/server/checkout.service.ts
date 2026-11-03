@@ -12,6 +12,7 @@ import type {
 	ShippingAddress,
 } from "../types";
 import { startStripeCheckout } from "./checkout.session";
+import { actionError } from "@/shared/lib/error";
 
 type ParsedAddress =
 	| { ok: true; address: ShippingAddress }
@@ -85,20 +86,18 @@ export async function startCheckoutSession(
 	});
 
 	const parsed = parseAddress(formData);
-	if (!parsed.ok) return { status: "error", message: parsed.message };
+	if (!parsed.ok) return actionError(parsed.message);
 
 	const { cart, products } = await getCart({ userId: user.id });
 	if (cart.length === 0) {
-		return { status: "error", message: "Your cart is empty." };
+		return actionError("Your cart is empty.");
 	}
 
 	const items = toCheckoutItems(cart, products);
 	if (!items) {
-		return {
-			status: "error",
-			message:
-				"Some cart items are no longer available. Remove them to continue.",
-		};
+		return actionError(
+			"Some cart items are no longer available. Remove them to continue.",
+		);
 	}
 
 	try {
@@ -116,6 +115,6 @@ export async function startCheckoutSession(
 		return { status: "redirect", url };
 	} catch (error) {
 		console.error("Could not start a Stripe Checkout Session.", error);
-		return { status: "error", message: "Could not start checkout. Try again." };
+		return actionError("Could not start checkout. Try again.");
 	}
 }

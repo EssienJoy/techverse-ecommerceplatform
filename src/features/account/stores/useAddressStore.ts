@@ -1,13 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { AddressEntry } from "../schema";
-
-type AddressState = {
-	addresses: AddressEntry[];
-	addAddress: (input: Omit<AddressEntry, "id" | "isDefault">) => void;
-	removeAddress: (id: string) => void;
-	setDefaultAddress: (id: string) => void;
-};
+import type { AddressState } from "../types";
 
 export const useAddressStore = create<AddressState>()(
 	persist(

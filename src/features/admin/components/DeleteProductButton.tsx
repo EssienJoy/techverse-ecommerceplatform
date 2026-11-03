@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { Trash2 } from "lucide-react";
-import { Button } from "@/shared";
+import { Button, useAlertStore } from "@/shared";
 import { deleteProductAction } from "@/features/products/server/products.actions";
 
 export function DeleteProductButton({
@@ -13,12 +13,14 @@ export function DeleteProductButton({
 	name: string;
 }) {
 	const [isPending, startTransition] = useTransition();
+	const showError = useAlertStore((store) => store.error);
 
 	const handleDelete = () => {
 		if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
 
 		startTransition(async () => {
-			await deleteProductAction(id);
+			const result = await deleteProductAction(id);
+			if (result.status === "error") showError(result.message);
 		});
 	};
 

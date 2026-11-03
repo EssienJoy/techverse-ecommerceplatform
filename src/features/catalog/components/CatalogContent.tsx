@@ -22,7 +22,6 @@ import {
 	DEFAULT_PRODUCT_PAGE_SIZE,
 	type ProductSort,
 } from "@/features/products/lib/pagination";
-import { CatalogBreadcrumb } from "./CatalogBreadcrumb";
 import { ProductFeed } from "./ProductFeed";
 
 const sortOptions: { label: string; value: ProductSort }[] = [
@@ -104,13 +103,6 @@ export async function CatalogContent({
 		inStockOnly,
 	});
 
-	const currentPath =
-		mode === "category" && matchedCategory
-			? `/shop/category/${matchedCategory.slug}`
-			: mode === "brand" && matchedBrand
-				? `/shop/brand/${matchedBrand.slug}`
-				: "/shop";
-
 	const heroKind =
 		mode === "category"
 			? "Category"
@@ -138,6 +130,15 @@ export async function CatalogContent({
 	];
 
 	const categoryHref = (slug: string | null) => {
+		if (mode === "all") {
+			return withQuery("/shop", {
+				category: slug,
+				brand: matchedBrand?.slug,
+				sort,
+				stock: inStockOnly,
+			});
+		}
+
 		if (mode === "brand" && matchedBrand) {
 			return withQuery(`/shop/brand/${matchedBrand.slug}`, {
 				category: slug,
@@ -165,6 +166,15 @@ export async function CatalogContent({
 	};
 
 	const brandHref = (slug: string | null) => {
+		if (mode === "all") {
+			return withQuery("/shop", {
+				category: matchedCategory?.slug,
+				brand: slug,
+				sort,
+				stock: inStockOnly,
+			});
+		}
+
 		if (mode === "category" && matchedCategory) {
 			return withQuery(`/shop/category/${matchedCategory.slug}`, {
 				brand: slug,
@@ -222,11 +232,6 @@ export async function CatalogContent({
 		});
 	};
 
-	const clearSecondaryHref = withQuery(currentPath, {
-		sort,
-		stock: inStockOnly,
-	});
-
 	return (
 		<>
 			<section className='relative my-6 w-full overflow-hidden bg-gradient-to-br from-zinc-950 via-neutral-900 to-black text-white'>
@@ -238,7 +243,6 @@ export async function CatalogContent({
 					</span>
 
 					<Container className='relative flex min-h-40 flex-col justify-end py-6 sm:min-h-48'>
-						{mode !== "all" ? <CatalogBreadcrumb /> : null}
 						<span className='inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-semibold tracking-[0.16em] uppercase backdrop-blur'>
 							<span className='size-1.5 rounded-full bg-brand-400' />
 							{heroKind}
@@ -254,22 +258,27 @@ export async function CatalogContent({
 							{page.total} {page.total === 1 ? "product" : "products"}
 						</p>
 
-						{mode === "category" && matchedBrand ? (
-							<Link
-								href={clearSecondaryHref}
-								aria-label={`Clear ${matchedBrand.name} brand filter`}
-								className='mt-3 inline-flex w-fit items-center gap-1 rounded-full border border-white/40 bg-white/10 px-3 py-1 text-xs font-medium text-white capitalize backdrop-blur transition-colors hover:bg-white hover:text-foreground'>
-								<X className='size-3.5' />
-								{matchedBrand.name}
-							</Link>
-						) : mode === "brand" && matchedCategory ? (
-							<Link
-								href={clearSecondaryHref}
-								aria-label={`Clear ${matchedCategory.label} category filter`}
-								className='mt-3 inline-flex w-fit items-center gap-1 rounded-full border border-white/40 bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur transition-colors hover:bg-white hover:text-foreground'>
-								<X className='size-3.5' />
-								{matchedCategory.label}
-							</Link>
+						{matchedCategory || matchedBrand ? (
+							<div className='mt-3 flex flex-wrap gap-2'>
+								{matchedCategory ? (
+									<Link
+										href={categoryHref(null)}
+										aria-label={`Clear ${matchedCategory.label} category filter`}
+										className='inline-flex w-fit items-center gap-1 rounded-full border border-white/40 bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur transition-colors hover:bg-white hover:text-foreground'>
+										<X className='size-3.5' />
+										{matchedCategory.label}
+									</Link>
+								) : null}
+								{matchedBrand ? (
+									<Link
+										href={brandHref(null)}
+										aria-label={`Clear ${matchedBrand.name} brand filter`}
+										className='inline-flex w-fit items-center gap-1 rounded-full border border-white/40 bg-white/10 px-3 py-1 text-xs font-medium text-white capitalize backdrop-blur transition-colors hover:bg-white hover:text-foreground'>
+										<X className='size-3.5' />
+										{matchedBrand.name}
+									</Link>
+								) : null}
+							</div>
 						) : null}
 					</Container>
 				</section>
@@ -397,7 +406,7 @@ export async function CatalogContent({
 									title='No products found'
 									description='Try a different category, brand, or filter.'
 									actionLabel='Clear filters'
-									actionHref={currentPath}
+									actionHref='/shop'
 								/>
 							</>
 						) : (

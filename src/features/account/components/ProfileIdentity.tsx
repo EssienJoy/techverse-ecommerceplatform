@@ -1,12 +1,5 @@
 import { BadgeCheck, CalendarDays, Mail } from "lucide-react";
-
-type ProfileIdentityProps = {
-	name: string | null;
-	email: string;
-	role: string;
-	/** ISO date or Date; shown as the month and year the account was created. */
-	memberSince: Date | string;
-};
+import type { ProfileIdentityProps } from "../types";
 
 const roleLabels: Record<string, string> = {
 	user: "Customer",

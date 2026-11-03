@@ -5,6 +5,7 @@ import { Heart, Package, ShoppingCart } from "lucide-react";
 import { useOrderStore } from "@/features/orders/stores/useOrderStore";
 import { useFavoritesStore } from "@/features/saved/stores/useFavoritesStore";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
+import type { ProfileStat } from "../types";
 
 /**
  * Live counts for the dashboard. They come from the browser stores, so the
@@ -15,7 +16,7 @@ export function ProfileStats() {
 	const saved = useFavoritesStore((state) => state.favorites.length);
 	const cart = useCartStore((state) => state.totalCartItems);
 
-	const stats = [
+	const stats: ProfileStat[] = [
 		{ href: "/profile/orders", label: "Orders", value: orders, icon: Package },
 		{
 			href: "/profile/wishlist",

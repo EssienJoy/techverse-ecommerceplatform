@@ -3,13 +3,7 @@
 import NextLink from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Container } from "@/shared";
-
-type ProfileHeaderProps = {
-	title: string;
-	subtitle?: string;
-	/** Pass `false` on the dashboard itself. Every other page points back there. */
-	back?: boolean;
-};
+import type { ProfileHeaderProps } from "../types";
 
 export function ProfileHeader({
 	title,

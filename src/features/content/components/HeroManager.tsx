@@ -34,7 +34,7 @@ const emptyDraft: Draft = {
 	active: true,
 };
 
-const initialState: ContentFormState = {};
+const initialState: ContentFormState = { status: "idle" };
 
 export function HeroManager({ slides }: { slides: HeroSlide[] }) {
 	const [editingId, setEditingId] = useState<string | null>(null);
@@ -61,7 +61,7 @@ export function HeroManager({ slides }: { slides: HeroSlide[] }) {
 
 		startTransition(async () => {
 			const result = await heroFormAction(initialState, formData);
-			if (result.success) {
+			if (result.status === "success") {
 				resetForm();
 			} else {
 				setState(result);
@@ -85,11 +85,13 @@ export function HeroManager({ slides }: { slides: HeroSlide[] }) {
 
 	const handleDelete = (id: string) => {
 		startTransition(async () => {
-			await deleteHeroAction(id);
+			const result = await deleteHeroAction(id);
+			if (result.status === "error") setState(result);
 		});
 	};
 
-	const fieldErrors = state.fieldErrors ?? {};
+	const fieldErrors =
+		state.status === "error" ? (state.fieldErrors ?? {}) : {};
 
 	return (
 		<>
@@ -187,9 +189,11 @@ export function HeroManager({ slides }: { slides: HeroSlide[] }) {
 										</Button>
 									</div>
 								</div>
-								{state.formError ? (
+								{state.status === "error" &&
+								state.message &&
+								!state.fieldErrors ? (
 									<p className='rounded-lg border border-danger/30 bg-danger-muted px-3 py-2 text-sm text-danger'>
-										{state.formError}
+										{state.message}
 									</p>
 								) : null}
 							</div>

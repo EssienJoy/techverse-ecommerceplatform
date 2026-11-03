@@ -1,4 +1,5 @@
 export * from "./schema";
+export * from "./types";
 export * from "./components/AddressBook";
 export * from "./components/AppearancePicker";
 export * from "./components/LogoutButton";

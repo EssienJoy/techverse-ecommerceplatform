@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Star } from "lucide-react";
-import { Button, Input, useAlertStore } from "@/shared";
+import { Button, Container, Input, useAlertStore } from "@/shared";
 import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { cn } from "cn";
@@ -12,7 +12,7 @@ import {
 	type ReviewFormState,
 } from "@/features/products/server/reviews.actions";
 
-const initialState: ReviewFormState = {};
+const initialState: ReviewFormState = { status: "idle" };
 
 function FieldError({ message }: { message?: string }) {
 	if (!message) return null;
@@ -36,19 +36,21 @@ export function ProductReviewForm({
 	const [rating, setRating] = useState(0);
 	const [hovered, setHovered] = useState(0);
 
-	const fieldErrors = state.fieldErrors ?? {};
+	const fieldErrors = state.status === "error" ? (state.fieldErrors ?? {}) : {};
 	const showSuccess = useAlertStore((store) => store.success);
 	const showError = useAlertStore((store) => store.error);
 
 	useEffect(() => {
-		if (state.success) {
+		if (state.status === "success") {
 			showSuccess("Review posted. Thanks for sharing!");
 			router.refresh();
 			onSubmitted?.();
 			return;
 		}
 
-		if (state.formError) showError(state.formError);
+		if (state.status === "error" && state.message && !state.fieldErrors) {
+			showError(state.message);
+		}
 	}, [state, showSuccess, showError, router, onSubmitted]);
 
 	return (
@@ -78,9 +80,7 @@ export function ProductReviewForm({
 								<Star
 									className={cn(
 										"size-6 transition-colors",
-										active
-											? "fill-amber-400 text-amber-400"
-											: "text-border",
+										active ? "fill-amber-400 text-amber-400" : "text-border",
 									)}
 								/>
 							</button>

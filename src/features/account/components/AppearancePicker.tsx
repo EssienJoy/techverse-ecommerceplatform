@@ -2,14 +2,10 @@
 
 import { Monitor, Moon, Sun } from "lucide-react";
 import { cn } from "cn";
-import { useTheme, type Theme } from "@/shared";
+import { useTheme } from "@/shared";
+import type { ThemeOption } from "../types";
 
-const themeOptions: {
-	value: Theme;
-	label: string;
-	description: string;
-	icon: typeof Sun;
-}[] = [
+const themeOptions: ThemeOption[] = [
 	{
 		value: "light",
 		label: "Light",

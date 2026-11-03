@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { themeSchema } from "@/shared/lib/theme";
+import { themeSchema } from "@/shared/lib/schema/theme";
 
 export const notificationKeySchema = z.enum([
 	"orderUpdates",
@@ -29,12 +29,7 @@ export const addressEntrySchema = z.object({
 	isDefault: z.boolean(),
 });
 
-export const cardBrandSchema = z.enum([
-	"visa",
-	"mastercard",
-	"verve",
-	"card",
-]);
+export const cardBrandSchema = z.enum(["visa", "mastercard", "verve", "card"]);
 
 export const savedCardSchema = z.object({
 	id: z.string().min(1),

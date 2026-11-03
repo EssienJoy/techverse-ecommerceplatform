@@ -1,19 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { CardBrand, SavedCard } from "../schema";
-
-type WalletState = {
-	balance: number;
-	cards: SavedCard[];
-	addCard: (input: {
-		last4: string;
-		brand: CardBrand;
-		expiry: string;
-		makeDefault?: boolean;
-	}) => void;
-	removeCard: (id: string) => void;
-	setDefaultCard: (id: string) => void;
-};
+import type { WalletState } from "../types";
 
 /**
  * Saved cards hold only what the profile needs to show: the network, the last

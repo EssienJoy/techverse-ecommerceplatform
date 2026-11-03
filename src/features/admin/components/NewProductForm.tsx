@@ -50,7 +50,7 @@ const toSlug = (value: string) =>
 		.replace(/[^a-z0-9]+/g, "-")
 		.replace(/^-+|-+$/g, "");
 
-const initialState: ProductFormState = {};
+const initialState: ProductFormState = { status: "idle" };
 
 function FieldError({ message }: { message?: string }) {
 	if (!message) return null;
@@ -84,11 +84,14 @@ function ProductForm({
 }: ProductFormProps) {
 	const action = initial ? updateProductAction : createProductAction;
 	const [state, formAction, pending] = useActionState(action, initialState);
-	const fieldErrors = state.fieldErrors ?? {};
+	const fieldErrors =
+		state.status === "error" ? (state.fieldErrors ?? {}) : {};
 	const showError = useAlertStore((store) => store.error);
 
 	useEffect(() => {
-		if (state.formError) showError(state.formError);
+		if (state.status === "error" && state.message && !state.fieldErrors) {
+			showError(state.message);
+		}
 	}, [state, showError]);
 
 	const [name, setName] = useState(initial?.name ?? "");

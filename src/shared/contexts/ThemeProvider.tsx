@@ -9,7 +9,7 @@ import {
 	useSyncExternalStore,
 	type ReactNode,
 } from "react";
-import { themeSchema, type Theme } from "@/shared/lib/theme";
+import { themeSchema, type Theme } from "@/shared/lib/schema/theme";
 
 type ThemeContextValue = {
 	theme: Theme;

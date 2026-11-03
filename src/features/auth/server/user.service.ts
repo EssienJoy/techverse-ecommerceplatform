@@ -9,14 +9,16 @@ import {
 } from "./user.repository";
 import type { SessionUser } from "../schema";
 import { getSession } from "./middleware/session";
+import {
+	actionError,
+	actionSuccess,
+	databaseError,
+	type ActionOutcome,
+} from "@/shared/lib/error";
 
 type Role = "user" | "admin" | "super_admin";
 
 type PublicUser = Omit<Awaited<ReturnType<typeof createUser>>, "password">;
-
-export type AuthResult<T> =
-	| { status: "success"; statusCode: number; data: T }
-	| { status: "failure" | "error"; statusCode: number; message: string };
 
 /** A copy of the user that is safe to hand out: never includes the password hash. */
 function withoutPassword<T extends { password: string }>(
@@ -60,15 +62,11 @@ export async function registerUser(data: {
 	email: string;
 	password: string;
 	role?: Role;
-}): Promise<AuthResult<PublicUser>> {
+}): Promise<ActionOutcome<PublicUser>> {
 	try {
 		const existingUser = await findUserByEmail(data.email);
 		if (existingUser) {
-			return {
-				status: "failure",
-				statusCode: 409,
-				message: "An account with that email already exists.",
-			};
+			return actionError("An account with that email already exists.");
 		}
 
 		const hashedPassword = await hashPassword(data.password);
@@ -79,62 +77,36 @@ export async function registerUser(data: {
 			role: data.role ?? "user",
 		});
 
-		return {
-			status: "success",
-			statusCode: 201,
-			data: withoutPassword(user),
-		};
+		return actionSuccess(withoutPassword(user));
 	} catch (error) {
-		console.error("Could not register a user.", error);
-		return {
-			status: "error",
-			statusCode: 500,
-			message: "Could not create your account. Try again.",
-		};
+		return databaseError(error, "Could not create your account. Try again.");
 	}
 }
 
 export async function loginUser(data: {
 	email: string;
 	password: string;
-}): Promise<AuthResult<PublicUser>> {
+}): Promise<ActionOutcome<PublicUser>> {
 	try {
 		const user = await findUserByEmail(data.email);
 		if (!user) {
-			return {
-				status: "failure",
-				statusCode: 401,
-				message: "Incorrect email or password.",
-			};
+			return actionError("Incorrect email or password.");
 		}
 
 		const isValid = await verifyPassword(data.password, user.password);
 		if (!isValid) {
-			return {
-				status: "failure",
-				statusCode: 401,
-				message: "Incorrect email or password.",
-			};
+			return actionError("Incorrect email or password.");
 		}
 
 		// A deactivated account would otherwise get a cookie that every page treats
 		// as signed out, with no explanation.
 		if (!user.isActive) {
-			return {
-				status: "failure",
-				statusCode: 403,
-				message: "This account has been deactivated. Contact support.",
-			};
+			return actionError("This account has been deactivated. Contact support.");
 		}
 
-		return { status: "success", statusCode: 200, data: withoutPassword(user) };
+		return actionSuccess(withoutPassword(user));
 	} catch (error) {
-		console.error("Could not sign in a user.", error);
-		return {
-			status: "error",
-			statusCode: 500,
-			message: "Could not sign you in. Try again.",
-		};
+		return databaseError(error, "Could not sign you in. Try again.");
 	}
 }
 
@@ -145,23 +117,17 @@ export async function createAdminUser(
 	data: { name?: string | null; email: string; password: string },
 	currentUser: SessionUser | null,
 	role: Exclude<Role, "user"> = "admin",
-): Promise<AuthResult<PublicUser>> {
+): Promise<ActionOutcome<PublicUser>> {
 	try {
 		if (currentUser?.role !== "super_admin") {
-			return {
-				status: "failure",
-				statusCode: 403,
-				message: "Only super admins can create admin accounts.",
-			};
+			return actionError("Only super admins can create admin accounts.", {
+				reason: "forbidden",
+			});
 		}
 
 		const existingUser = await findUserByEmail(data.email);
 		if (existingUser) {
-			return {
-				status: "failure",
-				statusCode: 409,
-				message: "An account with that email already exists.",
-			};
+			return actionError("An account with that email already exists.");
 		}
 
 		const hashedPassword = await hashPassword(data.password);
@@ -172,18 +138,12 @@ export async function createAdminUser(
 			role,
 		});
 
-		return {
-			status: "success",
-			statusCode: 201,
-			data: withoutPassword(user),
-		};
+		return actionSuccess(withoutPassword(user));
 	} catch (error) {
-		console.error("Could not create an admin user.", error);
-		return {
-			status: "error",
-			statusCode: 500,
-			message: "Could not create the admin account. Try again.",
-		};
+		return databaseError(
+			error,
+			"Could not create the admin account. Try again.",
+		);
 	}
 }
 
@@ -195,32 +155,22 @@ export async function updateUserDetails(
 		role?: Role;
 		isActive?: boolean;
 	},
-): Promise<AuthResult<PublicUser>> {
+): Promise<ActionOutcome<PublicUser>> {
 	try {
 		const user = await updateMe(id, data);
-		return { status: "success", statusCode: 200, data: withoutPassword(user) };
+		return actionSuccess(withoutPassword(user));
 	} catch (error) {
-		console.error("Could not update a user.", error);
-		return {
-			status: "error",
-			statusCode: 500,
-			message: "Could not update the account. Try again.",
-		};
+		return databaseError(error, "Could not update the account. Try again.");
 	}
 }
 
 export async function removeUser(
 	id: string,
-): Promise<AuthResult<{ id: string }>> {
+): Promise<ActionOutcome<{ id: string }>> {
 	try {
 		await deleteMe(id);
-		return { status: "success", statusCode: 200, data: { id } };
+		return actionSuccess({ id });
 	} catch (error) {
-		console.error("Could not delete a user.", error);
-		return {
-			status: "error",
-			statusCode: 500,
-			message: "Could not delete the account. Try again.",
-		};
+		return databaseError(error, "Could not delete the account. Try again.");
 	}
 }

@@ -8,18 +8,21 @@ import {
 } from "@/features/auth/server/auth.actions";
 import { AuthField, FormMessage, PasswordField } from "./AuthFields";
 
-const initialState: AuthFormState = {};
+const initialState: AuthFormState = { status: "idle" };
 
 export function NormalLoginForm({ next }: { next?: string | null }) {
 	const [state, formAction, pending] = useActionState(
 		loginAction,
 		initialState,
 	);
+	const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
 
 	return (
 		<form action={formAction} className='flex flex-col gap-4'>
 			{next ? <input type='hidden' name='next' value={next} /> : null}
-			{state.error ? <FormMessage type='error'>{state.error}</FormMessage> : null}
+			{state.status === "error" && !state.fieldErrors ? (
+				<FormMessage type='error'>{state.message}</FormMessage>
+			) : null}
 
 			<AuthField
 				id='login-email'
@@ -28,7 +31,7 @@ export function NormalLoginForm({ next }: { next?: string | null }) {
 				type='email'
 				placeholder='you@example.com'
 				autoComplete='email'
-				errors={state.fieldErrors?.email}
+				errors={fieldErrors?.email}
 				required
 			/>
 

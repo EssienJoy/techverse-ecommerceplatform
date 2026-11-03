@@ -20,12 +20,15 @@ import {
 	addFlashSaleItem,
 	removeFlashSaleItem,
 } from "./content.service";
+import {
+	actionError,
+	actionSuccess,
+	databaseError,
+	validationError,
+	type ActionResult,
+} from "@/shared/lib/error";
 
-export type ContentFormState = {
-	fieldErrors?: Record<string, string[]>;
-	formError?: string | null;
-	success?: boolean;
-};
+export type ContentFormState = ActionResult;
 
 function str(value: FormDataEntryValue | null): string {
 	return typeof value === "string" ? value.trim() : "";
@@ -61,7 +64,9 @@ export async function categoryFormAction(
 	formData: FormData,
 ): Promise<ContentFormState> {
 	const access = await restrictTo(ADMIN_ROLES);
-	if (access.status !== "success") return { formError: access.message };
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	const id = str(formData.get("id"));
 	const label = str(formData.get("label"));
@@ -71,10 +76,10 @@ export async function categoryFormAction(
 	const fieldErrors: Record<string, string[]> = {};
 	if (!label) fieldErrors.label = ["Name is required"];
 	if (!icon) fieldErrors.icon = ["Icon is required"];
-	if (Object.keys(fieldErrors).length > 0) return { fieldErrors };
+	if (Object.keys(fieldErrors).length > 0) return validationError(fieldErrors);
 
 	const image = await resolveImageUpload(formData);
-	if (!image.ok) return { formError: image.error };
+	if (!image.ok) return actionError(image.error);
 
 	try {
 		if (id) {
@@ -82,25 +87,30 @@ export async function categoryFormAction(
 		} else {
 			await createCategory({ label, title, icon, imageUrl: image.url });
 		}
-	} catch {
-		return { formError: "Could not save the category. Try again." };
+	} catch (error) {
+		return databaseError(error, "Could not save the category. Try again.");
 	}
 
 	updateTag("categories");
 	revalidateCategoryConsumers();
-	return { success: true };
+	return actionSuccess();
 }
 
-export async function deleteCategoryAction(id: string): Promise<void> {
-	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
+export async function deleteCategoryAction(id: string): Promise<ActionResult> {
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	try {
 		await deleteCategory(id);
-	} catch {
-		// ignored — revalidation refreshes the list regardless
+	} catch (error) {
+		return databaseError(error, "Could not delete the category. Try again.");
 	}
+
 	updateTag("categories");
 	revalidateCategoryConsumers();
+	return actionSuccess();
 }
 
 // Brand actions
@@ -109,17 +119,19 @@ export async function brandFormAction(
 	formData: FormData,
 ): Promise<ContentFormState> {
 	const access = await restrictTo(ADMIN_ROLES);
-	if (access.status !== "success") return { formError: access.message };
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	const id = str(formData.get("id"));
 	const name = str(formData.get("name"));
 
 	const fieldErrors: Record<string, string[]> = {};
 	if (!name) fieldErrors.name = ["Name is required"];
-	if (Object.keys(fieldErrors).length > 0) return { fieldErrors };
+	if (Object.keys(fieldErrors).length > 0) return validationError(fieldErrors);
 
 	const image = await resolveImageUpload(formData, "logoUrl");
-	if (!image.ok) return { formError: image.error };
+	if (!image.ok) return actionError(image.error);
 
 	try {
 		if (id) {
@@ -127,25 +139,30 @@ export async function brandFormAction(
 		} else {
 			await createBrand({ name, logoUrl: image.url || undefined });
 		}
-	} catch {
-		return { formError: "Could not save the brand. Try again." };
+	} catch (error) {
+		return databaseError(error, "Could not save the brand. Try again.");
 	}
 
 	updateTag("brands");
 	revalidateBrandConsumers();
-	return { success: true };
+	return actionSuccess();
 }
 
-export async function deleteBrandAction(id: string): Promise<void> {
-	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
+export async function deleteBrandAction(id: string): Promise<ActionResult> {
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	try {
 		await deleteBrand(id);
-	} catch {
-		// ignored
+	} catch (error) {
+		return databaseError(error, "Could not delete the brand. Try again.");
 	}
+
 	updateTag("brands");
 	revalidateBrandConsumers();
+	return actionSuccess();
 }
 
 // Hero slide actions
@@ -154,7 +171,9 @@ export async function heroFormAction(
 	formData: FormData,
 ): Promise<ContentFormState> {
 	const access = await restrictTo(ADMIN_ROLES);
-	if (access.status !== "success") return { formError: access.message };
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	const id = str(formData.get("id"));
 	const tag = str(formData.get("tag"));
@@ -165,10 +184,10 @@ export async function heroFormAction(
 
 	const fieldErrors: Record<string, string[]> = {};
 	if (!title) fieldErrors.title = ["Title is required"];
-	if (Object.keys(fieldErrors).length > 0) return { fieldErrors };
+	if (Object.keys(fieldErrors).length > 0) return validationError(fieldErrors);
 
 	const image = await resolveImageUpload(formData);
-	if (!image.ok) return { formError: image.error };
+	if (!image.ok) return actionError(image.error);
 
 	try {
 		if (id) {
@@ -190,27 +209,32 @@ export async function heroFormAction(
 				active,
 			});
 		}
-	} catch {
-		return { formError: "Could not save the slide. Try again." };
+	} catch (error) {
+		return databaseError(error, "Could not save the slide. Try again.");
 	}
 
 	updateTag("hero-slides");
 	revalidatePath("/admin/content/hero");
 	revalidateContentConsumers();
-	return { success: true };
+	return actionSuccess();
 }
 
-export async function deleteHeroAction(id: string): Promise<void> {
-	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
+export async function deleteHeroAction(id: string): Promise<ActionResult> {
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	try {
 		await deleteHeroSlide(id);
-	} catch {
-		// ignored
+	} catch (error) {
+		return databaseError(error, "Could not delete the slide. Try again.");
 	}
+
 	updateTag("hero-slides");
 	revalidatePath("/admin/content/hero");
 	revalidateContentConsumers();
+	return actionSuccess();
 }
 
 // Flash sale actions
@@ -219,7 +243,9 @@ export async function flashSaleSettingsAction(
 	formData: FormData,
 ): Promise<ContentFormState> {
 	const access = await restrictTo(ADMIN_ROLES);
-	if (access.status !== "success") return { formError: access.message };
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	const headline = str(formData.get("headline"));
 	const endsAt = str(formData.get("endsAt"));
@@ -228,17 +254,17 @@ export async function flashSaleSettingsAction(
 	const fieldErrors: Record<string, string[]> = {};
 	if (!headline) fieldErrors.headline = ["Headline is required"];
 	if (!endsAt) fieldErrors.endsAt = ["End date is required"];
-	if (Object.keys(fieldErrors).length > 0) return { fieldErrors };
+	if (Object.keys(fieldErrors).length > 0) return validationError(fieldErrors);
 
 	try {
 		await upsertFlashSale({ headline, endsAt, active });
-	} catch {
-		return { formError: "Could not save the flash sale. Try again." };
+	} catch (error) {
+		return databaseError(error, "Could not save the flash sale. Try again.");
 	}
 
 	updateTag("flash-sale");
 	revalidatePath("/admin/content/flash-sale");
-	return { success: true };
+	return actionSuccess();
 }
 
 export async function addFlashSaleItemAction(
@@ -246,7 +272,9 @@ export async function addFlashSaleItemAction(
 	formData: FormData,
 ): Promise<ContentFormState> {
 	const access = await restrictTo(ADMIN_ROLES);
-	if (access.status !== "success") return { formError: access.message };
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	const productId = str(formData.get("productId"));
 	const discount = Number(str(formData.get("discount")));
@@ -256,27 +284,34 @@ export async function addFlashSaleItemAction(
 	if (!discount || discount <= 0 || discount > 90) {
 		fieldErrors.discount = ["Discount must be between 1 and 90"];
 	}
-	if (Object.keys(fieldErrors).length > 0) return { fieldErrors };
+	if (Object.keys(fieldErrors).length > 0) return validationError(fieldErrors);
 
 	try {
 		await addFlashSaleItem({ productId, discount });
-	} catch {
-		return { formError: "Could not add the item. Try again." };
+	} catch (error) {
+		return databaseError(error, "Could not add the item. Try again.");
 	}
 
 	updateTag("flash-sale");
 	revalidatePath("/admin/content/flash-sale");
-	return { success: true };
+	return actionSuccess();
 }
 
-export async function deleteFlashSaleItemAction(id: string): Promise<void> {
-	if ((await restrictTo(ADMIN_ROLES)).status !== "success") return;
+export async function deleteFlashSaleItemAction(
+	id: string,
+): Promise<ActionResult> {
+	const access = await restrictTo(ADMIN_ROLES);
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	try {
 		await removeFlashSaleItem(id);
-	} catch {
-		// ignored
+	} catch (error) {
+		return databaseError(error, "Could not remove the item. Try again.");
 	}
+
 	updateTag("flash-sale");
 	revalidatePath("/admin/content/flash-sale");
+	return actionSuccess();
 }

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { ProductDetail } from "@/features/products";
+import { ProductDetail, ProductDetailSkeleton } from "@/features/products";
 import { ProductViewTracker } from "@/features/history";
 import {
 	getProduct,
@@ -13,12 +13,7 @@ export default function ProductPage({
 	params: Promise<{ productId: string }>;
 }) {
 	return (
-		<Suspense
-			fallback={
-				<div className='flex min-h-[60vh] items-center justify-center text-sm text-muted-foreground'>
-					Loading product...
-				</div>
-			}>
+		<Suspense fallback={<ProductDetailSkeleton />}>
 			<ProductContent params={params} />
 		</Suspense>
 	);

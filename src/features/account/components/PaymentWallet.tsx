@@ -12,13 +12,13 @@ import {
 	formatExpiryInput,
 	isValidExpiry,
 } from "../lib/card";
-import type { CardBrand } from "../schema";
+import type { BrandMarkProps } from "../types";
 
 const inputClass =
 	"h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring/40";
 
 /** A small wordmark so each saved card is recognisable at a glance. */
-function BrandMark({ brand }: { brand: CardBrand }) {
+function BrandMark({ brand }: BrandMarkProps) {
 	const label = cardBrandLabels[brand];
 
 	return (

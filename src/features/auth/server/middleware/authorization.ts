@@ -1,9 +1,15 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { getUserById, type AuthResult } from "../user.service";
+import { getUserById } from "../user.service";
 import { getSession } from "./session";
 import { withNext } from "../../lib/redirect";
 import type { UserRole } from "../../schema";
+import {
+	actionError,
+	actionSuccess,
+	databaseError,
+	type ActionOutcome,
+} from "@/shared/lib/error";
 
 export type AuthenticatedUser = NonNullable<
 	Awaited<ReturnType<typeof getUserById>>
@@ -27,44 +33,35 @@ export async function protect(): Promise<string | null> {
  * Authorization only. Loads the user behind `userId` and checks that the
  * account is active and holds one of `roles`.
  *
- * Expected denials come back as a result (401 when the id no longer maps to an
- * active account, 403 for the wrong role) so callers can answer in their own
- * shape. Unexpected database failures come back as a 500 result.
+ * Expected denials come back as an error result with a `reason` (unauthenticated
+ * when the id no longer maps to an active account, forbidden for the wrong
+ * role) so callers can answer in their own shape. Unexpected database failures
+ * come back as a plain error result.
  */
 export async function authorize(
 	userId: string,
 	roles: UserRole | UserRole[] = ALL_ROLES,
-): Promise<AuthResult<AuthenticatedUser>> {
+): Promise<ActionOutcome<AuthenticatedUser>> {
 	const allowedRoles = Array.isArray(roles) ? roles : [roles];
 
 	try {
 		const user = await getUserById(userId);
 
 		if (!user) {
-			return {
-				status: "failure",
-				statusCode: 401,
-				message: "You must be signed in to do that.",
-			};
+			return actionError("You must be signed in to do that.", {
+				reason: "unauthenticated",
+			});
 		}
 
 		if (!allowedRoles.includes(user.role)) {
-			return {
-				status: "failure",
-				statusCode: 403,
-				message: "You do not have permission to do that.",
-			};
+			return actionError("You do not have permission to do that.", {
+				reason: "forbidden",
+			});
 		}
 
-		return { status: "success", statusCode: 200, data: user };
+		return actionSuccess(user);
 	} catch (error) {
-		console.error("Could not verify the current user.", error);
-
-		return {
-			status: "error",
-			statusCode: 500,
-			message: "Could not verify your account. Try again.",
-		};
+		return databaseError(error, "Could not verify your account. Try again.");
 	}
 }
 
@@ -76,27 +73,19 @@ export async function authorize(
  */
 export async function guard(
 	roles: UserRole | UserRole[] = ALL_ROLES,
-): Promise<AuthResult<AuthenticatedUser>> {
+): Promise<ActionOutcome<AuthenticatedUser>> {
 	let userId: string | null;
 
 	try {
 		userId = await protect();
 	} catch (error) {
-		console.error("Could not read the session.", error);
-
-		return {
-			status: "error",
-			statusCode: 500,
-			message: "Could not verify your account. Try again.",
-		};
+		return databaseError(error, "Could not verify your account. Try again.");
 	}
 
 	if (!userId) {
-		return {
-			status: "failure",
-			statusCode: 401,
-			message: "You must be signed in to do that.",
-		};
+		return actionError("You must be signed in to do that.", {
+			reason: "unauthenticated",
+		});
 	}
 
 	return authorize(userId, roles);
@@ -132,11 +121,11 @@ export function restrictTo(
 export function restrictTo(
 	roles: UserRole | UserRole[],
 	options?: ResultOptions,
-): Promise<AuthResult<AuthenticatedUser>>;
+): Promise<ActionOutcome<AuthenticatedUser>>;
 export async function restrictTo(
 	roles: UserRole | UserRole[],
 	options: RedirectOptions | ResultOptions = {},
-): Promise<AuthenticatedUser | AuthResult<AuthenticatedUser>> {
+): Promise<AuthenticatedUser | ActionOutcome<AuthenticatedUser>> {
 	const result = await guard(roles);
 
 	if (result.status === "success") {
@@ -146,9 +135,9 @@ export async function restrictTo(
 	if (options.redirect) {
 		// A database failure is not a permission decision: let the page's error
 		// boundary handle it instead of showing the sign-in or forbidden page.
-		if (result.status === "error") throw new Error(result.message);
+		if (!result.reason) throw new Error(result.message);
 
-		if (result.statusCode === 401) {
+		if (result.reason === "unauthenticated") {
 			redirect(withNext(options.loginPath ?? "/login", options.next ?? null));
 		}
 

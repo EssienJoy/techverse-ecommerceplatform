@@ -10,19 +10,7 @@ import {
 	Settings,
 	UserRound,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-
-type MenuItem = {
-	href: string;
-	label: string;
-	description: string;
-	icon: LucideIcon;
-};
-
-type MenuGroup = {
-	title: string;
-	items: MenuItem[];
-};
+import type { MenuGroup } from "../types";
 
 /**
  * The dashboard sections. They are grouped so the page stays a short overview

@@ -31,12 +31,14 @@ export const useCartStore = create<Cart>()(
 			totalCartItems: 0,
 			addToCart: (productId, variationId) => {
 				if (blockAdminShopping()) return;
-				void addCartItemAction(productId, variationId).catch(() => {
-					alert.error("Could not add this item to your cart.");
-					// Roll the optimistic change back to what the server actually has.
-					void getCartAction()
-						.then((result) => get().replaceCart(result.cart))
-						.catch(() => {});
+				void addCartItemAction(productId, variationId).then((result) => {
+					if (result.status === "error") {
+						alert.error(result.message);
+						// Roll the optimistic change back to what the server actually has.
+						void getCartAction()
+							.then((cart) => get().replaceCart(cart.cart))
+							.catch(() => {});
+					}
 				});
 				set((state) => {
 					const id = variationId ?? productId;
@@ -60,27 +62,28 @@ export const useCartStore = create<Cart>()(
 					item.productId,
 					item.variationId,
 					requested,
-				)
-					.then((applied) => {
-						// The server caps quantity at stock and the per-item limit.
-						if (applied === null || applied >= requested) return;
-						alert.error(
-							applied > 0
-								? `Only ${applied} available for this item.`
-								: "This item is no longer available.",
-						);
-						set((state) => {
-							const cart = state.cart
-								.map((line) =>
-									cartLineId(line) === id ? { ...line, qty: applied } : line,
-								)
-								.filter((line) => line.qty > 0);
-							return { cart, totalCartItems: cart.length };
-						});
-					})
-					.catch(() => {
-						alert.error("Could not save this cart change to your account.");
+				).then((result) => {
+					if (result.status === "error") {
+						alert.error(result.message);
+						return;
+					}
+					const applied = result.data;
+					// The server caps quantity at stock and the per-item limit.
+					if (applied === null || applied >= requested) return;
+					alert.error(
+						applied > 0
+							? `Only ${applied} available for this item.`
+							: "This item is no longer available.",
+					);
+					set((state) => {
+						const cart = state.cart
+							.map((line) =>
+								cartLineId(line) === id ? { ...line, qty: applied } : line,
+							)
+							.filter((line) => line.qty > 0);
+						return { cart, totalCartItems: cart.length };
 					});
+				});
 				set((state) => {
 					const cart = state.cart.map((item) =>
 						cartLineId(item) === id ? { ...item, qty: item.qty + 1 } : item,
@@ -95,8 +98,8 @@ export const useCartStore = create<Cart>()(
 					item.productId,
 					item.variationId,
 					item.qty - 1,
-				).catch(() => {
-					alert.error("Could not save this cart change to your account.");
+				).then((result) => {
+					if (result.status === "error") alert.error(result.message);
 				});
 				set((state) => {
 					const cart = state.cart
@@ -110,17 +113,19 @@ export const useCartStore = create<Cart>()(
 			removeFromCart: (id) => {
 				const item = get().cart.find((line) => cartLineId(line) === id);
 				if (!item) return;
-				void removeCartItemAction(item.productId, item.variationId).catch(() => {
-					alert.error("Could not save this cart change to your account.");
-				});
+				void removeCartItemAction(item.productId, item.variationId).then(
+					(result) => {
+						if (result.status === "error") alert.error(result.message);
+					},
+				);
 				set((state) => {
 					const cart = state.cart.filter((item) => cartLineId(item) !== id);
 					return { cart, totalCartItems: cart.length };
 				});
 			},
 			clearCart: () => {
-				void clearCartAction().catch(() => {
-					alert.error("Could not clear your saved cart.");
+				void clearCartAction().then((result) => {
+					if (result.status === "error") alert.error(result.message);
 				});
 				set({ cart: [], totalCartItems: 0 });
 			},

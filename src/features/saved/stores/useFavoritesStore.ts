@@ -17,6 +17,9 @@ type Favorites = {
 	replaceFavorites: (favorites: string[]) => void;
 };
 
+const reportError = (result: { status: "error"; message: string }) =>
+	alert.error(result.message);
+
 export const useFavoritesStore = create<Favorites>()(
 	persist(
 		(set, get) => ({
@@ -24,8 +27,8 @@ export const useFavoritesStore = create<Favorites>()(
 			addToFavorites: (productId) => {
 				if (blockAdminShopping()) return;
 				if (get().favorites.includes(productId)) return;
-				void setSavedItemAction(productId, true).catch(() => {
-					alert.error("Could not save this item to your account.");
+				void setSavedItemAction(productId, true).then((result) => {
+					if (result.status === "error") reportError(result);
 				});
 				set((state) => ({
 					favorites: state.favorites.includes(productId)
@@ -34,8 +37,8 @@ export const useFavoritesStore = create<Favorites>()(
 				}));
 			},
 			removeFromFavorites: (productId) => {
-				void setSavedItemAction(productId, false).catch(() => {
-					alert.error("Could not update your saved items.");
+				void setSavedItemAction(productId, false).then((result) => {
+					if (result.status === "error") reportError(result);
 				});
 				set((state) => ({
 					favorites: state.favorites.filter((id) => id !== productId),
@@ -44,8 +47,8 @@ export const useFavoritesStore = create<Favorites>()(
 			toggleFavorite: (productId) => {
 				if (blockAdminShopping()) return;
 				const isSaved = get().favorites.includes(productId);
-				void setSavedItemAction(productId, !isSaved).catch(() => {
-					alert.error("Could not update your saved items.");
+				void setSavedItemAction(productId, !isSaved).then((result) => {
+					if (result.status === "error") reportError(result);
 				});
 				set((state) => ({
 					favorites: state.favorites.includes(productId)
@@ -55,8 +58,8 @@ export const useFavoritesStore = create<Favorites>()(
 			},
 			isFavorite: (productId) => get().favorites.includes(productId),
 			clearFavorites: () => {
-				void clearSavedItemsAction().catch(() => {
-					alert.error("Could not clear your saved items.");
+				void clearSavedItemsAction().then((result) => {
+					if (result.status === "error") reportError(result);
 				});
 				set({ favorites: [] });
 			},

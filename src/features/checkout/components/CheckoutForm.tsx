@@ -16,7 +16,7 @@ import { startCheckoutSession } from "../server/checkout.service";
 import { useCheckoutOrder } from "../lib/useCheckoutOrder";
 import type { CheckoutActionState } from "../types";
 
-const initialState: CheckoutActionState = { status: "idle", message: "" };
+const initialState: CheckoutActionState = { status: "idle" };
 
 type CheckoutField = {
 	id: string;

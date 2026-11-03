@@ -1,4 +1,5 @@
 import type { z } from "zod";
+import type { ActionError } from "@/shared/lib/error";
 import type { shippingAddressSchema } from "./schema";
 
 /** The shipping form, once it has passed `shippingAddressSchema`. */
@@ -6,7 +7,8 @@ export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
 
 /** Result of the "continue to payment" server action. */
 export type CheckoutActionState =
-	| { status: "idle" | "error"; message: string }
+	| { status: "idle" }
+	| ActionError
 	| { status: "redirect"; url: string };
 
 /** A cart line resolved against its product, ready to become a line item. */

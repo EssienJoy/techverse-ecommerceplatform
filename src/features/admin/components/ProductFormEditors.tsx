@@ -110,10 +110,10 @@ function VariationImages({
 			formData.set("file", file);
 			formData.set("removeBackground", removeBackground ? "true" : "false");
 			const result = await uploadImageAction(formData);
-			if (result.ok) {
-				uploaded.push(result.url);
-			} else {
-				setError(result.error);
+			if (result.status === "success") {
+				uploaded.push(result.data.url);
+			} else if (result.status === "error") {
+				setError(result.message);
 			}
 		}
 

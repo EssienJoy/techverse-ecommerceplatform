@@ -28,7 +28,7 @@ import {
 	type ContentFormState,
 } from "@/features/content/server/content.actions";
 
-const initialState: ContentFormState = {};
+const initialState: ContentFormState = { status: "idle" };
 
 export function FlashSaleManager({
 	flashSale,
@@ -56,7 +56,7 @@ export function FlashSaleManager({
 
 		startTransition(async () => {
 			const result = await flashSaleSettingsAction(initialState, formData);
-			if (result.success) {
+			if (result.status === "success") {
 				setSettingsState(initialState);
 			} else {
 				setSettingsState(result);
@@ -70,7 +70,7 @@ export function FlashSaleManager({
 
 		startTransition(async () => {
 			const result = await addFlashSaleItemAction(initialState, formData);
-			if (result.success) {
+			if (result.status === "success") {
 				setItemState(initialState);
 				setSelectedProduct("");
 				setDiscount("");
@@ -82,12 +82,15 @@ export function FlashSaleManager({
 
 	const handleRemoveItem = (id: string) => {
 		startTransition(async () => {
-			await deleteFlashSaleItemAction(id);
+			const result = await deleteFlashSaleItemAction(id);
+			if (result.status === "error") setItemState(result);
 		});
 	};
 
-	const settingsErrors = settingsState.fieldErrors ?? {};
-	const itemErrors = itemState.fieldErrors ?? {};
+	const settingsErrors =
+		settingsState.status === "error" ? (settingsState.fieldErrors ?? {}) : {};
+	const itemErrors =
+		itemState.status === "error" ? (itemState.fieldErrors ?? {}) : {};
 
 	return (
 		<>
@@ -142,9 +145,11 @@ export function FlashSaleManager({
 								{isPending ? "Saving…" : "Save campaign"}
 							</Button>
 						</div>
-						{settingsState.formError ? (
+						{settingsState.status === "error" &&
+						settingsState.message &&
+						!settingsState.fieldErrors ? (
 							<p className='rounded-lg border border-danger/30 bg-danger-muted px-3 py-2 text-sm text-danger'>
-								{settingsState.formError}
+								{settingsState.message}
 							</p>
 						) : null}
 					</form>
@@ -209,9 +214,11 @@ export function FlashSaleManager({
 						</Button>
 					</form>
 
-					{itemState.formError ? (
+					{itemState.status === "error" &&
+					itemState.message &&
+					!itemState.fieldErrors ? (
 						<p className='rounded-lg border border-danger/30 bg-danger-muted px-3 py-2 text-sm text-danger'>
-							{itemState.formError}
+							{itemState.message}
 						</p>
 					) : null}
 

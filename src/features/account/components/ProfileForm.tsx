@@ -1,22 +1,21 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-	updateProfileAction,
-	type ProfileFormState,
-} from "../server/user.action";
+import { updateProfileAction } from "../server/user.action";
+import type {
+	ProfileFieldProps,
+	ProfileFormProps,
+	ProfileFormState,
+} from "../types";
 
-const initialState: ProfileFormState = {};
+const initialState: ProfileFormState = { status: "idle" };
 
-export function ProfileForm({
-	defaultValues,
-}: {
-	defaultValues: { name: string; email: string };
-}) {
+export function ProfileForm({ defaultValues }: ProfileFormProps) {
 	const [state, formAction, pending] = useActionState(
 		updateProfileAction,
 		initialState,
 	);
+	const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
 
 	return (
 		<section className='rounded-3xl border border-border/80 bg-card p-4 shadow-sm'>
@@ -29,7 +28,7 @@ export function ProfileForm({
 					label='Name'
 					name='name'
 					defaultValue={defaultValues.name}
-					errors={state.fieldErrors?.name}
+					errors={fieldErrors?.name}
 					autoComplete='name'
 				/>
 				<Field
@@ -37,18 +36,18 @@ export function ProfileForm({
 					name='email'
 					type='email'
 					defaultValue={defaultValues.email}
-					errors={state.fieldErrors?.email}
+					errors={fieldErrors?.email}
 					autoComplete='email'
 				/>
 
-				{state.error && (
+				{state.status === "error" && state.message && !state.fieldErrors && (
 					<p className='rounded-md border border-error-border bg-error-muted px-3 py-2 text-sm text-error-foreground'>
-						{state.error}
+						{state.message}
 					</p>
 				)}
-				{state.success && (
+				{state.status === "success" && state.message && (
 					<p className='rounded-md border border-success-border bg-success-muted px-3 py-2 text-sm text-success-foreground'>
-						{state.success}
+						{state.message}
 					</p>
 				)}
 
@@ -70,14 +69,7 @@ function Field({
 	defaultValue,
 	errors,
 	autoComplete,
-}: {
-	label: string;
-	name: string;
-	type?: string;
-	defaultValue?: string;
-	errors?: string[];
-	autoComplete?: string;
-}) {
+}: ProfileFieldProps) {
 	const id = `profile-${name}`;
 	return (
 		<div className='space-y-2'>

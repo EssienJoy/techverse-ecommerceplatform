@@ -3,12 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { productReviewInputSchema } from "../schema";
 import { addProductReview } from "./products.service";
+import {
+	actionSuccess,
+	databaseError,
+	validationError,
+	type ActionResult,
+} from "@/shared/lib/error";
 
-export type ReviewFormState = {
-	success?: boolean;
-	formError?: string | null;
-	fieldErrors?: Record<string, string[]>;
-};
+export type ReviewFormState = ActionResult;
 
 export async function createReviewAction(
 	_prevState: ReviewFormState,
@@ -23,18 +25,21 @@ export async function createReviewAction(
 	});
 
 	if (!parsed.success) {
-		return { fieldErrors: parsed.error.flatten().fieldErrors };
+		return validationError(parsed.error.flatten().fieldErrors);
 	}
 
 	try {
 		await addProductReview(parsed.data);
-	} catch {
-		return { formError: "Could not submit your review. Please try again." };
+	} catch (error) {
+		return databaseError(
+			error,
+			"Could not submit your review. Please try again.",
+		);
 	}
 
 	revalidatePath(`/product/${parsed.data.productId}`);
 	revalidatePath("/shop");
 	revalidatePath("/");
 
-	return { success: true };
+	return actionSuccess();
 }

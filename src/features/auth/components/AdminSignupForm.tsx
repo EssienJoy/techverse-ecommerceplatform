@@ -8,19 +8,22 @@ import {
 } from "@/features/auth/server/auth.actions";
 import { AuthField, FormMessage, PasswordField } from "./AuthFields";
 
-const initialState: AuthFormState = {};
+const initialState: AuthFormState = { status: "idle" };
 
 export function AdminSignupForm() {
 	const [state, formAction, pending] = useActionState(
 		adminSignupAction,
 		initialState,
 	);
+	const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
 
 	return (
 		<form action={formAction} className='flex flex-col gap-4'>
-			{state.error ? <FormMessage type='error'>{state.error}</FormMessage> : null}
-			{state.success ? (
-				<FormMessage type='success'>{state.success}</FormMessage>
+			{state.status === "error" && !state.fieldErrors ? (
+				<FormMessage type='error'>{state.message}</FormMessage>
+			) : null}
+			{state.status === "success" && state.message ? (
+				<FormMessage type='success'>{state.message}</FormMessage>
 			) : null}
 
 			<AuthField
@@ -29,7 +32,7 @@ export function AdminSignupForm() {
 				label='Full name'
 				placeholder='Alex Morgan'
 				autoComplete='off'
-				errors={state.fieldErrors?.name}
+				errors={fieldErrors?.name}
 				required
 			/>
 
@@ -40,7 +43,7 @@ export function AdminSignupForm() {
 				type='email'
 				placeholder='admin@example.com'
 				autoComplete='off'
-				errors={state.fieldErrors?.email}
+				errors={fieldErrors?.email}
 				required
 			/>
 
@@ -52,7 +55,7 @@ export function AdminSignupForm() {
 					placeholder='8+ characters'
 					autoComplete='new-password'
 					minLength={8}
-					errors={state.fieldErrors?.password}
+					errors={fieldErrors?.password}
 					required
 				/>
 
@@ -63,7 +66,7 @@ export function AdminSignupForm() {
 					placeholder='Repeat password'
 					autoComplete='new-password'
 					minLength={8}
-					errors={state.fieldErrors?.confirmPassword}
+					errors={fieldErrors?.confirmPassword}
 					required
 				/>
 			</div>

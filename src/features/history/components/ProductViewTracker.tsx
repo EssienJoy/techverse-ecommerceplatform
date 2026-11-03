@@ -9,7 +9,7 @@ import { recordProductViewAction } from "../server/history.actions";
  */
 export function ProductViewTracker({ productId }: { productId: string }) {
 	useEffect(() => {
-		void recordProductViewAction(productId).catch(() => {});
+		void recordProductViewAction(productId);
 	}, [productId]);
 
 	return null;

@@ -1,11 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { NotificationKey, NotificationSettings } from "../schema";
-
-type SettingsState = {
-	notifications: NotificationSettings;
-	toggleNotification: (key: NotificationKey) => void;
-};
+import type { SettingsState } from "../types";
 
 export const useSettingsStore = create<SettingsState>()(
 	persist(

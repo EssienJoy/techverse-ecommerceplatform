@@ -15,12 +15,14 @@ import {
 import { restrictTo } from "./middleware/authorization";
 import { safeRedirectPath } from "../lib/redirect";
 import { claimGuestActivity } from "@/features/guest/server/merge-guest.service";
+import {
+	actionError,
+	actionSuccess,
+	validationError,
+	type ActionResult,
+} from "@/shared/lib/error";
 
-export type AuthFormState = {
-	fieldErrors?: Record<string, string[]>;
-	error?: string | null;
-	success?: string | null;
-};
+export type AuthFormState = ActionResult;
 
 export async function loginAction(
 	_prevState: AuthFormState,
@@ -32,13 +34,11 @@ export async function loginAction(
 	const password = String(formData.get("password") ?? "");
 
 	if (!email || !password) {
-		return { error: "Enter your email and password." };
+		return actionError("Enter your email and password.");
 	}
 
 	const result = await loginUser({ email, password });
-	if (result.status !== "success") {
-		return { error: result.message };
-	}
+	if (result.status === "error") return actionError(result.message);
 
 	await setSessionCookie(result.data.id);
 
@@ -62,18 +62,16 @@ export async function userSignupAction(
 	});
 
 	if (!parsed.success) {
-		return { fieldErrors: parsed.error.flatten().fieldErrors };
+		return validationError(parsed.error.flatten().fieldErrors);
 	}
 
 	const confirmPassword = String(formData.get("confirmPassword") ?? "");
 	if (parsed.data.password !== confirmPassword) {
-		return { fieldErrors: { confirmPassword: ["Passwords do not match."] } };
+		return validationError({ confirmPassword: ["Passwords do not match."] });
 	}
 
 	const result = await registerUser({ ...parsed.data, role: "user" });
-	if (result.status !== "success") {
-		return { error: result.message, success: null };
-	}
+	if (result.status === "error") return actionError(result.message);
 
 	await setSessionCookie(result.data.id);
 	await claimGuestActivity(result.data.id);
@@ -85,7 +83,9 @@ export async function adminSignupAction(
 	formData: FormData,
 ): Promise<AuthFormState> {
 	const access = await restrictTo("super_admin");
-	if (access.status !== "success") return { error: access.message };
+	if (access.status === "error") {
+		return actionError(access.message, { reason: access.reason });
+	}
 
 	const parsed = createUserInputSchema.safeParse({
 		name: formData.get("name"),
@@ -94,22 +94,21 @@ export async function adminSignupAction(
 	});
 
 	if (!parsed.success) {
-		return { fieldErrors: parsed.error.flatten().fieldErrors };
+		return validationError(parsed.error.flatten().fieldErrors);
 	}
 
 	const confirmPassword = String(formData.get("confirmPassword") ?? "");
 	if (parsed.data.password !== confirmPassword) {
-		return { fieldErrors: { confirmPassword: ["Passwords do not match."] } };
+		return validationError({ confirmPassword: ["Passwords do not match."] });
 	}
 
 	const result = await createAdminUser(parsed.data, access.data);
-	if (result.status !== "success") {
-		return { error: result.message };
-	}
+	if (result.status === "error") return actionError(result.message);
 
-	return {
-		success: `Account created for ${result.data.email}. They can now sign in.`,
-	};
+	return actionSuccess(
+		undefined,
+		`Account created for ${result.data.email}. They can now sign in.`,
+	);
 }
 
 export async function logoutAction(): Promise<void> {
