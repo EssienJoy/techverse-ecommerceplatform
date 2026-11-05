@@ -1,4 +1,4 @@
-export * from "./AlertMessage";
+export * from "./AppToaster";
 export * from "./Button";
 export * from "./Container";
 export * from "./DotsLoader";

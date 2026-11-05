@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { alert } from "@/shared";
+import { toast } from "react-hot-toast";
 import { seedProductsByIds } from "@/features/products/hooks/useProductsByIds";
 import { useCartStore } from "../stores/useCartStore";
 import { getCartAction } from "../server/cart.actions";
@@ -43,7 +43,7 @@ export function ShoppingListsSync() {
 			})
 			.catch(() => {
 				if (isMounted) {
-					alert.error("Could not load your saved cart and items.");
+					toast.error("Could not load your saved cart and items.");
 				}
 			});
 

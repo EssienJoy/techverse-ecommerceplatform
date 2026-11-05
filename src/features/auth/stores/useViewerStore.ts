@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { alert } from "@/shared";
+import { toast } from "react-hot-toast";
 
 export const ADMIN_SHOPPING_MESSAGE =
 	"Admin accounts can't shop. Sign in with a customer account to continue.";
@@ -18,6 +18,6 @@ export const useViewerStore = create<ViewerState>((set) => ({
 export function blockAdminShopping(): boolean {
 	if (!useViewerStore.getState().isAdmin) return false;
 
-	alert.error(ADMIN_SHOPPING_MESSAGE);
+	toast.error(ADMIN_SHOPPING_MESSAGE);
 	return true;
 }

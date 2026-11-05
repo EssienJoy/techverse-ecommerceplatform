@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useAlertStore } from "@/shared";
+import { toast } from "react-hot-toast";
 
 type ProductSuccessAlertProps = {
 	kind: "created" | "updated" | null;
@@ -11,18 +11,17 @@ type ProductSuccessAlertProps = {
 export function ProductSuccessAlert({ kind }: ProductSuccessAlertProps) {
 	const router = useRouter();
 	const pathname = usePathname();
-	const showSuccess = useAlertStore((store) => store.success);
 
 	useEffect(() => {
 		if (!kind) return;
 
-		showSuccess(
+		toast.success(
 			kind === "created"
 				? "Product created successfully."
 				: "Product updated successfully.",
 		);
 		router.replace(pathname, { scroll: false });
-	}, [kind, pathname, router, showSuccess]);
+	}, [kind, pathname, router]);
 
 	return null;
 }

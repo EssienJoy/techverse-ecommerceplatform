@@ -3,7 +3,8 @@
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Star } from "lucide-react";
-import { Button, Container, Input, useAlertStore } from "@/shared";
+import { toast } from "react-hot-toast";
+import { Button, Input } from "@/shared";
 import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { cn } from "cn";
@@ -37,21 +38,19 @@ export function ProductReviewForm({
 	const [hovered, setHovered] = useState(0);
 
 	const fieldErrors = state.status === "error" ? (state.fieldErrors ?? {}) : {};
-	const showSuccess = useAlertStore((store) => store.success);
-	const showError = useAlertStore((store) => store.error);
 
 	useEffect(() => {
 		if (state.status === "success") {
-			showSuccess("Review posted. Thanks for sharing!");
+			toast.success("Review posted. Thanks for sharing!");
 			router.refresh();
 			onSubmitted?.();
 			return;
 		}
 
 		if (state.status === "error" && state.message && !state.fieldErrors) {
-			showError(state.message);
+			toast.error(state.message);
 		}
-	}, [state, showSuccess, showError, router, onSubmitted]);
+	}, [state, router, onSubmitted]);
 
 	return (
 		<form

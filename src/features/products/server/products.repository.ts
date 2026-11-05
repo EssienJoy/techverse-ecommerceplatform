@@ -51,17 +51,36 @@ function toVariationCreate(variations: ProductInput["variations"]) {
 }
 
 function buildProductWhere({
+	q,
 	categoryId,
 	brandId,
 	inStockOnly,
 	includeInactive,
 }: ProductListFilters): Prisma.ProductWhereInput {
+	const search = q?.trim();
+
 	return {
 		...(includeInactive ? {} : { isActive: true }),
 		...(categoryId ? { categoryId } : {}),
 		...(brandId ? { brandId } : {}),
 		...(inStockOnly
 			? { variations: { some: { stock: { gt: 0 } } } }
+			: {}),
+		...(search
+			? {
+					OR: [
+						{ name: { contains: search, mode: "insensitive" } },
+						{ slug: { contains: search, mode: "insensitive" } },
+						{ description: { contains: search, mode: "insensitive" } },
+						{ category: { label: { contains: search, mode: "insensitive" } } },
+						{ brand: { name: { contains: search, mode: "insensitive" } } },
+						{
+							variations: {
+								some: { sku: { contains: search, mode: "insensitive" } },
+							},
+						},
+					],
+				}
 			: {}),
 	};
 }
@@ -140,6 +159,27 @@ export async function findProductsPage(options: ProductPageOptions = {}) {
 	}
 	if (options.brandId) {
 		conditions.push(Prisma.sql`p."brandId" = ${options.brandId}`);
+	}
+	if (options.q?.trim()) {
+		const pattern = `%${options.q.trim()}%`;
+
+		conditions.push(Prisma.sql`(
+			p.name ILIKE ${pattern}
+			OR p.slug ILIKE ${pattern}
+			OR p.description ILIKE ${pattern}
+			OR EXISTS (
+				SELECT 1 FROM categories c
+				WHERE c.id = p."categoryId" AND c.label ILIKE ${pattern}
+			)
+			OR EXISTS (
+				SELECT 1 FROM brands b
+				WHERE b.id = p."brandId" AND b.name ILIKE ${pattern}
+			)
+			OR EXISTS (
+				SELECT 1 FROM variations sv
+				WHERE sv."productId" = p.id AND sv.sku ILIKE ${pattern}
+			)
+		)`);
 	}
 	if (options.inStockOnly) {
 		conditions.push(

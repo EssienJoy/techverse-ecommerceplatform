@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { alert } from "@/shared";
+import { toast } from "react-hot-toast";
 import { blockAdminShopping } from "@/features/auth/stores/useViewerStore";
 import {
 	clearSavedItemsAction,
@@ -18,7 +18,7 @@ type Favorites = {
 };
 
 const reportError = (result: { status: "error"; message: string }) =>
-	alert.error(result.message);
+	toast.error(result.message);
 
 export const useFavoritesStore = create<Favorites>()(
 	persist(

@@ -15,6 +15,7 @@ export type ProductCursor = {
 };
 
 export type ProductListFilters = {
+	q?: string;
 	categoryId?: string;
 	brandId?: string;
 	inStockOnly?: boolean;

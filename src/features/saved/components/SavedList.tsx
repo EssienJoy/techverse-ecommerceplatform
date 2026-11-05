@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { Heart } from "lucide-react";
-import { EmptyState, Skeleton, useAlertStore } from "@/shared";
+import { toast } from "react-hot-toast";
+import { EmptyState, Skeleton } from "@/shared";
 import { useProductsByIds } from "@/features/products";
 import { useFavoritesStore } from "../stores/useFavoritesStore";
 import { SavedItemRow } from "./SavedItemRow";
@@ -28,7 +29,6 @@ export function SavedList({
 	const removeFromFavorites = useFavoritesStore(
 		(state) => state.removeFromFavorites,
 	);
-	const showAlert = useAlertStore((state) => state.show);
 	const { productsById, isLoading, missingIds } = useProductsByIds(favorites);
 	const missingKey = missingIds.join("|");
 
@@ -38,11 +38,8 @@ export function SavedList({
 		missingKey.split("|").forEach((productId) => {
 			removeFromFavorites(productId);
 		});
-		showAlert(
-			"info",
-			"Some saved items are no longer available and were removed.",
-		);
-	}, [isLoading, missingKey, removeFromFavorites, showAlert]);
+		toast("Some saved items are no longer available and were removed.");
+	}, [isLoading, missingKey, removeFromFavorites]);
 
 	const savedProducts = favorites.flatMap((productId) => {
 		const product = productsById.get(productId);

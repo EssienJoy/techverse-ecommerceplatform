@@ -4,7 +4,8 @@ import { useActionState, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, Layers, Tag } from "lucide-react";
-import { Button, Input, formatCurrency, useAlertStore } from "@/shared";
+import { toast } from "react-hot-toast";
+import { Button, Input, formatCurrency } from "@/shared";
 import type { ProductFormValues, ProductVariationInput } from "@/features/products/schema";
 import { Badge } from "@/shared/components/ui/badge";
 import {
@@ -86,13 +87,12 @@ function ProductForm({
 	const [state, formAction, pending] = useActionState(action, initialState);
 	const fieldErrors =
 		state.status === "error" ? (state.fieldErrors ?? {}) : {};
-	const showError = useAlertStore((store) => store.error);
 
 	useEffect(() => {
 		if (state.status === "error" && state.message && !state.fieldErrors) {
-			showError(state.message);
+			toast.error(state.message);
 		}
-	}, [state, showError]);
+	}, [state]);
 
 	const [name, setName] = useState(initial?.name ?? "");
 	const [slug, setSlug] = useState(initial?.slug ?? "");

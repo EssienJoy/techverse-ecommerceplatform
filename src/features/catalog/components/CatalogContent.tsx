@@ -350,7 +350,7 @@ export async function CatalogContent({
 						<details className='group relative'>
 							<summary className='flex cursor-pointer list-none items-center gap-2 rounded-full border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/50 [&::-webkit-details-marker]:hidden'>
 								<SlidersHorizontal className='size-4 text-muted-foreground' />
-								<span>Filter: {activeSortLabel}</span>
+								<span>Sort: {activeSortLabel}</span>
 								<ChevronDown className='size-3.5 text-muted-foreground transition-transform group-open:rotate-180' />
 							</summary>
 							<div className='absolute left-0 top-full z-30 mt-2 w-60 overflow-hidden rounded-xl border border-border bg-background p-1 shadow-lg'>

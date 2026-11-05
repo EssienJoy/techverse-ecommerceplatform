@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { alert } from "@/shared";
+import { toast } from "react-hot-toast";
 import type { CartLine } from "../schema";
 import { blockAdminShopping } from "@/features/auth/stores/useViewerStore";
 import {
@@ -33,7 +33,7 @@ export const useCartStore = create<Cart>()(
 				if (blockAdminShopping()) return;
 				void addCartItemAction(productId, variationId).then((result) => {
 					if (result.status === "error") {
-						alert.error(result.message);
+						toast.error(result.message);
 						// Roll the optimistic change back to what the server actually has.
 						void getCartAction()
 							.then((cart) => get().replaceCart(cart.cart))
@@ -64,13 +64,13 @@ export const useCartStore = create<Cart>()(
 					requested,
 				).then((result) => {
 					if (result.status === "error") {
-						alert.error(result.message);
+						toast.error(result.message);
 						return;
 					}
 					const applied = result.data;
 					// The server caps quantity at stock and the per-item limit.
 					if (applied === null || applied >= requested) return;
-					alert.error(
+					toast.error(
 						applied > 0
 							? `Only ${applied} available for this item.`
 							: "This item is no longer available.",
@@ -99,7 +99,7 @@ export const useCartStore = create<Cart>()(
 					item.variationId,
 					item.qty - 1,
 				).then((result) => {
-					if (result.status === "error") alert.error(result.message);
+					if (result.status === "error") toast.error(result.message);
 				});
 				set((state) => {
 					const cart = state.cart
@@ -115,7 +115,7 @@ export const useCartStore = create<Cart>()(
 				if (!item) return;
 				void removeCartItemAction(item.productId, item.variationId).then(
 					(result) => {
-						if (result.status === "error") alert.error(result.message);
+						if (result.status === "error") toast.error(result.message);
 					},
 				);
 				set((state) => {
@@ -125,7 +125,7 @@ export const useCartStore = create<Cart>()(
 			},
 			clearCart: () => {
 				void clearCartAction().then((result) => {
-					if (result.status === "error") alert.error(result.message);
+					if (result.status === "error") toast.error(result.message);
 				});
 				set({ cart: [], totalCartItems: 0 });
 			},

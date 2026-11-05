@@ -4,8 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
+import { toast } from "react-hot-toast";
 
-import { DotsLoader, formatCurrency, useAlertStore } from "@/shared";
+import { DotsLoader, formatCurrency } from "@/shared";
 import type { Product } from "@/features/products/schema";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
@@ -50,7 +51,6 @@ export function AdminProductsTable({
 	const [products, setProducts] = useState(initialProducts);
 	const [nextCursor, setNextCursor] = useState(initialNextCursor);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
-	const showError = useAlertStore((state) => state.error);
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
 
 	const loadMore = useCallback(() => {
@@ -74,10 +74,10 @@ export function AdminProductsTable({
 				setNextCursor(page.nextCursor);
 			})
 			.catch(() => {
-				showError("Could not load more products.");
+				toast.error("Could not load more products.");
 			})
 			.finally(() => setIsLoadingMore(false));
-	}, [nextCursor, isLoadingMore, showError]);
+	}, [nextCursor, isLoadingMore]);
 
 	useEffect(() => {
 		const node = sentinelRef.current;

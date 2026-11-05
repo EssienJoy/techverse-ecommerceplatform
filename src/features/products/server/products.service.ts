@@ -59,6 +59,7 @@ export async function getProducts(
 	const [{ rows, nextCursor }, total] = await Promise.all([
 		findProductsPage(options),
 		countProducts({
+			q: options.q,
 			categoryId: options.categoryId,
 			brandId: options.brandId,
 			inStockOnly: options.inStockOnly,

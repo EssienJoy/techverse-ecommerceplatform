@@ -12,7 +12,8 @@ import {
 	X,
 } from "lucide-react";
 import { cn } from "cn";
-import { Skeleton, formatCurrency, useAlertStore } from "@/shared";
+import { toast } from "react-hot-toast";
+import { Skeleton, formatCurrency } from "@/shared";
 import { useProductsByIds } from "@/features/products";
 import { useCartStore } from "@/features/cart/stores/useCartStore";
 import { useCartUIStore } from "@/features/cart/stores/useCartUIStore";
@@ -25,7 +26,6 @@ export function CartDrawer() {
 	const increaseQty = useCartStore((state) => state.increaseQty);
 	const decreaseQty = useCartStore((state) => state.decreaseQty);
 	const removeFromCart = useCartStore((state) => state.removeFromCart);
-	const showAlert = useAlertStore((state) => state.show);
 	const drawerRef = useRef<HTMLDivElement>(null);
 	const { productsById, isLoading, missingIds } = useProductsByIds(
 		cart.map((item) => item.productId),
@@ -45,11 +45,10 @@ export function CartDrawer() {
 		staleLines.forEach((line) => {
 			removeFromCart(line.variationId ?? line.productId);
 		});
-		showAlert(
-			"info",
+		toast(
 			"Some items in your cart are no longer available and were removed.",
 		);
-	}, [isLoading, missingKey, removeFromCart, showAlert]);
+	}, [isLoading, missingKey, removeFromCart]);
 
 	const cartItems = cart.flatMap((line) => {
 		const product = productsById.get(line.productId);

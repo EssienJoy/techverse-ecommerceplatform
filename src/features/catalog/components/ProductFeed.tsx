@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DotsLoader, useAlertStore } from "@/shared";
+import { toast } from "react-hot-toast";
+import { DotsLoader } from "@/shared";
 import { ProductCard } from "@/features/products";
 import type { Product } from "@/features/products/schema";
 import {
@@ -32,7 +33,6 @@ export function ProductFeed({
 	const [total] = useState(initialTotal);
 	const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-	const showError = useAlertStore((state) => state.error);
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
 
 	const loadMore = useCallback(() => {
@@ -56,12 +56,12 @@ export function ProductFeed({
 				setNextCursor(page.nextCursor);
 			})
 			.catch(() => {
-				showError("Could not load more products.");
+				toast.error("Could not load more products.");
 			})
 			.finally(() => {
 				setIsLoadingMore(false);
 			});
-	}, [nextCursor, isLoadingMore, filters, showError]);
+	}, [nextCursor, isLoadingMore, filters]);
 
 	useEffect(() => {
 		const node = sentinelRef.current;

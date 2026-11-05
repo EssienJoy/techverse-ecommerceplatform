@@ -1,11 +1,12 @@
 import { Suspense } from "react";
-import { Container, EmptyState, Link, SearchInput } from "@/shared";
+import { Container, EmptyState, Link, SearchInput, Skeleton } from "@/shared";
 import { ProductCard } from "@/features/products";
 import { Header } from "@/features/navigation";
 import { ChevronLeft, Search } from "lucide-react";
 import { getCategories } from "@/features/content/server/content.service";
+import { getProducts } from "@/features/products/server/products.service";
+import { MAX_PRODUCT_PAGE_SIZE } from "@/features/products/lib/pagination";
 import { isLowStock } from "@/features/products/lib/stock";
-import type { Product } from "@/features/products/schema";
 
 const tagMeta: Record<string, { label: string }> = {
 	"limited-stock": { label: "Limited Stock" },
@@ -19,9 +20,42 @@ export default function SearchPage({
 	searchParams: Promise<{ q?: string; tag?: string; category?: string }>;
 }) {
 	return (
-		<Suspense fallback={<Header text='Shop results' />}>
+		<Suspense fallback={<SearchResultsSkeleton />}>
 			<SearchResults searchParams={searchParams} />
 		</Suspense>
+	);
+}
+
+function SearchResultsSkeleton() {
+	return (
+		<>
+			<Header text='Shop results' />
+			<section
+				className='pb-24'
+				aria-busy='true'
+				aria-label='Loading products'>
+				<Container>
+					<Skeleton className='mt-2 h-4 w-28 rounded-full' />
+
+					<div className='pt-2'>
+						<Skeleton className='h-11 w-full rounded-full' />
+					</div>
+
+					<div className='mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4'>
+						{Array.from({ length: 6 }).map((_, index) => (
+							<div
+								key={index}
+								className='flex flex-col gap-2 rounded-xl border border-border/70 bg-card p-2 shadow-sm'>
+								<Skeleton className='aspect-square w-full rounded-xl' />
+								<Skeleton className='h-4 w-3/4 rounded-full' />
+								<Skeleton className='h-4 w-1/2 rounded-full' />
+								<Skeleton className='mt-1 h-9 w-full rounded-md' />
+							</div>
+						))}
+					</div>
+				</Container>
+			</section>
+		</>
 	);
 }
 
@@ -36,20 +70,23 @@ async function SearchResults({
 	const meta = tag ? tagMeta[tag] : null;
 
 	const categories = await getCategories();
-	const products: Product[] = [];
 	const activeCategory = category
 		? categories.find(
 				(item) => item.slug === category || item.label === category,
 			)
 		: undefined;
 
+	const { products } = await getProducts({
+		q: query || undefined,
+		categoryId: activeCategory?.id,
+		limit: MAX_PRODUCT_PAGE_SIZE,
+	});
+
 	const results = products.filter((product) => {
 		if (tag === "limited-stock" && !isLowStock(product.stock)) return false;
 		if (tag === "new-in-stock" && product.stock < 20) return false;
 		if (tag === "bestsellers" && product.rating < 4.7) return false;
 		if (activeCategory && product.category !== activeCategory.label)
-			return false;
-		if (query && !product.name.toLowerCase().includes(query.toLowerCase()))
 			return false;
 		return true;
 	});
